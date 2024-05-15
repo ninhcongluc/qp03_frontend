@@ -14,8 +14,8 @@ function App() {
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          Home page
+        > 
+          Login page2
         </a>
       </header>
     </div>
