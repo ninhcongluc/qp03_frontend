@@ -1,7 +1,7 @@
 - Need install: 
 + Node V16: https://nodejs.org/en/download/package-manager
 + Visual Studio Code
-+ SQL Server
++ MySQL: mysql server + tools(workbend or dbeaver)
 
 Step: Clone code -> npm install -> npm start
 
