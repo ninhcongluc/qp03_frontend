@@ -1,3 +1,12 @@
+- Need install: 
++ Node V16: https://nodejs.org/en/download/package-manager
++ Visual Studio Code
++ SQL Server
+
+Step: Clone code -> npm install -> npm start
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
