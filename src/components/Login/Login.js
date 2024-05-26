@@ -31,37 +31,63 @@ function Login() {
   // };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
-        <TextField label="Email" value={email} onChange={handleEmailChange} />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <Checkbox
-          checked={rememberMe}
-          onChange={handleRememberMeChange}
-          label="Remember me"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleLogin}
-          className="login-button"
-        >
-          Login
-        </Button>
-        <GoogleLogin
-          clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-          buttonText="Sign in with Google"
-          // onSuccess={responseGoogle}
-          // onFailure={responseGoogle}
-          cookiePolicy={"single_host_origin"}
-        />
+  
+      <div className="login-container">
+        <div className="login-form">
+          <h2>LOGIN</h2>
+
+          <TextField
+            label="Enter email"
+            value={email}
+            onChange={handleEmailChange}
+            InputLabelProps={{ style: { color: "black" } }}
+          />
+          <TextField
+            label="Enter password"
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+            InputLabelProps={{ style: { color: "black" } }}
+          />
+          <div>
+
+            <Checkbox
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+              label="Remember me"
+              style={{ color: "orange" }}
+            />
+            <label className="remember-me-label" >Remember me</label>
+
+            <a href="!#"
+              style={{ color: "#ff4a02" }}  >
+              Forgot password?</a>
+          </div>
+
+
+
+          <Button
+            variant="contained"
+            style={{ backgroundColor: '#fc8b03', color: '#ffffff' }} // Custom colors
+            onClick={handleLogin}
+            className="login-button"
+          >
+            Login
+          </Button>
+          <div class="or">OR </div>
+
+          <GoogleLogin
+            clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+            buttonText="Sign in with Google"
+            // onSuccess={responseGoogle}
+            // onFailure={responseGoogle}
+            cookiePolicy={"single_host_origin"}
+            style={{ borderRadius: '10%' }}
+          />
+
+        </div>
       </div>
-    </div>
+
   );
 }
 
