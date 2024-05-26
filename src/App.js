@@ -6,8 +6,7 @@ import Homepage from "./components/Homepage";
 
 function App() {
   return (
-    <div className="container">
-      {/* Defining routes path and rendering components as element */}
+    <div>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Homepage />} />
