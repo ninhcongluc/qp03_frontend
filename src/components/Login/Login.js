@@ -55,6 +55,22 @@ function Login() {
       });
   };
 
+  const responseGoogle = (response) => {
+    console.log("response", response);
+    axios
+      .get("http://localhost:8000/auth/google", {
+        params: { token: response.tokenId },
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data);
+        // Handle the response
+      })
+      .catch((error) => {
+        console.error(error);
+        // Handle the error
+      });
+  };
   return (
     <div className="login-container">
       <div className="login-form">
@@ -100,8 +116,8 @@ function Login() {
         <GoogleLogin
           clientId="136665406201-o3244ge21kai14aaehs4gtvrbo3vomih.apps.googleusercontent.com"
           buttonText="Sign in with Google"
-          // onSuccess={responseGoogle}
-          // onFailure={responseGoogle}
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
           cookiePolicy={"single_host_origin"}
           style={{ borderRadius: "10%" }}
         />
