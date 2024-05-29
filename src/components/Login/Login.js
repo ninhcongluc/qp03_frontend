@@ -25,6 +25,7 @@ function Login() {
   };
 
   const handleLogin = () => {
+    window.open("http://localhost:8000/auth/login", "_self");
     // Perform login logic here
     console.log("Login clicked");
     axios
@@ -56,20 +57,8 @@ function Login() {
   };
 
   const responseGoogle = (response) => {
-    console.log("response", response);
-    axios
-      .get("http://localhost:8000/auth/google", {
-        params: { token: response.tokenId },
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        // Handle the response
-      })
-      .catch((error) => {
-        console.error(error);
-        // Handle the error
-      });
+    // Perform login logic here
+    window.open("http://localhost:8000/auth/google", "_self");
   };
   return (
     <div className="login-container">
