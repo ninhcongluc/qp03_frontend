@@ -9,7 +9,7 @@ function App() {
     <div className="container">
       {/* Defining routes path and rendering components as element */}
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Header />} />
       </Routes>
     </div>
