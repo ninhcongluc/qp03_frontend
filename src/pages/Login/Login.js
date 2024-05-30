@@ -1,19 +1,20 @@
-import React, { useState } from "react";
-import { TextField, Checkbox, Button } from "@material-ui/core";
-import "./Login.css";
-import { GoogleLogin } from "react-google-login";
+import { Button, Checkbox, TextField } from "@material-ui/core";
 import axios from "axios";
+import React, { useState } from "react";
+import { GoogleLogin } from "react-google-login";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./Login.css";
+
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -25,11 +26,9 @@ function Login() {
   };
 
   const handleLogin = () => {
-    window.open("http://localhost:8000/auth/login", "_self");
     // Perform login logic here
-    console.log("Login clicked");
     axios
-      .post("http://localhost:8000/auth/login", { username, password })
+      .post("http://localhost:8000/auth/login", { email, password })
       .then((response) => {
         console.log(response.data);
         const { token, userInfo } = response.data.data;
@@ -50,25 +49,25 @@ function Login() {
       })
       .catch((error) => {
         // Handle login error
-        // Handle login error
         console.error(error.response.data.error);
         toast.error(error.response.data.error);
       });
   };
 
   const responseGoogle = (response) => {
-    // Perform login logic here
-    window.open("http://localhost:8000/auth/google", "_self");
+    // window.open("http://localhost:8000/auth/google", "_self");
+    // console.log(response);
   };
+
   return (
     <div className="login-container">
       <div className="login-form">
         <h2>LOGIN</h2>
 
         <TextField
-          label="Enter username"
-          value={username}
-          onChange={handleUsernameChange}
+          label="Enter email"
+          value={email}
+          onChange={handleEmailChange}
           InputLabelProps={{ style: { color: "black" } }}
         />
         <TextField
