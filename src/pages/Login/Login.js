@@ -56,7 +56,7 @@ function Login() {
 
   const responseGoogle = (response) => {
     // window.open("http://localhost:8000/auth/google", "_self");
-    // console.log(response);
+    console.log(response);
   };
 
   return (

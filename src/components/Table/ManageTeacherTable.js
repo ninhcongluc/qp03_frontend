@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Avatar from "@mui/material/Avatar";
 import {
   Box,
   Button,
@@ -13,9 +14,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const ManagerAccountTable = () => {
+const ManageTeacherTable = () => {
   const [managerAccounts, setManagerAccounts] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchManagerAccounts = async () => {
@@ -27,12 +27,12 @@ const ManagerAccountTable = () => {
           },
         };
         const response = await axios.get(
-          "http://localhost:8000/manager/list",
+          "http://localhost:8000/teacher/list",
           config
         );
         setManagerAccounts(response.data.data);
+        console.log("data", response.data.data);
       } catch (error) {
-        setError("Error fetching manager accounts");
         console.error("Error fetching manager accounts:", error);
       }
     };
@@ -42,13 +42,12 @@ const ManagerAccountTable = () => {
   const handleCreateAccount = () => {
     // Add logic to create a new manager account
   };
+  const handleViewAccount = (account) => {
+    // Add logic to view the selected manager account
+  };
 
   const handleEditAccount = (account) => {
     // Add logic to edit the selected manager account
-  };
-
-  const handleViewAccount = (account) => {
-    // Add logic to view the selected manager account
   };
 
   const handleActiveChange = (account) => {
@@ -57,7 +56,6 @@ const ManagerAccountTable = () => {
 
   return (
     <Box>
-      {error && <Box color="error.main">{error}</Box>}
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button
           sx={{ width: "200px" }}
@@ -73,24 +71,30 @@ const ManagerAccountTable = () => {
         component={Paper}
         sx={{
           maxHeight: "100%",
-          width: "1100px",
-          marginLeft: "200px",
+          width: "1000px",
+          marginLeft: "300px",
         }}
       >
         <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
+              <TableCell>Avatar</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Active</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Edit</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {managerAccounts.map((account, index) => (
               <TableRow key={account.id}>
                 <TableCell>{index + 1}</TableCell>
+                <Avatar
+                  sx={{ marginTop: "15px" }}
+                  alt="Avatar"
+                  src={account?.avatarUrl}
+                />
                 <TableCell>
                   {account.firstName} {account.lastName}
                 </TableCell>
@@ -131,4 +135,4 @@ const ManagerAccountTable = () => {
   );
 };
 
-export default ManagerAccountTable;
+export default ManageTeacherTable;

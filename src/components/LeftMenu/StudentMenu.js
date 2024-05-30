@@ -9,11 +9,11 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const LeftMenu = () => {
+const StudentMenu = () => {
   const navigate = useNavigate();
 
-  const handleManagerManagementClick = () => {
-    navigate("/admin/manage-manager");
+  const handleCourseManagementClick = () => {
+    navigate("/student/course-management");
   };
 
   const handleLogoutClick = () => {
@@ -26,11 +26,11 @@ const LeftMenu = () => {
     <div>
       <Drawer variant="permanent" anchor="left">
         <List>
-          <ListItem button onClick={handleManagerManagementClick}>
+          <ListItem button onClick={handleCourseManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
             </ListItemIcon>
-            <ListItemText primary="Manager Management" />
+            <ListItemText primary="My Courses" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>
@@ -45,4 +45,4 @@ const LeftMenu = () => {
   );
 };
 
-export default LeftMenu;
+export default StudentMenu;
