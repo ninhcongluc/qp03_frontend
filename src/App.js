@@ -12,11 +12,13 @@ import TeacherManagementPage from "./pages/Manager/TeacherManagement";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
 import StudentCourseListPage from "./pages/Student/StudentCourseList";
+import ProfilePage from "./pages/Profile";
 function App() {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="/admin" element={<AdminPage />} />
         <Route

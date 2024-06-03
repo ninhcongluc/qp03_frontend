@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
 
 const LeftMenu = () => {
   const navigate = useNavigate();
@@ -22,9 +23,21 @@ const LeftMenu = () => {
     window.location.replace("/");
   };
 
+  const handleAvatarClick = () => {
+    navigate("/profile");
+  };
+
   return (
     <div>
       <Drawer variant="permanent" anchor="left">
+        <Avatar
+          alt="Remy Sharp"
+          src="/static/images/avatar/1.jpg"
+          onClick={handleAvatarClick}
+          style={{ cursor: "pointer" }}
+        />
+        <h1>Admin</h1>
+
         <List>
           <ListItem button onClick={handleManagerManagementClick}>
             <ListItemIcon>
