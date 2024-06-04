@@ -8,10 +8,13 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import {  deepPurple } from '@mui/material/colors';
 import "./ManagerMenu.css";
+
+
 
 const ManagerMenu = () => {
   const navigate = useNavigate();
@@ -39,6 +42,7 @@ const ManagerMenu = () => {
             <Avatar sx={{ bgcolor: deepPurple[500] }}>M</Avatar>
           </Stack>
           </div>
+
           <ListItem button onClick={handleTeacherManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
