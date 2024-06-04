@@ -10,16 +10,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import { deepOrange } from '@mui/material/colors';
-import "./AdminMenu.css";
-import Link from '@mui/material/Link';
+import {  deepPurple } from '@mui/material/colors';
+import "./ManagerMenu.css";
 
-
-const LeftMenu = () => {
+const ManagerMenu = () => {
   const navigate = useNavigate();
 
-  const handleManagerManagementClick = () => {
-    navigate("/admin/manage-manager");
+  const handleTeacherManagementClick = () => {
+    navigate("/manager/manage-teacher");
+  };
+
+  const handleStudentManagementClick = () => {
+    navigate("/manager/manage-student");
   };
 
   const handleLogoutClick = () => {
@@ -30,23 +32,25 @@ const LeftMenu = () => {
 
   return (
     <div>
-
       <Drawer variant="permanent" anchor="left">
         <List>
-          <Link href="./profile.js">
-           <div class="Admin_Menu">
+        <div class="Manager_Menu">
             <Stack direction="row" spacing={2}>
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>A</Avatar>
+            <Avatar sx={{ bgcolor: deepPurple[500] }}>M</Avatar>
           </Stack>
           </div>
-          </Link>
-         
-          
-          <ListItem button onClick={handleManagerManagementClick}>
+          <ListItem button onClick={handleTeacherManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
             </ListItemIcon>
-            <ListItemText primary="Manager Management" />
+            <ListItemText primary="Teacher Account Management" />
+          </ListItem>
+
+          <ListItem button onClick={handleStudentManagementClick}>
+            <ListItemIcon>
+              <DashboardOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Student Account Management" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>
@@ -61,4 +65,4 @@ const LeftMenu = () => {
   );
 };
 
-export default LeftMenu;
+export default ManagerMenu;

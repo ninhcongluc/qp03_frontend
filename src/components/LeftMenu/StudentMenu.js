@@ -10,16 +10,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import { deepOrange } from '@mui/material/colors';
-import "./AdminMenu.css";
-import Link from '@mui/material/Link';
+import { yellow } from '@mui/material/colors';
+import "./StudentMenu.css";
 
-
-const LeftMenu = () => {
+const StudentMenu = () => {
   const navigate = useNavigate();
 
-  const handleManagerManagementClick = () => {
-    navigate("/admin/manage-manager");
+  const handleCourseManagementClick = () => {
+    navigate("/student/course-management");
   };
 
   const handleLogoutClick = () => {
@@ -30,23 +28,18 @@ const LeftMenu = () => {
 
   return (
     <div>
-
       <Drawer variant="permanent" anchor="left">
         <List>
-          <Link href="./profile.js">
-           <div class="Admin_Menu">
+        <div class="Student_Menu">
             <Stack direction="row" spacing={2}>
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>A</Avatar>
+            <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
           </Stack>
           </div>
-          </Link>
-         
-          
-          <ListItem button onClick={handleManagerManagementClick}>
+          <ListItem button onClick={handleCourseManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
             </ListItemIcon>
-            <ListItemText primary="Manager Management" />
+            <ListItemText primary="My Courses" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>
@@ -61,4 +54,4 @@ const LeftMenu = () => {
   );
 };
 
-export default LeftMenu;
+export default StudentMenu;
