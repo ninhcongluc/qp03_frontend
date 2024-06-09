@@ -8,11 +8,17 @@ import ManagerPage from "./pages/Manager/Manager";
 import StudentPage from "./pages/Student/Student";
 import Login from "./pages/Login/Login";
 import ManagerManagementPage from "./pages/Admin/ManagerManagement";
+import TeacherManagementPage from "./pages/Manager/TeacherManagement";
+import TeacherPage from "./pages/Teacher/Teacher";
+import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
+import StudentCourseListPage from "./pages/Student/StudentCourseList";
+import ProfilePage from "./pages/Profile";
 function App() {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="/admin" element={<AdminPage />} />
         <Route
@@ -21,7 +27,22 @@ function App() {
         />
 
         <Route path="/manager" element={<ManagerPage />} />
+        <Route
+          path="/manager/manage-teacher"
+          element={<TeacherManagementPage />}
+        />
+
+        <Route path="/teacher" element={<TeacherPage />} />
+        <Route
+          path="/teacher/course-management"
+          element={<TeacherCourseListPage />}
+        />
+
         <Route path="/student" element={<StudentPage />} />
+        <Route
+          path="/student/course-management"
+          element={<StudentCourseListPage />}
+        />
       </Routes>
       <ToastContainer />
     </div>

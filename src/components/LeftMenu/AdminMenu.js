@@ -8,12 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import { deepOrange } from '@mui/material/colors';
-import "./AdminMenu.css";
-import Link from '@mui/material/Link';
-
+import Avatar from "@mui/material/Avatar";
 
 const LeftMenu = () => {
   const navigate = useNavigate();
@@ -28,20 +23,30 @@ const LeftMenu = () => {
     window.location.replace("/");
   };
 
+  const handleAvatarClick = () => {
+    navigate("/profile");
+  };
+
   return (
     <div>
-
       <Drawer variant="permanent" anchor="left">
+        <Avatar
+          alt="Remy Sharp"
+          src="/static/images/avatar/1.jpg"
+          onClick={handleAvatarClick}
+          style={{ cursor: "pointer" }}
+        />
+        <h1>Admin</h1>
+
         <List>
           <Link href="./profile.js">
-           <div class="Admin_Menu">
-            <Stack direction="row" spacing={2}>
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>A</Avatar>
-          </Stack>
-          </div>
+            <div class="Admin_Menu">
+              <Stack direction="row" spacing={2}>
+                <Avatar sx={{ bgcolor: deepOrange[500] }}>A</Avatar>
+              </Stack>
+            </div>
           </Link>
-         
-          
+
           <ListItem button onClick={handleManagerManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
