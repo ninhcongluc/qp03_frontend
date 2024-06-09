@@ -1,4 +1,13 @@
      
 .Admin_Menu{
-    margin-left: 10px
+   border: 2px solid #f3f3f3;
+    border-radius: 8px;
+    padding: 4px;
+    margin: 7px;
+    background-color: #3fc94c;
+    text-align: center;
 }
+.button_management {
+    background-color: rgb(95, 24, 24);
+    border-radius: 15px
+  }
