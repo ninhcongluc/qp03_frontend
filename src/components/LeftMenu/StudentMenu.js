@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { yellow } from "@mui/material/colors";
@@ -35,6 +36,7 @@ const StudentMenu = () => {
               <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
             </Stack>
           </div>
+
           <ListItem button onClick={handleCourseManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
