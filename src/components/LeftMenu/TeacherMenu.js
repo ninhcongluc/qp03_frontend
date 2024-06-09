@@ -8,7 +8,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import GroupsIcon from '@mui/icons-material/Groups';
+import PortraitIcon from '@mui/icons-material/Portrait';
+import QuizIcon from '@mui/icons-material/Quiz';
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import "./TeacherMenu.css";
@@ -28,22 +30,22 @@ const TeacherMenu = () => {
 
   return (
     <div>
-      <Drawer variant="permanent" anchor="left" 
-      sx={{
-        '& .MuiDrawer-paper': {
-          backgroundColor: '#f38413', 
-          color: '#fff', 
-        },
-      }}>
+      <Drawer variant="permanent" anchor="left"
+        sx={{
+          '& .MuiDrawer-paper': {
+            backgroundColor: '#f38413',
+            color: '#fff',
+          },
+        }}>
         <List>
           <div class="Teacher_Menu">
             <Stack direction="row" spacing={2}>
-            <Avatar 
-              alt="Teacher" 
-              src="" 
-              sx={{ width: 50, height: 50 }} 
-            />
-            <h3>Teacher</h3>
+              <Avatar
+                alt="Teacher"
+                src=""
+                sx={{ width: 50, height: 50 }}
+              />
+              <h3>Teacher</h3>
             </Stack>
           </div>
           <ListItem button onClick={handleCourseManagementClick}>
@@ -51,6 +53,27 @@ const TeacherMenu = () => {
               <DashboardOutlined />
             </ListItemIcon>
             <ListItemText primary="My Courses" />
+          </ListItem>
+
+          <ListItem button onClick={handleCourseManagementClick}>
+            <ListItemIcon>
+              < PortraitIcon />
+            </ListItemIcon>
+            <ListItemText primary="Class" />
+          </ListItem>
+
+          <ListItem button onClick={handleCourseManagementClick}>
+            <ListItemIcon>
+              <GroupsIcon />
+            </ListItemIcon>
+            <ListItemText primary="List Student" />
+          </ListItem>
+
+          <ListItem button onClick={handleCourseManagementClick}>
+            <ListItemIcon>
+              <QuizIcon />
+            </ListItemIcon>
+            <ListItemText primary="Quiz" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>
