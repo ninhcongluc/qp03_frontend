@@ -20,6 +20,7 @@ const LeftMenu = () => {
   const handleManagerManagementClick = () => {
     navigate("/admin/manage-manager");
   };
+  const handleAvatarClick = () => {};
 
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
