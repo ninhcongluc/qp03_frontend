@@ -2,10 +2,11 @@ import React from "react";
 import { Box } from "@mui/material";
 import ManageTeacherTable from "../../components/Table/ManageTeacherTable";
 import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
+import "./TeacherManagement.css";
 
 const TeacherManagementPage = () => {
   return (
-    <div>
+    <div class="table_manageTeacher">
       <ManagerMenu />
       <Box
         sx={{
