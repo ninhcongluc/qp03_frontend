@@ -8,7 +8,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import PortraitIcon from '@mui/icons-material/Portrait';
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import "./ManagerMenu.css";
@@ -54,15 +55,24 @@ const ManagerMenu = () => {
             <ListItemIcon>
               <DashboardOutlined />
             </ListItemIcon>
-            <ListItemText primary="Teacher Account Management" />
+            <ListItemText primary="Semester" />
           </ListItem>
 
           <ListItem button onClick={handleStudentManagementClick}>
             <ListItemIcon>
-              <DashboardOutlined />
+              <PermIdentityIcon/>
             </ListItemIcon>
-            <ListItemText primary="Student Account Management" />
+            <ListItemText primary="Teacher Account Management" />
           </ListItem>
+
+          <ListItem >
+            <ListItemIcon>
+              <PortraitIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Class" />
+          </ListItem>
+
+         
 
           <ListItem button onClick={handleLogoutClick}>
             <ListItemIcon>
