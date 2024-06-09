@@ -26,9 +26,7 @@ const LeftMenu = () => {
   };
 
   return (
-    <Drawer
-      variant="permanent"
-      anchor="left"
+    <Drawer variant="permanent" anchor="left"
       sx={{
         '& .MuiDrawer-paper': {
           backgroundColor: '#f38413', 

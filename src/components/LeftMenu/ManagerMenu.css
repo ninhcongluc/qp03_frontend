@@ -1,3 +1,8 @@
 .Manager_Menu{
-    margin-left:10px
+    border: 2px solid #e7e5e3; 
+  border-radius: 8px; 
+  padding: 9px;
+  margin: 9px; 
+  background-color: #5dc71f; 
+  text-align: center; 
 }

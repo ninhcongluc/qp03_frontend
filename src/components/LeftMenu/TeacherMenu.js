@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import { green } from "@mui/material/colors";
 import "./TeacherMenu.css";
 
 const TeacherMenu = () => {
@@ -29,11 +28,22 @@ const TeacherMenu = () => {
 
   return (
     <div>
-      <Drawer variant="permanent" anchor="left">
+      <Drawer variant="permanent" anchor="left" 
+      sx={{
+        '& .MuiDrawer-paper': {
+          backgroundColor: '#f38413', 
+          color: '#fff', 
+        },
+      }}>
         <List>
           <div class="Teacher_Menu">
             <Stack direction="row" spacing={2}>
-              <Avatar sx={{ bgcolor: green[500] }}>T</Avatar>
+            <Avatar 
+              alt="Teacher" 
+              src="" 
+              sx={{ width: 50, height: 50 }} 
+            />
+            <h3>Teacher</h3>
             </Stack>
           </div>
           <ListItem button onClick={handleCourseManagementClick}>

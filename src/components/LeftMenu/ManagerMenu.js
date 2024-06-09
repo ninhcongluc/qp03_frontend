@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import { deepPurple } from "@mui/material/colors";
 import "./ManagerMenu.css";
 
 const ManagerMenu = () => {
@@ -33,11 +32,21 @@ const ManagerMenu = () => {
 
   return (
     <div>
-      <Drawer variant="permanent" anchor="left">
+      <Drawer variant="permanent" anchor="left" sx={{
+        '& .MuiDrawer-paper': {
+          backgroundColor: '#f38413', 
+          color: '#fff', 
+        },
+      }}>
         <List>
           <div class="Manager_Menu">
             <Stack direction="row" spacing={2}>
-              <Avatar sx={{ bgcolor: deepPurple[500] }}>M</Avatar>
+            <Avatar 
+              alt="Manager" 
+              src="" 
+              sx={{ width: 64, height: 64 }} 
+            />
+            <h3>Manager</h3>
             </Stack>
           </div>
 
