@@ -8,6 +8,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import { green } from "@mui/material/colors";
+import "./TeacherMenu.css";
 
 const TeacherMenu = () => {
   const navigate = useNavigate();
@@ -26,6 +30,11 @@ const TeacherMenu = () => {
     <div>
       <Drawer variant="permanent" anchor="left">
         <List>
+          <div class="Teacher_Menu">
+            <Stack direction="row" spacing={2}>
+              <Avatar sx={{ bgcolor: green[500] }}>T</Avatar>
+            </Stack>
+          </div>
           <ListItem button onClick={handleCourseManagementClick}>
             <ListItemIcon>
               <DashboardOutlined />
