@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "@mui/material/Avatar";
 import {
   Box,
   Button,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const ManageTeacherTable = () => {
+const ManageSemesterTable = () => {
   const [managerAccounts, setManagerAccounts] = useState([]);
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const ManageTeacherTable = () => {
           },
         };
         const response = await axios.get(
-          "http://localhost:8000/teacher/list",
+          "http://localhost:8000/semester",
           config
         );
         setManagerAccounts(response.data.data);
@@ -46,7 +45,7 @@ const ManageTeacherTable = () => {
     // Add logic to view the selected manager account
   };
 
-  const handleImport = () => {
+  const handleEditAccount = (account) => {
     // Add logic to edit the selected manager account
   };
 
@@ -64,7 +63,7 @@ const ManageTeacherTable = () => {
           size="small"
           onClick={handleCreateAccount}
         >
-          Import
+          Create+
         </Button>
       </Box>
       <TableContainer
@@ -79,22 +78,16 @@ const ManageTeacherTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
-              <TableCell>Avatar</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Active</TableCell>
-              <TableCell>Edit</TableCell>
+              <TableCell>StartDate</TableCell>
+              <TableCell>EndDate</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {managerAccounts.map((account, index) => (
               <TableRow key={account.id}>
                 <TableCell>{index + 1}</TableCell>
-                <Avatar
-                  sx={{ marginTop: "15px" }}
-                  alt="Avatar"
-                  src={account?.avatarUrl}
-                />
                 <TableCell>
                   {account.firstName} {account.lastName}
                 </TableCell>
@@ -120,7 +113,7 @@ const ManageTeacherTable = () => {
                     variant="contained"
                     color="secondary"
                     size="small"
-                    onClick={() => handleImport()}
+                    onClick={() => handleEditAccount(account)}
                     style={{ width: "70px" }}
                   >
                     Edit
@@ -135,4 +128,4 @@ const ManageTeacherTable = () => {
   );
 };
 
-export default ManageTeacherTable;
+export default ManageSemesterTable;

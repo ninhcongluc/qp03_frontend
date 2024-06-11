@@ -1,0 +1,15 @@
+.menu {
+  border: 2px solid #e7e5e3;
+  border-radius: 8px;
+  padding: 9px;
+  margin: 9px;
+  background-color: rgb(76, 104, 241);
+  text-align: center;
+}
+
+.itemIcon {
+  color: rgb(76, 104, 241);
+}
+h3 {
+  color: rgb(27, 51, 71);
+}

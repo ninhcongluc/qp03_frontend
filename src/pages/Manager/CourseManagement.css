@@ -1,0 +1,12 @@
+.course-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+.course-card h3 {
+  margin-top: 0;
+}
+.course-card p {
+  margin-bottom: 8px;
+}

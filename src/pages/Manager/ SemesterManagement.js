@@ -1,10 +1,9 @@
 import React from "react";
 import { Box } from "@mui/material";
-import ManageTeacherTable from "../../components/Table/ManageTeacherTable";
 import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
-import "./TeacherManagement.css";
+import ManageSemesterTable from "../../components/Table/ManageSemester";
 
-const TeacherManagementPage = () => {
+const SemesterManagement = () => {
   return (
     <div class="table_manageTeacher">
       <ManagerMenu />
@@ -16,13 +15,11 @@ const TeacherManagementPage = () => {
           marginTop: "2rem",
         }}
       >
-        <h1 style={{ marginBottom: "1.5rem" }}>
-          Teacher Information Management
-        </h1>
-        <ManageTeacherTable />
+        <h1 style={{ marginBottom: "1.5rem" }}>Semester Management</h1>
+        <ManageSemesterTable />
       </Box>
     </div>
   );
 };
 
-export default TeacherManagementPage;
+export default SemesterManagement;

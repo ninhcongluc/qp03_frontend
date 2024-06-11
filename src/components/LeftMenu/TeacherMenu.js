@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import GroupsIcon from '@mui/icons-material/Groups';
-import PortraitIcon from '@mui/icons-material/Portrait';
-import QuizIcon from '@mui/icons-material/Quiz';
+import GroupsIcon from "@mui/icons-material/Groups";
+import PortraitIcon from "@mui/icons-material/Portrait";
+import QuizIcon from "@mui/icons-material/Quiz";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import "./TeacherMenu.css";
+import "./LeftMenu.css";
 
 const TeacherMenu = () => {
   const navigate = useNavigate();
@@ -30,21 +30,19 @@ const TeacherMenu = () => {
 
   return (
     <div>
-      <Drawer variant="permanent" anchor="left"
+      <Drawer
+        variant="permanent"
+        anchor="left"
         sx={{
-          '& .MuiDrawer-paper': {
-            backgroundColor: '#f38413',
-            color: '#fff',
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#fff",
           },
-        }}>
+        }}
+      >
         <List>
-          <div class="Teacher_Menu">
+          <div class="menu">
             <Stack direction="row" spacing={2}>
-              <Avatar
-                alt="Teacher"
-                src=""
-                sx={{ width: 50, height: 50 }}
-              />
+              <Avatar alt="Teacher" src="" sx={{ width: 50, height: 50 }} />
               <h3>Teacher</h3>
             </Stack>
           </div>
@@ -57,7 +55,7 @@ const TeacherMenu = () => {
 
           <ListItem button onClick={handleCourseManagementClick}>
             <ListItemIcon>
-              < PortraitIcon />
+              <PortraitIcon />
             </ListItemIcon>
             <ListItemText primary="Class" />
           </ListItem>

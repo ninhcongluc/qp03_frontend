@@ -6,11 +6,11 @@ import {
   ListItemIcon,
   ListItemText,
   Avatar,
-  Stack
+  Stack,
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./AdminMenu.css";
+import "./LeftMenu.css";
 
 const LeftMenu = () => {
   const navigate = useNavigate();
@@ -26,36 +26,32 @@ const LeftMenu = () => {
   };
 
   return (
-    <Drawer variant="permanent" anchor="left"
+    <Drawer
+      variant="permanent"
+      anchor="left"
       sx={{
-        '& .MuiDrawer-paper': {
-          backgroundColor: '#f38413', 
-          color: '#fff', 
+        "& .MuiDrawer-paper": {
+          backgroundColor: "#fff",
         },
       }}
     >
       <List>
-        <div className="Admin_Menu">
+        <div className="menu">
           <Stack direction="row" spacing={2}>
-            <Avatar 
-              alt="Admin" 
-              src="" 
-              sx={{ width: 64, height: 64 }} 
-            />
+            <Avatar alt="Admin" src="" sx={{ width: 64, height: 64 }} />
             <h3>Admin</h3>
           </Stack>
-          
         </div>
 
         <ListItem button onClick={handleManagerManagementClick}>
-          <ListItemIcon>
+          <ListItemIcon className="itemIcon">
             <DashboardOutlined />
           </ListItemIcon>
           <ListItemText primary="Manager Management" />
         </ListItem>
 
         <ListItem button onClick={handleLogoutClick}>
-          <ListItemIcon>
+          <ListItemIcon className="itemIcon">
             <ExitToAppOutlined />
           </ListItemIcon>
           <ListItemText primary="Logout" />
