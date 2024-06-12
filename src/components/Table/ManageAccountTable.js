@@ -15,10 +15,10 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Avatar,
 } from "@mui/material";
 import axios from "axios";
-import Avatar from "@mui/material/Avatar";
-import { toast } from "react-toastify"; // import toast
+import { toast } from "react-toastify";
 
 const ManagerAccountTable = () => {
   const [managerAccounts, setManagerAccounts] = useState([]);
@@ -31,28 +31,30 @@ const ManagerAccountTable = () => {
     firstName: "",
     lastName: "",
     email: "",
-    isActive: true,
+    code: "",
+    isActive: false,
   });
+  const fetchManagerAccounts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.get(
+        "http://localhost:8000/manager/list",
+        config
+      );
+      setManagerAccounts(response.data.data);
+    } catch (error) {
+      setError("Error fetching manager accounts");
+      console.error("Error fetching manager accounts:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchManagerAccounts = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        const response = await axios.get(
-          "http://localhost:8000/manager/list",
-          config
-        );
-        setManagerAccounts(response.data.data);
-      } catch (error) {
-        setError("Error fetching manager accounts");
-        console.error("Error fetching manager accounts:", error);
-      }
-    };
     fetchManagerAccounts();
   }, []);
 
@@ -61,10 +63,12 @@ const ManagerAccountTable = () => {
     setFormData({
       firstName: "",
       lastName: "",
+      code: "",
       email: "",
-      isActive: true,
+      isActive: false,
     });
     setOpen(true);
+    setViewMode(false);
   };
 
   const handleEditAccount = (account) => {
@@ -74,13 +78,15 @@ const ManagerAccountTable = () => {
       lastName: account.lastName,
       email: account.email,
       isActive: account.isActive,
+      dob: account.dob,
+      phoneNumber: account.phoneNumber,
     });
     setOpen(true);
+    setViewMode(false);
   };
 
   const handleDeleteAccount = async (account) => {
     try {
-      console.log("82", account);
       const token = localStorage.getItem("token");
       const config = {
         headers: {
@@ -89,6 +95,7 @@ const ManagerAccountTable = () => {
       };
       await axios.delete(`http://localhost:8000/manager/${account.id}`, config);
       setManagerAccounts(managerAccounts.filter((a) => a.id !== account.id));
+      toast.success("Manager account deleted successfully");
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error deleting manager account:", error);
@@ -115,13 +122,23 @@ const ManagerAccountTable = () => {
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       };
+
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        code: formData.code,
+        email: formData.email,
+        isActive: formData.isActive,
+      };
+
       if (selectedAccount) {
         // Update existing account
         const response = await axios.put(
           `http://localhost:8000/manager/${selectedAccount.id}`,
-          formData,
+          payload,
           config
         );
         setManagerAccounts(
@@ -133,13 +150,16 @@ const ManagerAccountTable = () => {
         );
       } else {
         // Create new account
-        const response = await axios.post(
-          "http://localhost:8000/manager",
-          formData,
+        await axios.post(
+          "http://localhost:8000/manager/create",
+          payload,
           config
         );
-        setManagerAccounts([...managerAccounts, response.data.data]);
+        // setManagerAccounts([...managerAccounts, response.data.data]);
       }
+      await fetchManagerAccounts();
+
+      toast.success("Manager account saved successfully");
       setOpen(false);
     } catch (error) {
       toast.error(error.response.data.error);
@@ -278,6 +298,14 @@ const ManagerAccountTable = () => {
             fullWidth
           />
           <TextField
+            name="code"
+            label="Code"
+            value={formData.code}
+            onChange={handleFormChange}
+            margin="normal"
+            fullWidth
+          />
+          <TextField
             name="email"
             label="Email"
             type="email"
@@ -319,17 +347,13 @@ const ManagerAccountTable = () => {
           </Box>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
+          </Button>
           {!viewMode && (
-            <>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button
-                onClick={handleSubmit}
-                variant="contained"
-                color="primary"
-              >
-                Save
-              </Button>
-            </>
+            <Button onClick={handleSubmit} color="primary">
+              {selectedAccount ? "Update" : "Create"}
+            </Button>
           )}
         </DialogActions>
       </Dialog>

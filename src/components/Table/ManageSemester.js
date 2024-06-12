@@ -9,15 +9,14 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Switch,
 } from "@mui/material";
 import axios from "axios";
 
 const ManageSemesterTable = () => {
-  const [managerAccounts, setManagerAccounts] = useState([]);
+  const [semesters, setSemesters] = useState([]);
 
   useEffect(() => {
-    const fetchManagerAccounts = async () => {
+    const fetchSemesters = async () => {
       try {
         const token = localStorage.getItem("token");
         const config = {
@@ -29,28 +28,34 @@ const ManageSemesterTable = () => {
           "http://localhost:8000/semester",
           config
         );
-        setManagerAccounts(response.data.data);
-        console.log("data", response.data.data);
+        setSemesters(response.data.data);
       } catch (error) {
-        console.error("Error fetching manager accounts:", error);
+        console.error("Error fetching semester information:", error);
       }
     };
-    fetchManagerAccounts();
+    fetchSemesters();
   }, []);
 
-  const handleCreateAccount = () => {
-    // Add logic to create a new manager account
-  };
-  const handleViewAccount = (account) => {
-    // Add logic to view the selected manager account
+  const handleCreateSemester = () => {
+    // Add logic to create a new semester
   };
 
-  const handleEditAccount = (account) => {
-    // Add logic to edit the selected manager account
-  };
-
-  const handleActiveChange = (account) => {
-    // Add logic to update the active status of the selected manager account
+  const handleDeleteSemester = async (semester) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      await axios.delete(
+        `http://localhost:8000/semester/${semester.id}`,
+        config
+      );
+      setSemesters(semesters.filter((s) => s.id !== semester.id));
+    } catch (error) {
+      console.error("Error deleting semester:", error);
+    }
   };
 
   return (
@@ -61,18 +66,14 @@ const ManageSemesterTable = () => {
           variant="contained"
           color="primary"
           size="small"
-          onClick={handleCreateAccount}
+          onClick={handleCreateSemester}
         >
           Create+
         </Button>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{
-          maxHeight: "100%",
-          width: "1000px",
-          marginLeft: "300px",
-        }}
+        sx={{ maxHeight: "100%", width: "1000px", marginLeft: "300px" }}
       >
         <Table stickyHeader>
           <TableHead>
@@ -85,38 +86,21 @@ const ManageSemesterTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {managerAccounts.map((account, index) => (
-              <TableRow key={account.id}>
+            {semesters.map((semester, index) => (
+              <TableRow key={semester.id}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>
-                  {account.firstName} {account.lastName}
-                </TableCell>
-                <TableCell>{account.email}</TableCell>
-                <TableCell>
-                  <Switch
-                    checked={account.isActive}
-                    onChange={() => handleActiveChange(account)}
-                    color="primary"
-                  />
-                </TableCell>
+                <TableCell>{semester.name}</TableCell>
+                <TableCell>{semester.startDate}</TableCell>
+                <TableCell>{semester.endDate}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    color="warning"
+                    color="error"
                     size="small"
-                    onClick={() => handleViewAccount(account)}
-                    style={{ marginRight: "8px", width: "70px" }}
-                  >
-                    View
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    onClick={() => handleEditAccount(account)}
+                    onClick={() => handleDeleteSemester(semester)}
                     style={{ width: "70px" }}
                   >
-                    Edit
+                    Delete
                   </Button>
                 </TableCell>
               </TableRow>
