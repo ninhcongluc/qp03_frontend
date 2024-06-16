@@ -12,37 +12,37 @@ const courses = [
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "MKT1915",
-    url: "/student-list-class/ACC101",
+   
   },
   {
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "SE1848-SAP",
-    url: "/student-list-class/SWR302",
+    
   },
   {
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "SE1849-SAP",
-    url: "/student-list-class/SWP391",
+  
   },
   {
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "SE1850-SAP",
-    url: "/student-list-class/SWT301",
+    
   },
   {
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "MKT1902",
-    url: "/student-list-class/MAS291",
+    
   },
   {
     code: "ACC101",
     image: "https://via.placeholder.com/150",
     instructor: "MKT1916",
-    url: "/student-list-class/PRJ301",
+   
   },
 
 ];

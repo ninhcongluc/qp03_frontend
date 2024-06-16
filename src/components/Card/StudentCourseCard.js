@@ -13,7 +13,7 @@ const CourseCard = ({ course }) => (
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          height="140" 
           image={course.image}
           alt={`${course.code} course`}
         />

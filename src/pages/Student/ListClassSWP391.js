@@ -25,6 +25,7 @@ const courses = [
     image: "https://via.placeholder.com/150",
     instructor: "SE1849-SAP",
     
+    
   },
   {
     code: "SWP391",

@@ -30,7 +30,7 @@ const courses = [
     code: "SWR302",
     image: "https://via.placeholder.com/150",
     instructor: "SE1850-SAP",
-    
+     
   },
   {
     code: "SWR302",
