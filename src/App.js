@@ -17,6 +17,7 @@ import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
 import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
+import TeacherQuestionListPage from "./pages/Teacher/TeacherQuestionList";
 
 function App() {
   return (
@@ -49,6 +50,8 @@ function App() {
           path="/teacher/quiz"
           element={<TeacherQuizListPage />}
         />
+
+        <Route path="/teacher/add-question" element={<TeacherQuestionListPage />} />
 
         <Route path="/student" element={<StudentPage />} />
         <Route

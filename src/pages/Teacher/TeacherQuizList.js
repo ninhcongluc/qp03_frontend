@@ -59,7 +59,7 @@ const QuizManagementPage = () => {
   );
 
   const handleAddQuiz = () => {
-    setSelectedQuiz(null);
+    navigate("/teacher/Add-question");
   };
 
   const handleEditQuiz = (id) => {
