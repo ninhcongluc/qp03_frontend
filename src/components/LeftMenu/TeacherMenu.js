@@ -18,8 +18,16 @@ import "./LeftMenu.css";
 const TeacherMenu = () => {
   const navigate = useNavigate();
 
+  const handleMyCourseClick = () => {
+    navigate("/teacher/course-management");
+  };
+
   const handleCourseManagementClick = () => {
     navigate("/teacher/course-management");
+  };
+
+  const handleQuizClick = () => {
+    navigate("/teacher/quiz");
   };
 
   const handleLogoutClick = () => {
@@ -46,7 +54,7 @@ const TeacherMenu = () => {
               <h3>Teacher</h3>
             </Stack>
           </div>
-          <ListItem button onClick={handleCourseManagementClick}>
+          <ListItem button onClick={handleMyCourseClick}>
             <ListItemIcon>
               <DashboardOutlined />
             </ListItemIcon>
@@ -67,7 +75,7 @@ const TeacherMenu = () => {
             <ListItemText primary="List Student" />
           </ListItem>
 
-          <ListItem button onClick={handleCourseManagementClick}>
+          <ListItem button onClick={handleQuizClick}>
             <ListItemIcon>
               <QuizIcon />
             </ListItemIcon>
