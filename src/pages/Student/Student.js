@@ -1,10 +1,9 @@
 import React from "react";
-import StudentMenu from "../../components/LeftMenu/StudentMenu";
 
 const StudentPage = () => {
   return (
     <div>
-      <StudentMenu />
+      <h1>Welcome to the Student Home Page!</h1>
     </div>
   );
 };

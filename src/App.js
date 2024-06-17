@@ -25,7 +25,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<ProfilePage />} />
-
         <Route path="/admin" element={<AdminPage />} />
         <Route
           path="/admin/manage-manager"
