@@ -14,12 +14,14 @@ import {
   MenuItem,
   FormControl,
 } from "@mui/material";
-import "./TeacherQuestionList.css";
+import "./TeacherAddQuestion.css";
+
 
 const TeacherQuestionListPage = () => {
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", options: [""] },
   ]);
+
 
   const handleOnChange = (event, questionId) => {
     const newQuestions = questions.map((question) => {
@@ -31,6 +33,7 @@ const TeacherQuestionListPage = () => {
     setQuestions(newQuestions);
   };
 
+
   const handleAddQuestion = () => {
     const newQuestion = {
       id: questions.length + 1,
@@ -39,6 +42,7 @@ const TeacherQuestionListPage = () => {
     };
     setQuestions([...questions, newQuestion]);
   };
+
 
   const handleDeleteQuestion = (questionId) => {
     console.log(questionId);
@@ -54,8 +58,10 @@ const TeacherQuestionListPage = () => {
       question.id = index + 1;
     });
 
+
     setQuestions(newQuestions);
   };
+
 
   const handleAddOption = (questionId) => {
     const newQuestions = questions.map((question) => {
@@ -66,6 +72,7 @@ const TeacherQuestionListPage = () => {
     });
     setQuestions(newQuestions);
   };
+
 
   const handleDeleteOption = (questionId, optionIndex) => {
     const newQuestions = questions.map((question) => {
@@ -79,6 +86,7 @@ const TeacherQuestionListPage = () => {
     });
     setQuestions(newQuestions);
   };
+
 
   return (
     <div>
@@ -146,10 +154,11 @@ const TeacherQuestionListPage = () => {
                             label={`Option ${index + 1}`}
                             variant="standard"
                             type="text"
-                            sx={{ width: "70%" }}
+                            sx={{ width: "90%" }}
                           />
                         </TableCell>
                         <TableCell>
+
 
                           <Button
                             variant="contained"
@@ -218,5 +227,6 @@ const TeacherQuestionListPage = () => {
     </div>
   );
 };
+
 
 export default TeacherQuestionListPage;

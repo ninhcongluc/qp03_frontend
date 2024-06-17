@@ -17,7 +17,7 @@ import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
 import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
-import TeacherQuestionListPage from "./pages/Teacher/TeacherQuestionList";
+import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
 
 function App() {
   return (
