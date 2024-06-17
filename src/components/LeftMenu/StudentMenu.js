@@ -9,9 +9,11 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import "./LeftMenu.css";
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import { yellow } from '@mui/material/colors';
+import "./StudentMenu.css";
+
 
 const StudentMenu = () => {
   const navigate = useNavigate();
@@ -38,11 +40,10 @@ const StudentMenu = () => {
         }}
       >
         <List>
-          <div class="menu">
+        <div class="Student_Menu">
             <Stack direction="row" spacing={2}>
-              <Avatar alt="Student" src="" sx={{ width: 50, height: 50 }} />
-              <h3>Student</h3>
-            </Stack>
+            <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
+          </Stack>
           </div>
 
           <ListItem button onClick={handleCourseManagementClick}>

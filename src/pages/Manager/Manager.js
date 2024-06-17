@@ -1,10 +1,9 @@
 import React from "react";
-import LeftMenu from "../../components/LeftMenu/ManagerMenu";
 
 const ManagerPage = () => {
   return (
     <div>
-      <LeftMenu />
+      <h1>Welcome to the Manager Home Page!</h1>
     </div>
   );
 };
