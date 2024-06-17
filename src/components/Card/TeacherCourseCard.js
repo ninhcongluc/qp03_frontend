@@ -22,9 +22,7 @@ const TeacherCourseCard = ({ course }) => (
             <Typography variant="body1" color="text.primary" gutterBottom>
               Start Date: <b>{course.startDate}</b>
             </Typography>
-            <Typography variant="body1" color="text.primary" gutterBottom>
-              Students: <b>{course.studentCount}</b>
-            </Typography>
+            
             
           </CardContent>
         </Grid>

@@ -15,7 +15,6 @@ const courses = [
   description: "Introductory Accounting",
   semesterName: "Fall 2024",
   startDate: "2024-06-01",
-  studentCount: 30,
   },
   {
   id: "f5a016b9-97c2-4832-ba68-490d8825225e",
@@ -23,7 +22,6 @@ const courses = [
   description: "Advanced Software Engineering",
   semesterName: "Spring 2024",
   startDate: "2024-01-01",
-  studentCount: 30,
   },
   {
   id: "84ec946c-7b70-45c5-9ac5-7c6123644e4b",
@@ -31,7 +29,6 @@ const courses = [
   description: "Principles of Macroeconomics",
   semesterName: "Fall 2024",
   startDate: "2024-06-01",
-  studentCount: 30,
   },
   {
   id: "5e7fbf37-4a7e-4a82-b298-8cbcba4a0c6b",
@@ -39,7 +36,6 @@ const courses = [
   description: "General Biology",
   semesterName: "Spring 2024",
   startDate: "2024-01-01",
-  studentCount: 30,
   },
   {
   id: "a2c5ea9e-4d7b-4e18-82fc-d0a269acaf5a",
@@ -47,7 +43,6 @@ const courses = [
   description: "Introduction to Computer Science",
   semesterName: "Fall 2024",
   startDate: "2024-06-01",
-  studentCount: 30,
   },
   {
   id: "8e9be1a0-cef6-4893-8a0d-e37d6e8abc11",
@@ -55,7 +50,6 @@ const courses = [
   description: "English Composition",
   semesterName: "Spring 2024",
   startDate: "2024-01-01",
-  studentCount: 30,
   },
   {
   id: "c4ac0d73-a279-4e91-9d67-5f4b35032766",
@@ -63,7 +57,6 @@ const courses = [
   description: "Calculus I",
   semesterName: "Fall 2024",
   startDate: "2024-06-01",
-  studentCount: 30,
   },
   {
   id: "f6b44d20-3fa2-476a-8c6c-1c4cdf79b6c1",
@@ -71,7 +64,6 @@ const courses = [
   description: "World History to 1500",
   semesterName: "Spring 2024",
   startDate: "2024-01-01",
-  studentCount: 30,
   },
   {
   id: "3b5b2e2c-aa54-4e9a-8f9a-d6a6f5ba9d31",
@@ -79,7 +71,6 @@ const courses = [
   description: "Introduction to Physics",
   semesterName: "Fall 2024",
   startDate: "2024-06-01",
-  studentCount: 30,
   },
   {
   id: "7d1f2a9a-d2d4-4d06-b2c9-84e991f2aa69",
@@ -87,7 +78,6 @@ const courses = [
   description: "Art Appreciation",
   semesterName: "Spring 2024",
   startDate: "2024-01-01",
-  studentCount: 30,
   },
   ];
 
