@@ -8,7 +8,7 @@ import { CardActionArea } from "@mui/material";
 import Link from "@mui/material/Link";
 
 const CourseCard = ({ course }) => (
-  <Card sx={{ maxWidth: 345 }}>
+  <Card sx={{ maxWidth: 500 }}>
     <Link component={RouterLink} to={course.url} underline="none">
       <CardActionArea>
         <CardMedia

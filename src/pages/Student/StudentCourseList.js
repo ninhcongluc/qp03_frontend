@@ -61,66 +61,66 @@ const courses = [
     
     code: "ACC101",
     image: "https://via.placeholder.com/150",
-    instructor: "HungNP30",
+    instructor: "",
     url: "./ACC101",
     
   },
   {
     code: "SWR302",
     image: "https://via.placeholder.com/150",
-    instructor: "TriTD",
+    instructor: "",
     url: "./SWR302",
   },
   {
     code: "SWP391",
     image: "https://via.placeholder.com/150",
-    instructor: "ThanHDT59",
+    instructor: "",
     url: "./SWP391",
   },
   {
     code: "SWT301",
     image: "https://via.placeholder.com/150",
-    instructor: "NangNTH",
+    instructor: "",
   },
   {
     code: "MAS291",
     image: "https://via.placeholder.com/150",
-    instructor: "LongDQ",
+    instructor: "",
   },
   {
     code: "PRJ301",
     image: "https://via.placeholder.com/150",
-    instructor: "SonNT5",
+    instructor: "",
   },
   {
     code: "CS107",
     image: "https://via.placeholder.com/150",
-    instructor: "Anna Blue",
+    instructor: "",
   },
   {
     code: "CS108",
     image: "https://via.placeholder.com/150",
-    instructor: "Tom Brown",
+    instructor: "",
   },
   {
     code: "CS109",
     image: "https://via.placeholder.com/150",
-    instructor: "John Green",
+    instructor: "",
   },
   {
     code: "CS110",
     image: "https://via.placeholder.com/150",
-    instructor: "Jane Red",
+    instructor: "",
   },
   {
     code: "CS111",
     image: "https://via.placeholder.com/150",
-    instructor: "James Purple",
+    instructor: "",
   },
   {
     code: "CS112",
     image: "https://via.placeholder.com/150",
-    instructor: "Emily Yellow",
+    instructor: "",
   },
 ];
 
