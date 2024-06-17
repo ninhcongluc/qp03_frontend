@@ -55,28 +55,28 @@ const ManagerMenu = () => {
           </div>
 
           <ListItem button onClick={handleSemesterClick}>
-            <ListItemIcon className="itemIcon">
+            <ListItemIcon class="itemIcon">
               <DashboardOutlined />
             </ListItemIcon>
             <ListItemText primary="Semester" />
           </ListItem>
 
           <ListItem button onClick={handleTeacherInformationClick}>
-            <ListItemIcon className="itemIcon">
+            <ListItemIcon class="itemIcon">
               <PermIdentityIcon />
             </ListItemIcon>
             <ListItemText primary="Teacher Information" />
           </ListItem>
 
           <ListItem button onClick={handleCourseClick}>
-            <ListItemIcon className="itemIcon">
+            <ListItemIcon class="itemIcon">
               <PortraitIcon />
             </ListItemIcon>
             <ListItemText primary="Course" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>
-            <ListItemIcon className="itemIcon">
+            <ListItemIcon class="itemIcon">
               <ExitToAppOutlined />
             </ListItemIcon>
             <ListItemText primary="Logout" />

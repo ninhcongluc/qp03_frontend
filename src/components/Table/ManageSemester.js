@@ -22,7 +22,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { TextField } from "@mui/material";
 import { toast } from "react-toastify";
-import { Formik, Field } from "formik";
+import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
@@ -63,19 +63,32 @@ const ManageSemesterTable = () => {
 
     setOpen(true);
   };
-  const handleSubmit = async (values) => {
-    try {
-      const { name, startDate, endDate } = values;
-      console.log("Name:", name);
-      console.log("Start Date:", startDate);
-      console.log("End Date:", endDate);
-    } catch (error) {
-      toast.error(error.response.data.error);
-      console.error("Error saving manager account:", error);
-    }
-  };
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSubmit = async (values, formikBag) => {
+    console.log("values", values);
+
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Make your API call here
+      await axios.post("http://localhost:8000/semester", values, config);
+
+      // Close the dialog and reset the form
+      handleClose();
+      formikBag.resetForm();
+    } catch (error) {
+      console.error("Error creating semester:", error);
+      // Handle any errors here
+    }
   };
 
   const handleDeleteSemester = (semester) => {
@@ -179,73 +192,81 @@ const ManageSemesterTable = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <div>
+        <Formik
+          initialValues={{
+            name: "",
+            startDate: null,
+            endDate: null,
+          }}
+          validationSchema={validationSchema}
+        >
+          {({ values, errors, touched, setFieldValue }) => (
+            <form onSubmit={handleSubmit}>
+              <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Create Semester</DialogTitle>
+                <DialogContent>
+                  <Field
+                    name="name"
+                    as={TextField}
+                    label="Semester Name"
+                    required
+                    value={values.name}
+                    margin="normal"
+                    fullWidth
+                    error={touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      label="Start Date"
+                      required
+                      value={values.startDate}
+                      onChange={(date) => setFieldValue("startDate", date)}
+                    >
+                      {({ inputRef, inputProps, InputProps }) => (
+                        <TextField
+                          {...inputProps}
+                          ref={inputRef}
+                          InputProps={InputProps}
+                          error={touched.startDate && !!errors.startDate}
+                          helperText={touched.startDate && errors.startDate}
+                        />
+                      )}
+                    </DesktopDatePicker>
+                    <DesktopDatePicker
+                      label="End Date"
+                      required
+                      value={values.endDate}
+                      onChange={(date) => setFieldValue("endDate", date)}
+                      minDate={values.startDate}
+                    >
+                      {({ inputRef, inputProps, InputProps }) => (
+                        <TextField
+                          {...inputProps}
+                          ref={inputRef}
+                          InputProps={InputProps}
+                          error={touched.endDate && !!errors.endDate}
+                          helperText={touched.endDate && errors.endDate}
+                        />
+                      )}
+                    </DesktopDatePicker>
+                  </LocalizationProvider>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} color="secondary">
+                    Cancel
+                  </Button>
 
-      <Formik
-        initialValues={{
-          name: "",
-          startDate: null,
-          endDate: null,
-        }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, errors, touched, setFieldValue }) => (
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Create Semester</DialogTitle>
-            <DialogContent>
-              <Field
-                name="name"
-                as={TextField}
-                label="Semester Name"
-                required
-                value={values.name}
-                margin="normal"
-                fullWidth
-                error={touched.name && !!errors.name}
-                helperText={touched.name && errors.name}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  label="Start Date"
-                  required
-                  value={values.startDate}
-                  onChange={(date) => setFieldValue("startDate", date)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={touched.startDate && !!errors.startDate}
-                      helperText={touched.startDate && errors.startDate}
-                    />
-                  )}
-                />
-                <DesktopDatePicker
-                  label="End Date"
-                  required
-                  value={values.endDate}
-                  onChange={(date) => setFieldValue("endDate", date)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={touched.endDate && !!errors.endDate}
-                      helperText={touched.endDate && errors.endDate}
-                    />
-                  )}
-                  minDate={values.startDate}
-                />
-              </LocalizationProvider>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="secondary">
-                Cancel
-              </Button>
-
-              <Button type="submit" color="primary">
-                Save
-              </Button>
-            </DialogActions>{" "}
-          </Dialog>
-        )}
-      </Formik>
+                  <Button type="submit" color="primary">
+                    Save
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </form>
+          )}
+        </Formik>
+      </div>
     </Box>
   );
 };

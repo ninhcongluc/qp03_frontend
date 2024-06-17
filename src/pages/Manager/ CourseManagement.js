@@ -185,7 +185,7 @@ const CourseManagementPage = () => {
           </Grid>
           <Grid item>
             <button
-              className="add-course-btn"
+              class="add-course-btn"
               onClick={handleAddCourse}
               style={{
                 backgroundColor: "#4CAF50",
@@ -212,7 +212,7 @@ const CourseManagementPage = () => {
           {displayedCourses.map((course, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div
-                className="course-card"
+                class="course-card"
                 style={{ padding: 16 }}
                 onClick={() => handleCourseDetailClick(course.id)}
               >
@@ -220,7 +220,7 @@ const CourseManagementPage = () => {
                 <p>{course.description}</p>
                 <p>Semester: {course.semesterName}</p>
                 <p>Created by: {course.createdBy}</p>
-                <div className="course-actions">
+                <div class="course-actions">
                   <EditIcon
                     onClick={(event) => {
                       event.stopPropagation();
