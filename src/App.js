@@ -16,9 +16,6 @@ import StudentPage from "./pages/Student/Student";
 import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
-import ClassACC101 from "./pages/Student/ClassACC101";
-import ClassSWR302 from "./pages/Student/ClassSWR302";
-import ClassSWP391 from "./pages/Student/ClassSWP391";
 import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 
 
@@ -55,18 +52,6 @@ function App() {
         />
 
         <Route path="/student" element={<StudentPage />} />
-        <Route
-          path="/student/course-management/ACC101"
-          element={<ClassACC101/>}
-        />
-        <Route
-          path="/student/course-management/SWR302"
-          element={<ClassSWR302/>}
-        />
-        <Route
-          path="/student/course-management/SWP391"
-          element={<ClassSWP391/>}
-        />
         <Route
           path="/student/course-management"
           element={<StudentCourseListPage />}
