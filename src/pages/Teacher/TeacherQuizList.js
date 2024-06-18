@@ -48,10 +48,8 @@ const QuizManagementPage = () => {
   const [selectedQuiz, setSelectedQuiz] = useState("");
   const quizPerPage = 6;
 
-  // Tính toán số lượng trang
   const pageCount = Math.ceil(quiz.length / quizPerPage);
 
-  // Lấy các khóa học cho trang hiện tại
   const displayedQuiz = quiz.slice(
     (page - 1) * quizPerPage,
     page * quizPerPage
@@ -62,8 +60,8 @@ const QuizManagementPage = () => {
   };
 
   const handleEditQuiz = (id) => {
-    const quiz = quiz.find((c) => c.id === id);
-    setSelectedQuiz(quiz);
+    const quizFilter = quiz.find((c) => c.id === id);
+    setSelectedQuiz(quizFilter);
   };
 
   const handleDeleteQuiz = (id) => {

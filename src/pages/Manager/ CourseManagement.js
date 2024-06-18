@@ -101,22 +101,18 @@ const CourseManagementPage = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const coursesPerPage = 6;
 
-  // Tính toán số lượng trang
   const pageCount = Math.ceil(courses.length / coursesPerPage);
 
-  // Lọc theo mã khóa học
   const filteredCourses = courses.filter((course) =>
     course.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Lọc theo học kỳ
   const filteredAndSortedCourses = selectedSemester
     ? filteredCourses.filter(
         (course) => course.semesterName === selectedSemester
       )
     : filteredCourses;
 
-  // Lấy các khóa học cho trang hiện tại
   const displayedCourses = filteredAndSortedCourses.slice(
     (page - 1) * coursesPerPage,
     page * coursesPerPage
