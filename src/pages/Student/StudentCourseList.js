@@ -1,194 +1,371 @@
-import React, { useState } from "react";
-import StudentMenu from "../../components/LeftMenu/StudentMenu";
-import Grid from "@mui/material/Grid";
+import { TextField } from "@mui/material";
 import Container from "@mui/material/Container";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 import Pagination from "@mui/material/Pagination";
+import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import CourseCard from "../../components/Card/StudentCourseCard";
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
-
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
+import React, { useState } from "react";
+import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import LeftMenu from "../../components/LeftMenu/StudentMenu";
 
 const courses = [
   {
-    
+    id: "4713fc09-2967-4e59-a832-04db1379baad",
     code: "ACC101",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
-    url: "./ACC101",
-    
+    description: "Introductory Accounting",
+    semesterName: "Fall 2024",
+    createdBy: "John Doe",
   },
   {
+    id: "f5a016b9-97c2-4832-ba68-490d8825225e",
     code: "SWR302",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
-    url: "./SWR302",
+    description: "Advanced Software Engineering",
+    semesterName: "Spring 2024",
+    createdBy: "Jane Smith",
   },
   {
-    code: "SWP391",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
-    url: "./SWP391",
+    id: "84ec946c-7b70-45c5-9ac5-7c6123644e4b",
+    code: "ECO201",
+    description: "Principles of Macroeconomics",
+    semesterName: "Fall 2024",
+    createdBy: "Michael Johnson",
   },
   {
-    code: "SWT301",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "5e7fbf37-4a7e-4a82-b298-8cbcba4a0c6b",
+    code: "BIO150",
+    description: "General Biology",
+    semesterName: "Spring 2024",
+    createdBy: "Sarah Lee",
   },
   {
-    code: "MAS291",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "a2c5ea9e-4d7b-4e18-82fc-d0a269acaf5a",
+    code: "CSC110",
+    description: "Introduction to Computer Science",
+    semesterName: "Fall 2024",
+    createdBy: "David Kim",
   },
   {
-    code: "PRJ301",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "8e9be1a0-cef6-4893-8a0d-e37d6e8abc11",
+    code: "ENG201",
+    description: "English Composition",
+    semesterName: "Spring 2024",
+    createdBy: "Emily Chen",
   },
   {
-    code: "CS107",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "c4ac0d73-a279-4e91-9d67-5f4b35032766",
+    code: "MAT201",
+    description: "Calculus I",
+    semesterName: "Fall 2024",
+    createdBy: "Daniel Park",
   },
   {
-    code: "CS108",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "f6b44d20-3fa2-476a-8c6c-1c4cdf79b6c1",
+    code: "HIS101",
+    description: "World History to 1500",
+    semesterName: "Spring 2024",
+    createdBy: "Olivia Lim",
   },
   {
-    code: "CS109",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "3b5b2e2c-aa54-4e9a-8f9a-d6a6f5ba9d31",
+    code: "PHY101",
+    description: "Introduction to Physics",
+    semesterName: "Fall 2024",
+    createdBy: "Alex Tan",
   },
   {
-    code: "CS110",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
-  },
-  {
-    code: "CS111",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
-  },
-  {
-    code: "CS112",
-    image: "https://via.placeholder.com/150",
-    instructor: "",
+    id: "7d1f2a9a-d2d4-4d06-b2c9-84e991f2aa69",
+    code: "ART120",
+    description: "Art Appreciation",
+    semesterName: "Spring 2024",
+    createdBy: "Jessica Wang",
   },
 ];
 
 const StudentCourseListPage = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const coursesPerPage = 6;
 
   // Tính toán số lượng trang
   const pageCount = Math.ceil(courses.length / coursesPerPage);
 
+  // Lọc theo mã khóa học
+  const filteredCourses = courses.filter((course) =>
+    course.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Lọc theo học kỳ
+  const filteredAndSortedCourses = selectedSemester
+    ? filteredCourses.filter(
+        (course) => course.semesterName === selectedSemester
+      )
+    : filteredCourses;
+
   // Lấy các khóa học cho trang hiện tại
-  const displayedCourses = courses.slice(
+  const displayedCourses = filteredAndSortedCourses.slice(
     (page - 1) * coursesPerPage,
     page * coursesPerPage
   );
+
+
+  const handleEditCourse = (id) => {
+    const course = courses.find((c) => c.id === id);
+    setSelectedCourse(course);
+    setIsEditModalOpen(true);
+  };
+
+ 
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(1);
+  };
+
+  const handleSemesterChange = (event) => {
+    setSelectedSemester(event.target.value);
+    setPage(1);
+  };
+
+  const handleCourseDetailClick = (id) => {
+    navigate(`/manager/course/${id}`);
+  };
+
   return (
     <div>
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            COURSE
-          </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
+      <LeftMenu />
+
+      <Container sx={{ marginLeft: '240px' }}>
+        <Grid container spacing={4} sx={{ marginTop: 2 , left: '30%',}}>
+          <Grid item flex={1}>
+            <TextField
+              label="Search by Course Code"
+              variant="outlined"
+              value={searchTerm}
+              onChange={handleSearchTermChange}
             />
-          </Search>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  
-    <Box sx={{ height: 16 }} /> {/* Spacer Box */}
-  
-    <StudentMenu />
-  
-    <Container>
-      <Grid container spacing={4}>
-        {displayedCourses.map((course, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
-            <CourseCard course={course} />
           </Grid>
-        ))}
-      </Grid>
-      <Stack spacing={2} sx={{ marginTop: 4, alignItems: "center" }}>
-        <Pagination
-          count={pageCount}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
+          <Grid item flex={1} maxWidth={150}>
+            <FormControl fullWidth>
+              <InputLabel id="semester-select-label">Semester</InputLabel>
+              <Select
+                labelId="semester-select-label"
+                id="semester-select"
+                value={selectedSemester}
+                onChange={handleSemesterChange}
+              >
+                <MenuItem value="">All Semesters</MenuItem>
+                <MenuItem value="Fall 2024">Fall 2024</MenuItem>
+                <MenuItem value="Spring 2024">Spring 2024</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item>
+             
+          </Grid>
+        </Grid>
+        <Grid
+          container={displayedCourses.length}
+          spacing={4}
+          sx={{ marginTop: 2, minHeight: 100 }}
+        >
+          {displayedCourses.map((course, index) => (
+            <Grid item key={index} xs={12} sm={6} md={4}>
+              <div
+                className="course-card"
+                style={{ padding: 16 }}
+                onClick={() => handleCourseDetailClick(course.id)}
+              >
+                <h3>{course.code}</h3>
+                <p>{course.description}</p>
+                <p>Semester: {course.semesterName}</p>
+                <p>Created by: {course.createdBy}</p>
+                <div className="course-actions">
+                  <EditIcon
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleEditCourse(course.id);
+                    }}
+                  />
+                
+                </div>
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+        <Stack spacing={2} sx={{ marginTop: 4, alignItems: "center" }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Stack>
+      </Container>
+      {isCreateModalOpen && (
+        <CreateCourseModal
+          open={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
         />
-      </Stack>
-    </Container>
-  </div>
+      )}
+      {isEditModalOpen && selectedCourse && (
+        <EditCourseModal
+          open={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          course={selectedCourse}
+        />
+      )}
+    </div>
+  );
+};
+
+const CreateCourseModal = ({ open, onClose }) => {
+  const [courseCode, setCourseCode] = useState("");
+  const [courseDescription, setCourseDescription] = useState("");
+  const [courseSemester, setCourseSemester] = useState("");
+
+  const handleSave = () => {
+    // Add logic to save the new course
+    onClose();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+          Create New Course
+        </Typography>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <TextField
+            label="Course Code"
+            value={courseCode}
+            onChange={(e) => setCourseCode(e.target.value)}
+          />
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <TextField
+            label="Course Description"
+            value={courseDescription}
+            onChange={(e) => setCourseDescription(e.target.value)}
+          />
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="course-semester-label">Semester</InputLabel>
+          <Select
+            labelId="course-semester-label"
+            value={courseSemester}
+            onChange={(e) => setCourseSemester(e.target.value)}
+          >
+            <MenuItem value="Fall 2024">Fall 2024</MenuItem>
+            <MenuItem value="Spring 2024">Spring 2024</MenuItem>
+          </Select>
+        </FormControl>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={handleSave} variant="contained" sx={{ mr: 2 }}>
+            Save
+          </Button>
+          <Button onClick={onClose} variant="outlined">
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
+};
+
+const EditCourseModal = ({ open, onClose, course }) => {
+  const [courseCode, setCourseCode] = useState(course.code);
+  const [courseDescription, setCourseDescription] = useState(
+    course.description
+  );
+  const [courseSemester, setCourseSemester] = useState(course.semester);
+
+  const handleSave = () => {
+    // Add logic to update the course
+    onClose();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+          Edit Course
+        </Typography>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <TextField
+            label="Course Code"
+            value={courseCode}
+            onChange={(e) => setCourseCode(e.target.value)}
+          />
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <TextField
+            label="Course Description"
+            value={courseDescription}
+            onChange={(e) => setCourseDescription(e.target.value)}
+          />
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="course-semester-label">Semester</InputLabel>
+          <Select
+            labelId="course-semester-label"
+            value={courseSemester}
+            onChange={(e) => setCourseSemester(e.target.value)}
+          >
+            <MenuItem value="Fall 2024">Fall 2024</MenuItem>
+            <MenuItem value="Spring 2024">Spring 2024</MenuItem>
+          </Select>
+        </FormControl>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={handleSave} variant="contained" sx={{ mr: 2 }}>
+            Save
+          </Button>
+          <Button onClick={onClose} variant="outlined">
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 

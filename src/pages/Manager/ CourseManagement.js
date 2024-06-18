@@ -17,6 +17,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import "./CourseManagement.css";
+import LeftMenu from "../../components/LeftMenu/ManagerMenu";
 
 const courses = [
   {
@@ -158,8 +159,10 @@ const CourseManagementPage = () => {
 
   return (
     <div>
-      <Container>
-        <Grid container spacing={4} sx={{ marginTop: 2 }}>
+      <LeftMenu />
+
+      <Container sx={{ marginLeft: '240px' }}>
+        <Grid container spacing={4} sx={{ marginTop: 2 , left: '30%',}}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"

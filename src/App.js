@@ -17,7 +17,7 @@ import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
 import ClassACC101 from "./pages/Student/ClassACC101";
-import ClassSWR302 from "./pages/Student/ListClassSWR302";
+import ClassSWR302 from "./pages/Student/ClassSWR302";
 import ClassSWP391 from "./pages/Student/ClassSWP391";
 import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 
@@ -71,7 +71,6 @@ function App() {
           path="/student/course-management"
           element={<StudentCourseListPage />}
         />
-        
         
       </Routes>
 
