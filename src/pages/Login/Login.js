@@ -37,15 +37,16 @@ function Login() {
         // Handle successful login
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userInfo));
-
-        toast.success("Login successful");
         if (userInfo.roleId === 1) {
           navigate("/admin/manage-manager");
         } else if (userInfo.roleId === 2) {
           navigate("/manager/semester");
+        } else if (userInfo.roleId === 3) {
+          navigate("/teacher/course-management");
         } else {
-          navigate("/admin");
+          navigate("/student/course-management");
         }
+        toast.success("Login successful");
       })
       .catch((error) => {
         // Handle login error
