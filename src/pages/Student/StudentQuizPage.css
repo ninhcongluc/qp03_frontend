@@ -1,0 +1,40 @@
+.container {
+    margin-left: 300px;
+    flex-grow: 1;
+  }
+  
+  .title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Khoảng cách giữa các grid item */
+  }
+  
+  .grid-item {
+    width: calc(50% - 10px); /* Chiều rộng của grid item */
+  }
+  
+  .card {
+    padding: 16px; /* Padding cho card */
+    height: 100%; /* Chiều cao của card */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Căn giữa nội dung theo chiều dọc */
+  }
+  
+  .card-title {
+    font-size: 1rem; /* Font size của tiêu đề */
+    margin-bottom: 8px; /* Khoảng cách bottom của tiêu đề */
+  }
+  
+  .card-button {
+    margin-top: auto; /* Nút bắt đầu từ dưới cùng của card */
+    width: 100%; /* Chiều rộng của nút */
+  }
+  

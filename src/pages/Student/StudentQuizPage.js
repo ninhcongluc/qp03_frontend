@@ -1,17 +1,9 @@
-
 import React from 'react';
-import {
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Container
-} from '@mui/material';
+import { Button, Grid, Card, CardContent, Typography, Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentMenu from '../../components/LeftMenu/StudentMenu'; // Điều chỉnh đường dẫn tới StudentMenu
 import { Box } from '@mui/system'; // Import Box để có thể sử dụng margin
-
+import './StudentQuizPage.css';
 
 const quizData = [
   {
@@ -22,7 +14,6 @@ const quizData = [
       { quizId: 'PT3', title: 'Quiz PT3' },
       { quizId: 'Mid Terms', title: 'Quiz Mid Terms' },
       { quizId: 'Final Exam', title: 'Quiz Final Exam' },
-
     ],
   },
   {
@@ -54,19 +45,22 @@ const StudentQuizPage = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <StudentMenu />
-      <Container sx={{ marginLeft: '300px', flexGrow: 1 }}>
-        <Typography variant="h4" gutterBottom>
+      <Container className="container">
+        <Typography variant="h4" className="title" gutterBottom>
           Quizzes for {courseId}
         </Typography>
-        <Grid container spacing={6}>
+        <Grid container className="grid-container">
           {courseQuiz.quizzes.map((quiz) => (
-            <Grid item xs={6} key={quiz.quizId}>
-              <Card>
+            <Grid item className="grid-item" key={quiz.quizId}>
+              <Card className="card">
                 <CardContent>
-                  <Typography variant="h5">{quiz.title}</Typography>
+                  <Typography variant="h6" className="card-title">
+                    {quiz.title}
+                  </Typography>
                   <Button
                     variant="contained"
-                    color="primary"
+                    sx={{ backgroundColor: 'blue', color: 'white', '&:hover': { backgroundColor: 'darkpink' } }}
+                    className="card-button"
                     onClick={() => handleQuizClick(quiz.quizId)}
                   >
                     Start {quiz.title}

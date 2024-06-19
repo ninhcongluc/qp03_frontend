@@ -82,7 +82,7 @@ const StudentQuizDetail = () => {
   }, [courseId, quizId]);
 
   const handleStartQuiz = () => {
-    navigate(`/student/quiz-management/class/${courseId}/${quizId}/start`);
+    navigate(`/student/quiz-management/class/${courseId}/${quizId}/start&page=1`);
   };
 
   const handleReviewAttempt = (attempt) => {
