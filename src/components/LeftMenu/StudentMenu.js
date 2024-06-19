@@ -1,17 +1,11 @@
 import { DashboardOutlined, ExitToAppOutlined } from "@mui/icons-material";
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import "./LeftMenu.css";
+import { yellow } from "@mui/material/colors";
+import "./StudentMenu.css";
 
 const StudentMenu = () => {
   const navigate = useNavigate();
@@ -38,9 +32,9 @@ const StudentMenu = () => {
         }}
       >
         <List>
-          <div class="menu">
-            <Stack direction="row" spacing={2}>
-              <Avatar alt="Student" src="" sx={{ width: 50, height: 50 }} />
+          <div className="Student_Menu">
+            <Stack direction="row" spacing={2} className="menu-header">
+              <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
               <h3>Student</h3>
             </Stack>
           </div>

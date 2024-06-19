@@ -1,4 +1,4 @@
-import { DashboardOutlined, ExitToAppOutlined } from "@mui/icons-material";
+import { ExitToAppOutlined } from "@mui/icons-material";
 import {
   Drawer,
   List,
@@ -8,9 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import GroupsIcon from "@mui/icons-material/Groups";
 import PortraitIcon from "@mui/icons-material/Portrait";
-import QuizIcon from "@mui/icons-material/Quiz";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import "./LeftMenu.css";
@@ -18,7 +16,7 @@ import "./LeftMenu.css";
 const TeacherMenu = () => {
   const navigate = useNavigate();
 
-  const handleCourseManagementClick = () => {
+  const handleMyCourseClick = () => {
     navigate("/teacher/course-management");
   };
 
@@ -46,32 +44,12 @@ const TeacherMenu = () => {
               <h3>Teacher</h3>
             </Stack>
           </div>
-          <ListItem button onClick={handleCourseManagementClick}>
-            <ListItemIcon>
-              <DashboardOutlined />
-            </ListItemIcon>
-            <ListItemText primary="My Courses" />
-          </ListItem>
 
-          <ListItem button onClick={handleCourseManagementClick}>
+          <ListItem button onClick={handleMyCourseClick}>
             <ListItemIcon>
               <PortraitIcon />
             </ListItemIcon>
-            <ListItemText primary="Class" />
-          </ListItem>
-
-          <ListItem button onClick={handleCourseManagementClick}>
-            <ListItemIcon>
-              <GroupsIcon />
-            </ListItemIcon>
-            <ListItemText primary="List Student" />
-          </ListItem>
-
-          <ListItem button onClick={handleCourseManagementClick}>
-            <ListItemIcon>
-              <QuizIcon />
-            </ListItemIcon>
-            <ListItemText primary="Quiz" />
+            <ListItemText primary="My Class" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>

@@ -1,0 +1,87 @@
+.container1 {
+    margin-top: 0;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-left: 60px;
+  }
+  
+  
+  .header {
+    margin-bottom: 10px;
+  }
+  
+  
+  .header b {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  
+  .header span {
+    font-size: 16px;
+  }
+  
+  
+  .tableContainer {
+    max-height: 500px; /* Set a fixed height for the table container */
+    width: 100%;
+    overflow-y: auto; /* Enable vertical scrolling */
+    border-radius: 8px;
+  }
+  
+  
+  .tableCell {
+    padding: 16px;
+    text-align: left;
+    width: 900px;
+    vertical-align: top;
+  }
+  
+  
+  .questionLabel {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  
+  .textField {
+    margin-top: 8px;
+  }
+  
+  
+  .optionCell {
+    padding-left: 32px;
+    width: 900px;
+  }
+  
+  
+  .buttonsContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 16px;
+  }
+  
+  
+  .button {
+    width: 200px;
+    height: 40px;
+  }
+  
+  
+  .optionButtons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  
+  .select {
+    width: 200px;
+    height: 40px;
+  }
+  
+  
+  

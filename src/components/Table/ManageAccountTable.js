@@ -104,6 +104,15 @@ const ManagerAccountTable = () => {
 
   const handleViewAccount = (account) => {
     setSelectedAccount(account);
+    setFormData({
+      firstName: account.firstName,
+      lastName: account.lastName,
+      email: account.email,
+      code: account.code,
+      isActive: account.isActive,
+      dob: account.dob,
+      phoneNumber: account.phoneNumber,
+    });
     setOpen(true);
     setViewMode(true);
   };

@@ -36,7 +36,7 @@ const LeftMenu = () => {
       }}
     >
       <List>
-        <div className="menu">
+        <div class="menu">
           <Stack direction="row" spacing={2}>
             <Avatar alt="Admin" src="" sx={{ width: 64, height: 64 }} />
             <h3>Admin</h3>
@@ -44,14 +44,14 @@ const LeftMenu = () => {
         </div>
 
         <ListItem button onClick={handleManagerManagementClick}>
-          <ListItemIcon className="itemIcon">
+          <ListItemIcon class="itemIcon">
             <DashboardOutlined />
           </ListItemIcon>
           <ListItemText primary="Manager Management" />
         </ListItem>
 
         <ListItem button onClick={handleLogoutClick}>
-          <ListItemIcon className="itemIcon">
+          <ListItemIcon class="itemIcon">
             <ExitToAppOutlined />
           </ListItemIcon>
           <ListItemText primary="Logout" />
