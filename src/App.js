@@ -16,9 +16,7 @@ import StudentPage from "./pages/Student/Student";
 import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
 import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
-import ListClassACC101 from "./pages/Student/ListClassACC101";
-import ListClassSWR302 from "./pages/Student/ListClassSWR302";
-import ListClassSWP391 from "./pages/Student/ListClassSWP391";
+
 function App() {
   return (
     <div>
@@ -49,18 +47,6 @@ function App() {
 
         <Route path="/student" element={<StudentPage />} />
         <Route
-          path="/student/course-management/ACC101"
-          element={<ListClassACC101/>}
-        />
-        <Route
-          path="/student/course-management/SWR302"
-          element={<ListClassSWR302/>}
-        />
-        <Route
-          path="/student/course-management/SWP391"
-          element={<ListClassSWP391/>}
-        />
-        <Route
           path="/student/course-management"
           element={<StudentCourseListPage />}
         />
@@ -68,7 +54,6 @@ function App() {
         
       </Routes>
 
-      
       <ToastContainer />
     </div>
   );
