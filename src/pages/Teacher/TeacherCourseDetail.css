@@ -32,8 +32,13 @@
   border-radius: 4px;
 }
 
-.action {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+.create-dialog .MuiDialogContent-root {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  padding: 24px;
+}
+
+.create-dialog .MuiDialogContent-root > * {
+  margin: 0;
 }
