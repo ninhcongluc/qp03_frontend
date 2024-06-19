@@ -6,11 +6,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
 import FilterSemester from "../../components/Semester/filterSemester";
+import { useNavigate } from "react-router-dom";
+
 import TextField from "@mui/material/TextField";
 import TeacherCourseCard from "../../components/Card/TeacherCourseCard";
 import "./TeacherCourseList.css";
 
 const TeacherCourseListPage = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [filterCode, setFilterCode] = useState("");
   const [courses, setCourses] = useState([]);
@@ -48,6 +51,10 @@ const TeacherCourseListPage = () => {
     setPage(1); // Reset to the first page when filtering
   };
 
+  const handleClickCourseDetail = (courseId) => {
+    console.log(courseId);
+    navigate(`/teacher/course-management/${courseId}`);
+  };
   return (
     <Container>
       <Grid container spacing={4} sx={{ marginTop: 2 }}>
@@ -69,7 +76,10 @@ const TeacherCourseListPage = () => {
           <Grid container spacing={4}>
             {displayedCourses.map((course, index) => (
               <Grid item key={index} xs={12} sm={6} md={4}>
-                <TeacherCourseCard course={course} />
+                <TeacherCourseCard
+                  onClick={() => handleClickCourseDetail(course.id)}
+                  course={course}
+                />
               </Grid>
             ))}
           </Grid>

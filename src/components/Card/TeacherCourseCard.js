@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography";
 import { CardActionArea, Grid } from "@mui/material";
 import { formatDateDay } from "../../commons/function";
 
-const TeacherCourseCard = ({ course }) => (
+const TeacherCourseCard = ({ course, onClick }) => (
   <Card style={{ maxWidth: 500, height: "100%" }}>
-    <CardActionArea>
+    <CardActionArea onClick={onClick}>
       <Grid container>
         <Grid item xs={15}>
           <CardContent>
