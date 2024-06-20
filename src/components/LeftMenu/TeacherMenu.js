@@ -6,7 +6,9 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import axios from "axios";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PortraitIcon from "@mui/icons-material/Portrait";
 import Avatar from "@mui/material/Avatar";
@@ -15,6 +17,23 @@ import "./LeftMenu.css";
 
 const TeacherMenu = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/user/profile');
+        setUserData({
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
 
   const handleMyCourseClick = () => {
     navigate("/teacher/course-management");
@@ -41,7 +60,7 @@ const TeacherMenu = () => {
           <div class="menu">
             <Stack direction="row" spacing={2}>
               <Avatar alt="Teacher" src="" sx={{ width: 50, height: 50 }} />
-              <h3>Teacher</h3>
+              <h3>{userData.firstName} {userData.lastName}</h3>
             </Stack>
           </div>
 
