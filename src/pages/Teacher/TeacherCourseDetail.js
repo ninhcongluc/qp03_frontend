@@ -26,6 +26,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
+import { useNavigate } from "react-router-dom";
 import {
   Add as AddIcon,
   CloudUpload as CloudUploadIcon,
@@ -33,6 +34,7 @@ import {
   Edit as EditIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import "./TeacherCourseDetail.css";
 const TeacherCourseDetailPage = () => {
   const [course, setCourse] = useState(null);
@@ -43,6 +45,7 @@ const TeacherCourseDetailPage = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const navigate = useNavigate();
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
@@ -212,6 +215,9 @@ const TeacherCourseDetailPage = () => {
   const handleCloseSnackbar = () => {
     setShowSnackbar(false);
   };
+  const handleQA = (quizId) => {
+    navigate(`/teacher/quiz/${quizId}`);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -247,7 +253,7 @@ const TeacherCourseDetailPage = () => {
       }
       await fetchData();
 
-      toast.success("Manager account saved successfully");
+      toast.success("Quiz saved successfully");
       setShowCreateQuizDialog(false);
     } catch (error) {
       toast.error(error.response.data.error);
@@ -329,6 +335,12 @@ const TeacherCourseDetailPage = () => {
                         onClick={() => handleDeleteQuiz(quiz.id)}
                       >
                         <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        color="default"
+                        onClick={() => handleQA(quiz.id)}
+                      >
+                        <QuestionAnswerIcon />
                       </IconButton>
                     </div>
                   </ListItem>
@@ -491,7 +503,7 @@ const TeacherCourseDetailPage = () => {
               }}
               color="primary"
             >
-              Create
+              {selectedQuiz ? "Update" : "Create"}
             </Button>
           </DialogActions>
         </Dialog>

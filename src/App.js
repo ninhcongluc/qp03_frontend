@@ -19,7 +19,7 @@ import TeacherCourseListPage from "./pages/Teacher/TeacherCourseList";
 import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
 import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
-
+import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
 
 function App() {
   return (
@@ -52,6 +52,7 @@ function App() {
           element={<TeacherCourseDetailPage />}
         />
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
+        <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
 
         <Route
           path="/teacher/add-question"
@@ -63,8 +64,6 @@ function App() {
           path="/student/course-management"
           element={<StudentCourseListPage />}
         />
-        
-        
       </Routes>
 
       <ToastContainer />
