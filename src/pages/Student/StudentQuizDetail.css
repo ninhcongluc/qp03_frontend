@@ -1,0 +1,40 @@
+.quiz-detail-container {
+    flex-grow: 1;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .quiz-detail-title {
+    color: black;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .quiz-detail-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
+  }
+  
+  
+  .quiz-detail-history-title {
+    margin-bottom: 1rem;
+  }
+  
+  .quiz-detail-history {
+    margin-bottom: 3rem;
+  }
+  
+  .quiz-detail-review-link {
+    font-size: 0.875rem;
+    margin-left: 8px;
+  }
+  
+  .quiz-detail-start-button {
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+  
