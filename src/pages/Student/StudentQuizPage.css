@@ -6,35 +6,40 @@
   .title {
     padding-top: 20px;
     padding-bottom: 20px;
+    padding-left: 30px;
     font-size: 2rem;
     font-weight: bold;
+    
   }
   
   .grid-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Khoảng cách giữa các grid item */
+    gap: 20px;
+    padding-left: 30px;
   }
   
   .grid-item {
-    width: calc(50% - 10px); /* Chiều rộng của grid item */
+    width: calc(50% - 10px);
+    padding-left: 30px;
+    
   }
   
   .card {
-    padding: 16px; /* Padding cho card */
-    height: 100%; /* Chiều cao của card */
+    padding: 16px; 
+    height: 100%; 
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Căn giữa nội dung theo chiều dọc */
+    justify-content: space-between; 
   }
   
   .card-title {
-    font-size: 1rem; /* Font size của tiêu đề */
-    margin-bottom: 8px; /* Khoảng cách bottom của tiêu đề */
+    font-size: 1rem;
+    margin-bottom: 8px;
   }
   
   .card-button {
-    margin-top: auto; /* Nút bắt đầu từ dưới cùng của card */
-    width: 100%; /* Chiều rộng của nút */
+    margin-top: auto; 
+    width: 100%; 
   }
   
