@@ -17,23 +17,33 @@ import "./LeftMenu.css";
 
 const TeacherMenu = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/user/profile');
+        const token = localStorage.getItem("token");
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          "http://localhost:8000/user/profile",
+          config
+        );
+        console.log(response.data);
         setUserData({
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
+          firstName: response.data.data.firstName,
+          lastName: response.data.data.lastName,
         });
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     };
     fetchUserData();
   }, []);
-
 
   const handleMyCourseClick = () => {
     navigate("/teacher/course-management");
@@ -60,7 +70,9 @@ const TeacherMenu = () => {
           <div class="menu">
             <Stack direction="row" spacing={2}>
               <Avatar alt="Teacher" src="" sx={{ width: 50, height: 50 }} />
-              <h3>{userData.firstName} {userData.lastName}</h3>
+              <h3>
+                {userData.firstName} {userData.lastName}
+              </h3>
             </Stack>
           </div>
 

@@ -15,26 +15,35 @@ import Stack from "@mui/material/Stack";
 import "./LeftMenu.css";
 import axios from "axios";
 
-
 const ManagerMenu = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/user/profile');
+        const token = localStorage.getItem("token");
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          "http://localhost:8000/user/profile",
+          config
+        );
+        console.log(response.data);
         setUserData({
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
+          firstName: response.data.data.firstName,
+          lastName: response.data.data.lastName,
         });
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     };
     fetchUserData();
   }, []);
-
 
   const handleSemesterClick = () => {
     navigate("/manager/semester");
@@ -69,7 +78,9 @@ const ManagerMenu = () => {
           <div class="menu">
             <Stack direction="row" spacing={2}>
               <Avatar alt="Manager" src="" sx={{ width: 64, height: 64 }} />
-              <h3>{userData.firstName} {userData.lastName}</h3>
+              <h3>
+                {userData.firstName} {userData.lastName}
+              </h3>
             </Stack>
           </div>
 
