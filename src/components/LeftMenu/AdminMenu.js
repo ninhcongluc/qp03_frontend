@@ -8,12 +8,31 @@ import {
   Avatar,
   Stack,
 } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LeftMenu.css";
+import axios from "axios";
+
 
 const LeftMenu = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/user/profile');
+        setUserData({
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
 
   const handleManagerManagementClick = () => {
     navigate("/admin/manage-manager");
@@ -39,7 +58,7 @@ const LeftMenu = () => {
         <div class="menu">
           <Stack direction="row" spacing={2}>
             <Avatar alt="Admin" src="" sx={{ width: 64, height: 64 }} />
-            <h3>Admin</h3>
+            <h3>{userData.firstName} {userData.lastName}</h3>
           </Stack>
         </div>
 
