@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Container, Typography, Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "@mui/material";
+import {
+  Button,
+  Container,
+  Typography,
+  Box,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+} from "@mui/material";
 import LeftMenu from "../../components/LeftMenu/StudentMenu";
+import "./StudentDoQuiz.css";
 
 // Data for quiz PT1 of ACC101
 const quizQuestions = [
@@ -34,12 +45,26 @@ const StudentDoQuiz = () => {
   const currentPageIndex = parseInt(page, 10) - 1;
   const currentQuestion = quizQuestions[currentPageIndex];
 
+  useEffect(() => {
+    if (submitted) {
+      navigate(`/student/course-management/quiz/${courseId}/${quizId}/results`);
+    }
+  }, [submitted, courseId, quizId, navigate]);
+
   const handleChange = (value) => {
     setAnswers({ ...answers, [currentQuestion.id]: value });
   };
 
   const handleNext = () => {
-    navigate(`/student/quiz-management/class/${courseId}/${quizId}/start&page=${currentQuestion.id + 1}`);
+    navigate(
+      `/student/course-management/quiz/${courseId}/${quizId}/start&page=${currentPageIndex + 2}`
+    );
+  };
+
+  const handlePrevious = () => {
+    navigate(
+      `/student/course-management/quiz/${courseId}/${quizId}/start&page=${currentPageIndex}`
+    );
   };
 
   const handleFinish = () => {
@@ -53,18 +78,24 @@ const StudentDoQuiz = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <LeftMenu />
-      <Container sx={{ flexGrow: 1, mt: 3, mb: 3 }}>
-        <Typography variant="h3" align="center" gutterBottom>
+      <Container className="student-do-quiz-container">
+        <Typography
+          variant="h3"
+          align="center"
+          gutterBottom
+          className="student-do-quiz-title"
+        >
           Quiz PT1 - ACC101
         </Typography>
 
-        <Box sx={{ mb: 3 }}>
+        <Box className="student-do-quiz-question">
           <FormControl component="fieldset">
             <FormLabel component="legend">{currentQuestion.question}</FormLabel>
             <RadioGroup
               name={`question_${currentQuestion.id}`}
               value={answers[currentQuestion.id] || ""}
               onChange={(e) => handleChange(e.target.value)}
+              className="student-do-quiz-options"
             >
               {currentQuestion.options.map((option, index) => (
                 <FormControlLabel
@@ -79,13 +110,23 @@ const StudentDoQuiz = () => {
           </FormControl>
         </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box className="student-do-quiz-button-container">
+          {currentPageIndex > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePrevious}
+              className="student-do-quiz-button"
+            >
+              Previous
+            </Button>
+          )}
           {currentPageIndex < quizQuestions.length - 1 ? (
             <Button
               variant="contained"
               color="primary"
               onClick={handleNext}
-              sx={{ mt: 3 }}
+              className="student-do-quiz-button"
             >
               Next
             </Button>
@@ -94,7 +135,7 @@ const StudentDoQuiz = () => {
               variant="contained"
               color="primary"
               onClick={handleFinish}
-              sx={{ mt: 3 }}
+              className="student-do-quiz-button"
             >
               Finish
             </Button>
@@ -102,13 +143,16 @@ const StudentDoQuiz = () => {
         </Box>
 
         {submitted && (
-          <Box sx={{ mt: 3 }}>
+          <Box className="student-do-quiz-results">
             <Typography variant="h6" gutterBottom>
               Quiz Results
             </Typography>
             {quizQuestions.map((question) => (
               <Typography key={question.id} variant="body1">
-                {question.question} - Your answer: {answers[question.id]} - {answers[question.id] === question.correctAnswer ? "Correct" : "Incorrect"}
+                {question.question} - Your answer: {answers[question.id]} -{" "}
+                {answers[question.id] === question.correctAnswer
+                  ? "Correct"
+                  : "Incorrect"}
               </Typography>
             ))}
           </Box>
