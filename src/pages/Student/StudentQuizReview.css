@@ -1,0 +1,40 @@
+.student-quiz-review-title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.student-quiz-review-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10vh;
+}
+
+.quiz-cards-container {
+  display: block;
+  margin-top: 20px;
+}
+
+.quiz-review-card {
+  width: 100%;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.question-text {
+  font-weight: bold;
+}
+
+.your-answer {
+  margin-top: 10px;
+}
+
+.correct-answer {
+  color: green;
+}
+
+.wrong-answer {
+  color: red;
+}
+
+

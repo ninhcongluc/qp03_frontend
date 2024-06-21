@@ -20,6 +20,7 @@ import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 import StudentQuizPage from "./pages/Student/StudentQuizPage";
 import StudentQuizDetail from "./pages/Student/StudentQuizDetail";
 import StudentDoQuiz from "./pages/Student/StudentDoQuiz";
+import StudentQuizReview from "./pages/Student/StudentQuizReview";
 
 function App() {
   return (
@@ -72,8 +73,13 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/quiz/:courseId/:quizId/start&page=:page"
+          path="/student/course-management/quiz/:courseId/:quizId/start"
           element={<StudentDoQuiz />}
+        />
+
+        <Route
+          path="/student/course-management/quiz/:courseId/:quizId/review"
+          element={<StudentQuizReview />}
         />
       </Routes>
 

@@ -82,13 +82,11 @@ const StudentQuizDetail = () => {
   }, [courseId, quizId]);
 
   const handleStartQuiz = () => {
-    navigate(
-      `/student/quiz-management/class/${courseId}/${quizId}/start&page=1`
-    );
+    navigate(`/student/quiz-management/class/${courseId}/${quizId}/start`);
   };
 
-  const handleReviewAttempt = (attempt) => {
-    // Handle review action here, e.g., navigate or open a modal
+  const handleReviewAttempt = (attemptId) => {
+    navigate(`/student/course-management/quiz/${courseId}/${quizId}/review`);
   };
 
   return (
@@ -108,8 +106,8 @@ const StudentQuizDetail = () => {
 
             <Grid container spacing={3} className="quiz-detail-grid">
               <Grid item xs={6}>
-                <Typography variant="body1">
-                  <strong>Duration:</strong> {quizDetail.duration}
+                <Typography variant="body1" sx= {{ color: 'black'}}>
+                  <strong>Duration:</strong> {quizDetail.duration} 
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -130,17 +128,15 @@ const StudentQuizDetail = () => {
               <ul style={{ padding: 0 }}>
                 {quizDetail.history.map((attempt, index) => (
                   <li key={index} style={{ marginBottom: "8px" }}>
-                    <Typography style={{ display: "inline" }}>
+                    <Typography>
                       <strong>Attempt:</strong> {attempt.attemptId} -{" "}
                       <strong>State:</strong> {attempt.state} -{" "}
                       <strong>Marks:</strong> {attempt.score} -{" "}
                       <strong>Grade:</strong> {attempt.grade}{" "}
                       <a
-                        href="#"
-                        onClick={() => handleReviewAttempt(attempt)}
+                        href
+                        onClick={() => handleReviewAttempt(attempt.attemptId)}
                         className="quiz-detail-review-link"
-                        style={{ marginLeft: "10px", fontSize: "0.875rem" }} // Adjust styles as needed
-                        role = "button"
                       >
                         Review
                       </a>
@@ -155,7 +151,6 @@ const StudentQuizDetail = () => {
               color="primary"
               onClick={handleStartQuiz}
               className="quiz-detail-start-button"
-              sx={{ backgroundColor: 'blue', color: 'white', '&:hover': { backgroundColor: 'darkpink' } }}
             >
               Start
             </Button>

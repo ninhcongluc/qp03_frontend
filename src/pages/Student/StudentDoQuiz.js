@@ -63,7 +63,7 @@ const StudentDoQuiz = () => {
 
   const handlePrevious = () => {
     navigate(
-      `/student/course-management/quiz/${courseId}/${quizId}/start&page=${currentPageIndex}`
+      `/student/course-management/quiz/${courseId}/${quizId}/start`
     );
   };
 
