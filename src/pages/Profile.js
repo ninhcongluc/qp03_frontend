@@ -1,9 +1,18 @@
-
 import React, { useState } from "react";
 import LeftMenu from "../components/LeftMenu/AdminMenu";
 import Modal from "../pages/ChangePassword/Modal";
 import ChangePassword from "../pages/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  MDBCol,
+  MDBContainer,
+  MDBRow,
+  MDBCard,
+  MDBCardText,
+  MDBCardBody,
+  MDBCardImage,
+  MDBBtn
+} from 'mdb-react-ui-kit';
 
 const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,45 +26,87 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container-fluid d-flex">
-      <div className="col-3">
-        <LeftMenu />
-      </div>
-      <div className="col-9 d-flex justify-content-center align-items-center">
-        <div
-          className="card mb-4 w-100"
-          style={{ maxWidth: "1000px", minWidth: "800px" }}
-        >
-          <div className="card-body d-flex flex-column justify-content-center align-items-center">
-            <h2 className="card-title mb-4">Johnatan Smith</h2>
-            <div className="d-flex flex-column w-100">
-              <div className="d-flex justify-content-between mb-3">
-                <span>Email:</span>
-                <span>example@example.com</span>
-              </div>
-              <div className="d-flex justify-content-between mb-3">
-                <span>Phone:</span>
-                <span>(097) 234-5678</span>
-              </div>
-              <div className="d-flex justify-content-between mb-3">
-                <span>Mobile:</span>
-                <span>(098) 765-4321</span>
-              </div>
-              <div className="d-flex justify-content-between mb-3">
-                <span>Address:</span>
-                <span>Bay Area, San Francisco, CA</span>
-              </div>
-              <button onClick={handleOpenModal} className="btn btn-primary">
-                Change Password
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <section style={{ backgroundColor: '#eee' }}>
+      <LeftMenu />
+      <MDBContainer className="py-5" >
+        <MDBRow>
+          <MDBCol lg="4">
+            <MDBCard className="mb-4">
+              <MDBCardBody className="text-center">
+                <MDBCardImage
+                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                  alt="avatar"
+                  className="rounded-circle"
+                  style={{ width: '150px' }}
+                  fluid
+                />
+                <p className="text-muted mb-1">USER</p>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol lg="8">
+            <MDBCard className="mb-4">
+              <MDBCardBody>
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Full Name</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">Johnatan Smith</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Email</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">example@example.com</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Phone</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">(097) 234-5678</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Mobile</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">(098) 765-4321</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Address</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">Bay Area, San Francisco, CA</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+      <MDBBtn
+        onClick={handleOpenModal}
+        color="primary"
+        style={{ width: '27%', marginLeft: '69%', marginBottom:'17px'}}
+      >
+        Change Password
+      </MDBBtn>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <ChangePassword onClose={handleCloseModal} />
       </Modal>
-    </div>
+    </section>
   );
 };
 
