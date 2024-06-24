@@ -12,7 +12,6 @@ function ChangePassword({ onClose }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -49,11 +48,6 @@ function ChangePassword({ onClose }) {
         toast.error(error.response.data.error);
       });
   };
-
-  const toggleShowCurrentPassword = () => {
-    setShowCurrentPassword(!showCurrentPassword);
-  };
-
   const toggleShowNewPassword = () => {
     setShowNewPassword(!showNewPassword);
   };
@@ -67,7 +61,7 @@ function ChangePassword({ onClose }) {
       <h2>Change Password</h2>
       <TextField
         label="Current Password"
-        type={showCurrentPassword ? "text" : "password"}
+        type="password"
         value={currentPassword}
         onChange={handleCurrentPasswordChange}
         variant="outlined"
