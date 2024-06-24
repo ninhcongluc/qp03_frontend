@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import {
   Button,
   Container,
@@ -34,46 +33,20 @@ const quizQuestions = [
     options: ["Shakespeare", "Hemingway", "Dickens", "Twain"],
     correctAnswer: "Shakespeare",
   },
+  
 ];
 
 const StudentDoQuiz = () => {
-  const { courseId, quizId, page } = useParams();
-  const navigate = useNavigate();
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const currentPageIndex = parseInt(page, 10) - 1;
-  const currentQuestion = quizQuestions[currentPageIndex];
-
-  useEffect(() => {
-    if (submitted) {
-      navigate(`/student/course-management/quiz/${courseId}/${quizId}/results`);
-    }
-  }, [submitted, courseId, quizId, navigate]);
-
-  const handleChange = (value) => {
-    setAnswers({ ...answers, [currentQuestion.id]: value });
+  const handleChange = (questionId, value) => {
+    setAnswers({ ...answers, [questionId]: value });
   };
 
-  const handleNext = () => {
-    navigate(
-      `/student/course-management/quiz/${courseId}/${quizId}/start&page=${currentPageIndex + 2}`
-    );
-  };
-
-  const handlePrevious = () => {
-    navigate(
-      `/student/course-management/quiz/${courseId}/${quizId}/start`
-    );
-  };
-
-  const handleFinish = () => {
+  const handleSubmit = () => {
     setSubmitted(true);
   };
-
-  if (!currentQuestion) {
-    return <Typography variant="body1">No more questions.</Typography>;
-  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -88,59 +61,42 @@ const StudentDoQuiz = () => {
           Quiz PT1 - ACC101
         </Typography>
 
-        <Box className="student-do-quiz-question">
-          <FormControl component="fieldset">
-            <FormLabel component="legend">{currentQuestion.question}</FormLabel>
-            <RadioGroup
-              name={`question_${currentQuestion.id}`}
-              value={answers[currentQuestion.id] || ""}
-              onChange={(e) => handleChange(e.target.value)}
-              className="student-do-quiz-options"
-            >
-              {currentQuestion.options.map((option, index) => (
-                <FormControlLabel
-                  key={index}
-                  value={option}
-                  control={<Radio />}
-                  label={option}
-                  disabled={submitted}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </Box>
+        {quizQuestions.map((question) => (
+          <Box key={question.id} className="student-do-quiz-question">
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{question.question}</FormLabel>
+              <RadioGroup
+                name={`question_${question.id}`}
+                value={answers[question.id] || ""}
+                onChange={(e) => handleChange(question.id, e.target.value)}
+                className="student-do-quiz-options"
+              >
+                {question.options.map((option, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={option}
+                    control={<Radio />}
+                    label={option}
+                    disabled={submitted}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Box>
+        ))}
 
-        <Box className="student-do-quiz-button-container">
-          {currentPageIndex > 0 && (
+        {!submitted && (
+          <Box className="student-do-quiz-button-container">
             <Button
               variant="contained"
               color="primary"
-              onClick={handlePrevious}
+              onClick={handleSubmit}
               className="student-do-quiz-button"
             >
-              Previous
+              Submit
             </Button>
-          )}
-          {currentPageIndex < quizQuestions.length - 1 ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleNext}
-              className="student-do-quiz-button"
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFinish}
-              className="student-do-quiz-button"
-            >
-              Finish
-            </Button>
-          )}
-        </Box>
+          </Box>
+        )}
 
         {submitted && (
           <Box className="student-do-quiz-results">

@@ -35,7 +35,7 @@ const StudentMenu = () => {
         anchor="left"
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundColor: "#fff",
+            backgroundColor: "pink",
           },
         }}
       >

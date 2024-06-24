@@ -64,6 +64,8 @@ const quizDetailData = {
 
 const StudentQuizDetail = () => {
   const { courseId, quizId } = useParams();
+  console.log('67', courseId);
+  console.log('68', quizId);
   const navigate = useNavigate();
   const [quizDetail, setQuizDetail] = useState(null);
 
@@ -82,11 +84,11 @@ const StudentQuizDetail = () => {
   }, [courseId, quizId]);
 
   const handleStartQuiz = () => {
-    navigate(`/student/quiz-management/class/${courseId}/${quizId}/start`);
+    navigate(`/student/course-management/${courseId}/quiz/${quizId}/start`);
   };
 
   const handleReviewAttempt = (attemptId) => {
-    navigate(`/student/course-management/quiz/${courseId}/${quizId}/review`);
+    navigate(`/student/course-management/${courseId}/quiz/${quizId}/review`);
   };
 
   return (

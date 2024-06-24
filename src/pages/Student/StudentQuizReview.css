@@ -13,12 +13,14 @@
 .quiz-cards-container {
   display: block;
   margin-top: 20px;
+  
 }
 
 .quiz-review-card {
   width: 100%;
   margin-bottom: 20px;
   flex-grow: 1;
+  
 }
 
 .question-text {
