@@ -1,8 +1,21 @@
-import React from "react";
+
+import React, { useState } from "react";
 import LeftMenu from "../components/LeftMenu/AdminMenu";
+import Modal from "../pages/ChangePassword/Modal";
+import ChangePassword from "../pages/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ProfilePage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="container-fluid d-flex">
       <div className="col-3">
@@ -32,10 +45,16 @@ const ProfilePage = () => {
                 <span>Address:</span>
                 <span>Bay Area, San Francisco, CA</span>
               </div>
+              <button onClick={handleOpenModal} className="btn btn-primary">
+                Change Password
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <ChangePassword onClose={handleCloseModal} />
+      </Modal>
     </div>
   );
 };
