@@ -11,7 +11,7 @@ import CourseManagementPage from "./pages/Manager/ CourseManagement";
 import SemesterManagement from "./pages/Manager/ SemesterManagement";
 import ManagerPage from "./pages/Manager/Manager";
 import TeacherManagementPage from "./pages/Manager/TeacherManagement";
-import ProfilePage from "./components/Profile";
+import ProfilePage from "./pages/Profile";
 import StudentPage from "./pages/Student/Student";
 import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";

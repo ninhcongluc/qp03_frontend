@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import LeftMenu from "./LeftMenu/AdminMenu";
-import Modal from "./ChangePassword/Modal";
-import ChangePassword from "./ChangePassword/ChangePassword";
+import LeftMenu from "../components/LeftMenu/AdminMenu";
+import Modal from "../components/ChangePassword/Modal";
+import ChangePassword from "../components/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   MDBCol,
@@ -32,7 +32,7 @@ const ProfilePage = () => {
         alt="FPT Logo"
         style={{ width: '9%', marginLeft: '90%', marginTop: '-10%' }}
       />  
-          
+         <LeftMenu /> 
       <div
         style={{
           backgroundColor:'#eee',
