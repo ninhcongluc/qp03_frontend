@@ -36,7 +36,7 @@ const ProfilePage = () => {
       <div
         style={{
           backgroundColor:'#eee',
-          transform: 'scale(1.2)',         
+          transform: 'scale(1.1)',         
           marginLeft: '35%',
           border: '2px solid rgb(197 194 194 / 0%)',                 
           borderRadius: '8px',       
@@ -46,7 +46,7 @@ const ProfilePage = () => {
         className="form-profile"
       >
         
-        <MDBContainer className="py-5" style={{ justifyContent: 'center', alignItems: 'center', transform: 'scale(1.1)'}}>
+        <MDBContainer className="py-5" style={{ justifyContent: 'center', alignItems: 'center'}}>
           <MDBRow>
             <MDBCol lg="4">
               <MDBCard className="mb-4">
