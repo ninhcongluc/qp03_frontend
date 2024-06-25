@@ -73,17 +73,17 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/class/:courseId/quizzes"
+          path="/student/course-management/class/:courseId"
           element={<StudentQuizPage />}
         />
 
         <Route
-          path="/student/course-management/quiz/:courseId/:quizId"
+          path="/student/course-management/class/:courseId/:quizId"
           element={<StudentQuizDetail />}
         />
 
         <Route
-          path="/student/course-management/:courseId/quiz/:quizId/start"
+          path="/student/course-management/class/:courseId/:quizId/start"
           element={<StudentDoQuiz />}
         />
 

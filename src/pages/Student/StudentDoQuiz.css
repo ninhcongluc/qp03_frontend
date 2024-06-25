@@ -1,5 +1,5 @@
 .student-do-quiz-container {
-  margin-top: 20px;
+  padding: 20px;
 }
 
 .student-do-quiz-title {
@@ -10,18 +10,9 @@
   margin-bottom: 20px;
 }
 
-.student-do-quiz-options {
-  margin-top: 10px;
-}
-
 .student-do-quiz-button-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-}
-
-.student-do-quiz-button {
-  min-width: 100px;
 }
 
 .student-do-quiz-results {

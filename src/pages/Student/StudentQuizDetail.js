@@ -1,101 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container, Grid, Typography, Box } from "@mui/material";
 import LeftMenu from "../../components/LeftMenu/StudentMenu";
-import "./StudentQuizDetail.css";
+import "./StudentQuizDetail.css"; // Assuming you have a CSS file for styling
 
-const quizDetailData = {
-  ACC101: {
-    PT1: {
-      title: "Quiz PT1",
-      duration: "30 minutes",
-      passingScore: "70%",
-      history: [
-        {
-          attemptId: 1,
-          state: "Completed",
-          score: 85,
-          grade: "A",
-        },
-        {
-          attemptId: 2,
-          state: "Completed",
-          score: 75,
-          grade: "B",
-        },
-      ],
-    },
-    PT2: {
-      title: "Quiz PT2",
-      duration: "40 minutes",
-      passingScore: "75%",
-      history: [
-        {
-          attemptId: 1,
-          state: "Completed",
-          score: 90,
-          grade: "A",
-        },
-      ],
-    },
+const quizData = [
+  {
+    id: "4713fc09-2967-4e59-a832-04db1379baad",
+    courseId: "ACC 101",
+    quizzes: [
+      {
+        quizId: "PT1",
+        title: "Quiz PT1",
+        duration: "30 minutes",
+        passingScore: 50,
+        history: [
+          {
+            attemptId: 1,
+            state: "Completed",
+            score: 85,
+            grade: "A",
+          },
+          {
+            attemptId: 2,
+            state: "Completed",
+            score: 75,
+            grade: "B",
+          },
+        ],
+      },
+      // ...
+    ],
   },
-  SWR302: {
-    PT1: {
-      title: "Quiz PT1",
-      duration: "45 minutes",
-      passingScore: "80%",
-      history: [
-        {
-          attemptId: 1,
-          state: "Completed",
-          score: 88,
-          grade: "A",
-        },
-        {
-          attemptId: 2,
-          state: "Completed",
-          score: 82,
-          grade: "A",
-        },
-      ],
-    },
-  },
-};
+  // ...
+];
 
 const StudentQuizDetail = () => {
   const { courseId, quizId } = useParams();
-  console.log('67', courseId);
-  console.log('68', quizId);
   const navigate = useNavigate();
   const [quizDetail, setQuizDetail] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchQuizDetail = async () => {
-      try {
-        // Simulate fetching data from an API
-        const data = quizDetailData[courseId]?.[quizId] || null;
-        setQuizDetail(data);
-      } catch (error) {
-        console.error("Error fetching quiz detail:", error);
-      }
-    };
-
-    fetchQuizDetail();
+    const course = quizData.find((course) => course.id === courseId);
+    if (course) {
+      const quiz = course.quizzes.find((quiz) => quiz.quizId === quizId);
+      setQuizDetail(quiz);
+    }
+    setIsLoading(false);
   }, [courseId, quizId]);
 
   const handleStartQuiz = () => {
-    navigate(`/student/course-management/${courseId}/quiz/${quizId}/start`);
+    navigate(`/student/course-management/class/${courseId}/${quizId}/start`);
   };
 
   const handleReviewAttempt = (attemptId) => {
-    navigate(`/student/course-management/${courseId}/quiz/${quizId}/review`);
+    navigate(`/student/course-management/class/${courseId}/${quizId}/review`);
   };
 
   return (
     <Box sx={{ display: "flex" }}>
       <LeftMenu />
       <Container className="quiz-detail-container">
-        {quizDetail ? (
+        {isLoading ? (
+          <Typography variant="body1">Loading quiz detail...</Typography>
+        ) : quizDetail ? (
           <>
             <Typography
               variant="h3"
@@ -108,15 +77,11 @@ const StudentQuizDetail = () => {
 
             <Grid container spacing={3} className="quiz-detail-grid">
               <Grid item xs={6}>
-                <Typography variant="body1" sx= {{ color: 'black'}}>
-                  <strong>Duration:</strong> {quizDetail.duration} 
+                <Typography variant="body1" sx={{ color: "black" }}>
+                  <strong>Duration:</strong> {quizDetail.duration}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1">
-                  <strong>Passing Score:</strong> {quizDetail.passingScore}
-                </Typography>
-              </Grid>
+              <Grid item xs={6}></Grid>
             </Grid>
 
             <Typography
@@ -158,7 +123,7 @@ const StudentQuizDetail = () => {
             </Button>
           </>
         ) : (
-          <Typography variant="body1">Loading quiz detail...</Typography>
+          <p>No quiz data found for this course and quiz ID.</p>
         )}
       </Container>
     </Box>

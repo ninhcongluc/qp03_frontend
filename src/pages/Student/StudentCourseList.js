@@ -127,7 +127,7 @@ const StudentCourseListPage = () => {
   };
 
   const handleCourseDetailClick = (id) => {
-    navigate(`/student/course-management/class/${id}/quizzes`);
+    navigate(`/student/course-management/class/${id}`);
   };
 
   return (

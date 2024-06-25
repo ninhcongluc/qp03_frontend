@@ -7,6 +7,7 @@
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 30px;
+    text-align: center;
     font-size: 2rem;
     font-weight: bold;
     
@@ -16,12 +17,15 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    padding-left: 30px;
+    justify-content: center; 
+    
   }
   
   .grid-item {
     width: calc(50% - 10px);
-    padding-left: 30px;
+    padding-left: 300px;
+    
+    
     
   }
   
