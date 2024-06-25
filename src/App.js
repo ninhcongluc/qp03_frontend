@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import AdminPage from "./pages/Admin/Admin";
 import ManagerManagementPage from "./pages/Admin/ManagerManagement";
-import Login from "./components/Login/Login";
+import Login from "./pages/Login/Login";
 import CourseDetailPage from "./pages/Manager/ CourseDetailManagement";
 import CourseManagementPage from "./pages/Manager/ CourseManagement";
 import SemesterManagement from "./pages/Manager/ SemesterManagement";

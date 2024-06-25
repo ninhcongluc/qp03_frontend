@@ -1,5 +1,5 @@
 body {
-
+  
   background-size: 100% auto;
   background-position: left center;
   display: flex;
@@ -65,7 +65,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 250px; /* Điều chỉnh kích thước của logo */
+  width: 150px; /* Điều chỉnh kích thước của logo */
   z-index: 1000; /* Đảm bảo logo nằm trên các phần tử khác */
 }
 .login-form h5 {
