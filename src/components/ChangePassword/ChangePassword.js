@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./ChangePassword.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 function ChangePassword({ onClose }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -58,6 +59,7 @@ function ChangePassword({ onClose }) {
 
   return (
     <div className="change-password-form">
+        
       <h2>Change Password</h2>
       <TextField
         label="Current Password"

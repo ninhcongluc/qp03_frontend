@@ -5,13 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import AdminPage from "./pages/Admin/Admin";
 import ManagerManagementPage from "./pages/Admin/ManagerManagement";
-import Login from "./pages/Login/Login";
+import Login from "./components/Login/Login";
 import CourseDetailPage from "./pages/Manager/ CourseDetailManagement";
 import CourseManagementPage from "./pages/Manager/ CourseManagement";
 import SemesterManagement from "./pages/Manager/ SemesterManagement";
 import ManagerPage from "./pages/Manager/Manager";
 import TeacherManagementPage from "./pages/Manager/TeacherManagement";
-import ProfilePage from "./pages/Profile";
+import ProfilePage from "./components/Profile";
 import StudentPage from "./pages/Student/Student";
 import StudentCourseListPage from "./pages/Student/StudentCourseList";
 import TeacherPage from "./pages/Teacher/Teacher";
@@ -20,7 +20,7 @@ import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
 import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
 import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
-import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import ChangePassword from "./components/ChangePassword/ChangePassword";
 
 function App() {
   return (
