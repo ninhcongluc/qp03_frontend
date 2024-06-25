@@ -1,4 +1,4 @@
-import { DashboardOutlined, ExitToAppOutlined } from "@mui/icons-material";
+import { ExitToAppOutlined } from "@mui/icons-material";
 import {
   Drawer,
   List,
@@ -6,28 +6,47 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import axios from "axios";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import GroupsIcon from "@mui/icons-material/Groups";
 import PortraitIcon from "@mui/icons-material/Portrait";
-import QuizIcon from "@mui/icons-material/Quiz";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import "./LeftMenu.css";
 
 const TeacherMenu = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          "http://localhost:8000/user/profile",
+          config
+        );
+        console.log(response.data);
+        setUserData({
+          firstName: response.data.data.firstName,
+          lastName: response.data.data.lastName,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleMyCourseClick = () => {
     navigate("/teacher/course-management");
-  };
-
-  const handleCourseManagementClick = () => {
-    navigate("/teacher/course-management");
-  };
-
-  const handleQuizClick = () => {
-    navigate("/teacher/quiz");
   };
 
   const handleLogoutClick = () => {
@@ -51,35 +70,17 @@ const TeacherMenu = () => {
           <div class="menu">
             <Stack direction="row" spacing={2}>
               <Avatar alt="Teacher" src="" sx={{ width: 50, height: 50 }} />
-              <h3>Teacher</h3>
+              <h3>
+                {userData.firstName} {userData.lastName}
+              </h3>
             </Stack>
           </div>
-          <ListItem button onClick={handleMyCourseClick}>
-            <ListItemIcon>
-              <DashboardOutlined />
-            </ListItemIcon>
-            <ListItemText primary="My Courses" />
-          </ListItem>
 
-          <ListItem button onClick={handleCourseManagementClick}>
+          <ListItem button onClick={handleMyCourseClick}>
             <ListItemIcon>
               <PortraitIcon />
             </ListItemIcon>
-            <ListItemText primary="Class" />
-          </ListItem>
-
-          <ListItem button onClick={handleCourseManagementClick}>
-            <ListItemIcon>
-              <GroupsIcon />
-            </ListItemIcon>
-            <ListItemText primary="List Student" />
-          </ListItem>
-
-          <ListItem button onClick={handleQuizClick}>
-            <ListItemIcon>
-              <QuizIcon />
-            </ListItemIcon>
-            <ListItemText primary="Quiz" />
+            <ListItemText primary="My Class" />
           </ListItem>
 
           <ListItem button onClick={handleLogoutClick}>

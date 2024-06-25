@@ -37,15 +37,16 @@ function Login() {
         // Handle successful login
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userInfo));
-
-        toast.success("Login successful");
         if (userInfo.roleId === 1) {
-          navigate("/admin");
+          navigate("/admin/manage-manager");
         } else if (userInfo.roleId === 2) {
-          navigate("/manager");
+          navigate("/manager/semester");
+        } else if (userInfo.roleId === 3) {
+          navigate("/teacher/course-management");
         } else {
-          navigate("/admin");
+          navigate("/student/course-management");
         }
+        toast.success("Login successful");
       })
       .catch((error) => {
         // Handle login error
@@ -56,12 +57,12 @@ function Login() {
 
   const responseGoogle = (response) => {
     // window.open("http://localhost:8000/auth/google", "_self");
-    // console.log(response);
+    console.log(response);
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
+    <div class="login-container">
+      <div class="login-form">
         <h2>LOGIN</h2>
 
         <TextField
@@ -84,7 +85,7 @@ function Login() {
             label="Remember me"
             style={{ color: "orange" }}
           />
-          <label className="remember-me-label">Remember me</label>
+          <label class="remember-me-label">Remember me</label>
 
           <a href="!#" style={{ color: "#ff4a02" }}>
             Forgot password?
@@ -95,11 +96,11 @@ function Login() {
           variant="contained"
           style={{ backgroundColor: "#fc8b03", color: "#ffffff" }} // Custom colors
           onClick={handleLogin}
-          className="login-button"
+          class="login-button"
         >
           Login
         </Button>
-        <div className="or">OR </div>
+        <div class="or">OR </div>
 
         <GoogleLogin
           clientId="136665406201-o3244ge21kai14aaehs4gtvrbo3vomih.apps.googleusercontent.com"

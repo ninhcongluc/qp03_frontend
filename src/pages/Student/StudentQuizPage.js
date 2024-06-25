@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Grid, Card, CardContent, Typography, Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import StudentMenu from '../../components/LeftMenu/StudentMenu'; // Điều chỉnh đường dẫn tới StudentMenu
-import { Box } from '@mui/system'; // Import Box để có thể sử dụng margin
+import StudentMenu from '../../components/LeftMenu/StudentMenu';
+import { Box } from '@mui/system';
 import './StudentQuizPage.css';
 
 const quizData = [
   {
-    courseId: 'ACC101',
+    id: '4713fc09-2967-4e59-a832-04db1379baad',
     quizzes: [
       { quizId: 'PT1', title: 'Quiz PT1' },
       { quizId: 'PT2', title: 'Quiz PT2' },
@@ -17,7 +17,7 @@ const quizData = [
     ],
   },
   {
-    courseId: 'SWR302',
+    id: 'f5a016b9-97c2-4832-ba68-490d8825225e',
     quizzes: [
       { quizId: 'PT1', title: 'Quiz PT1' },
       { quizId: 'PT2', title: 'Quiz PT2' },
@@ -32,14 +32,14 @@ const quizData = [
 const StudentQuizPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const courseQuiz = quizData.find((data) => data.courseId === courseId);
+  const courseQuiz = quizData.find((data) => data.id === courseId);
 
   if (!courseQuiz) {
     return <Typography>No quizzes available for this course.</Typography>;
   }
 
   const handleQuizClick = (quizId) => {
-    navigate(`/student/course-management/quiz/${courseId}/${quizId}`);
+    navigate(`/student/course-management/class/${courseId}/${quizId}`);
   };
 
   return (

@@ -21,6 +21,9 @@ import StudentQuizPage from "./pages/Student/StudentQuizPage";
 import StudentQuizDetail from "./pages/Student/StudentQuizDetail";
 import StudentDoQuiz from "./pages/Student/StudentDoQuiz";
 import StudentQuizReview from "./pages/Student/StudentQuizReview";
+import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
+import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
+import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
 
 function App() {
   return (
@@ -49,7 +52,19 @@ function App() {
           path="/teacher/course-management"
           element={<TeacherCourseListPage />}
         />
+
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
+        <Route
+          path="/teacher/course-management/:courseId"
+          element={<TeacherCourseDetailPage />}
+        />
+        <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
+        <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
+
+        <Route
+          path="/teacher/add-question"
+          element={<TeacherQuestionListPage />}
+        />
 
         <Route path="/student" element={<StudentPage />} />
         <Route
@@ -58,12 +73,7 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/quiz"
-          element={<StudentQuizPage />}
-        />
-
-        <Route
-          path="/student/course-management/quiz/:courseId"
+          path="/student/course-management/class/:courseId/quizzes"
           element={<StudentQuizPage />}
         />
 

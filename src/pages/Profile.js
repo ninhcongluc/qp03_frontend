@@ -9,7 +9,10 @@ const ProfilePage = () => {
         <LeftMenu />
       </div>
       <div className="col-9 d-flex justify-content-center align-items-center">
-        <div className="card mb-4 w-100" style={{ maxWidth: "1000px", minWidth: "800px" }}>
+        <div
+          className="card mb-4 w-100"
+          style={{ maxWidth: "1000px", minWidth: "800px" }}
+        >
           <div className="card-body d-flex flex-column justify-content-center align-items-center">
             <h2 className="card-title mb-4">Johnatan Smith</h2>
             <div className="d-flex flex-column w-100">

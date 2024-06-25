@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
 import ManageSemesterTable from "../../components/Table/ManageSemester";
 
+
 const SemesterManagement = () => {
   return (
     <div class="table_manageTeacher">

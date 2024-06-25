@@ -6,17 +6,44 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import axios from "axios";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import { yellow } from '@mui/material/colors';
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import { yellow } from "@mui/material/colors";
 import "./StudentMenu.css";
-
 
 const StudentMenu = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          "http://localhost:8000/user/profile",
+          config
+        );
+        console.log(response.data);
+        setUserData({
+          firstName: response.data.data.firstName,
+          lastName: response.data.data.lastName,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleCourseManagementClick = () => {
     navigate("/student/course-management");
@@ -40,10 +67,13 @@ const StudentMenu = () => {
         }}
       >
         <List>
-        <div class="Student_Menu">
-            <Stack direction="row" spacing={2}>
-            <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
-          </Stack>
+          <div className="Student_Menu">
+            <Stack direction="row" spacing={2} className="menu-header">
+              <Avatar sx={{ bgcolor: yellow[500] }}>S</Avatar>
+              <h3>
+                {userData.firstName} {userData.lastName}
+              </h3>
+            </Stack>
           </div>
 
           <ListItem button onClick={handleCourseManagementClick}>

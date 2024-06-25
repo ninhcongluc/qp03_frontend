@@ -13,10 +13,10 @@ import LeftMenu from "../../components/LeftMenu/StudentMenu";
 
 const courses = [
   {
-    id: "quiz",
+    id: "4713fc09-2967-4e59-a832-04db1379baad",
     code: "ACC101",
     description: "Introductory Accounting",
-    semesterName: "Fall 2024",
+    semesterName: "Summer 2024",
     createdBy: "John Doe",
   },
   {
@@ -126,16 +126,15 @@ const StudentCourseListPage = () => {
     setPage(1);
   };
 
-const handleCourseDetailClick = (code) => {
-  navigate(`/student/course-management/quiz/${code}`);
-};
+  const handleCourseDetailClick = (id) => {
+    navigate(`/student/course-management/class/${id}/quizzes`);
+  };
 
   return (
     <div>
       <LeftMenu />
-
       <Container sx={{ marginLeft: '240px' }}>
-        <Grid container spacing={4} sx={{ marginTop: 2 , left: '30%',}}>
+        <Grid container spacing={4} sx={{ marginTop: 2, left: '30%' }}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"
@@ -159,9 +158,7 @@ const handleCourseDetailClick = (code) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item>
-             
-          </Grid>
+          <Grid item></Grid>
         </Grid>
         <Grid
           container={displayedCourses.length}
@@ -173,15 +170,13 @@ const handleCourseDetailClick = (code) => {
               <div
                 className="course-card"
                 style={{ padding: 16 }}
-                onClick={() => handleCourseDetailClick(course.code)}
+                onClick={() => handleCourseDetailClick(course.id)}
               >
                 <h3>{course.code}</h3>
                 <p>{course.description}</p>
                 <p>Semester: {course.semesterName}</p>
                 <p>Created by: {course.createdBy}</p>
-                <div className="course-actions">
-          
-                </div>
+                <div className="course-actions"></div>
               </div>
             </Grid>
           ))}
@@ -194,7 +189,7 @@ const handleCourseDetailClick = (code) => {
             color="primary"
           />
         </Stack>
-      </Container>    
+      </Container>
     </div>
   );
 };

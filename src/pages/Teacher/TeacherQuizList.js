@@ -20,7 +20,7 @@ const quiz = [
     className: "SE1848",
     startDate: "2024-06-01",
     endDate: "2024-06-01",
-    TimeofQuiz: "30 minute"
+    TimeofQuiz: "30 minute",
   },
   {
     id: "b9a8c7d6-e5f4-3210-fedc-ba9876543210",
@@ -29,7 +29,7 @@ const quiz = [
     className: "SE1849",
     startDate: "2024-06-01",
     endDate: "2024-06-01",
-    TimeofQuiz: "30 minute"
+    TimeofQuiz: "30 minute",
   },
   {
     id: "4d3c2b1a-f0e9-8d7c-6b5a-4321fedcba98",
@@ -38,7 +38,7 @@ const quiz = [
     className: "SE1850",
     startDate: "2024-06-01",
     endDate: "2024-06-01",
-    TimeofQuiz: "30 minute"
+    TimeofQuiz: "30 minute",
   },
 ];
 
@@ -48,11 +48,8 @@ const QuizManagementPage = () => {
   const [selectedQuiz, setSelectedQuiz] = useState("");
   const quizPerPage = 6;
 
-  // Tính toán số lượng trang
   const pageCount = Math.ceil(quiz.length / quizPerPage);
 
-
-  // Lấy các khóa học cho trang hiện tại
   const displayedQuiz = quiz.slice(
     (page - 1) * quizPerPage,
     page * quizPerPage
@@ -63,8 +60,8 @@ const QuizManagementPage = () => {
   };
 
   const handleEditQuiz = (id) => {
-    const quiz = quiz.find((c) => c.id === id);
-    setSelectedQuiz(quiz);
+    const quizFilter = quiz.find((c) => c.id === id);
+    setSelectedQuiz(quizFilter);
   };
 
   const handleDeleteQuiz = (id) => {
@@ -104,33 +101,32 @@ const QuizManagementPage = () => {
                 <MenuItem value="ACC101">ACC101</MenuItem>
                 <MenuItem value="SWR302">SWR302</MenuItem>
                 <MenuItem value="ECO201">ECO201</MenuItem>
-
               </Select>
             </FormControl>
           </Grid>
-          
-              <Grid item>
-                <button
-                  className="add-quiz-btn"
-                  onClick={handleAddQuiz}
-                  style={{
-                    backgroundColor: "#4CAF50",
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    textAlign: "center",
-                    textDecoration: "none",
-                    display: "inline-block",
-                    fontSize: "20px",
-                    marginTop: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <AddIcon /> Add Course
-                </button>
-              </Grid>
-            </Grid>
-          
+
+          <Grid item>
+            <button
+              className="add-quiz-btn"
+              onClick={handleAddQuiz}
+              style={{
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                padding: "10px 20px",
+                textAlign: "center",
+                textDecoration: "none",
+                display: "inline-block",
+                fontSize: "20px",
+                marginTop: "5px",
+                cursor: "pointer",
+              }}
+            >
+              <AddIcon /> Add Course
+            </button>
+          </Grid>
+        </Grid>
+
         <Grid
           container={displayedQuiz.length}
           spacing={4}
@@ -139,7 +135,7 @@ const QuizManagementPage = () => {
           {displayedQuiz.map((quiz, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div
-                className="course-card"
+                class="course-card"
                 style={{ padding: 16 }}
                 onClick={() => handleQuizDetailClick(quiz.id)}
               >
@@ -150,7 +146,7 @@ const QuizManagementPage = () => {
                 <p>End Date: {quiz.endDate}</p>
                 <p>Time: {quiz.TimeofQuiz}</p>
 
-                <div className="quiz-actions">
+                <div class="quiz-actions">
                   <EditIcon
                     onClick={(event) => {
                       event.stopPropagation();
@@ -177,11 +173,8 @@ const QuizManagementPage = () => {
           />
         </Stack>
       </Container>
-
     </div>
   );
 };
-
-
 
 export default QuizManagementPage;
