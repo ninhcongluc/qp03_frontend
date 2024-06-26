@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import {
-  Button,
   Container,
   Typography,
   Box,
@@ -12,100 +13,61 @@ import {
   Card,
   CardContent,
   Grid,
-} from "@mui/material";
-import LeftMenu from "../../components/LeftMenu/StudentMenu";
-import "./StudentDoQuiz.css";
+  Button,
+} from '@mui/material';
+import './StudentDoQuiz.css';
 
-const quizQuestionsData = [
-  {
-    id: 1,
-    question: "What is the capital of France?",
-    options: ["Paris", "Berlin", "London", "Madrid"],
-    correctAnswer: "Paris",
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
   },
-  {
-    id: 2,
-    question: "Which planet is known as the Red Planet?",
-    options: ["Earth", "Mars", "Venus", "Jupiter"],
-    correctAnswer: "Mars",
-  },
-  {
-    id: 3,
-    question: 'Who wrote "Romeo and Juliet"?',
-    options: ["Shakespeare", "Hemingway", "Dickens", "Twain"],
-    correctAnswer: "Shakespeare",
-  },
-  {
-    id: 4,
-    question: "What is the largest ocean on Earth?",
-    options: [
-      "Atlantic Ocean",
-      "Indian Ocean",
-      "Arctic Ocean",
-      "Pacific Ocean",
-    ],
-    correctAnswer: "Pacific Ocean",
-  },
-  {
-    id: 5,
-    question: "What is the chemical symbol for the element Oxygen?",
-    options: ["O", "Ox", "Oy", "Om"],
-    correctAnswer: "O",
-  },
-  {
-    id: 6,
-    question: "Which country is known as the Land of the Rising Sun?",
-    options: ["China", "South Korea", "Japan", "Thailand"],
-    correctAnswer: "Japan",
-  },
-  {
-    id: 7,
-    question: "What is the square root of 64?",
-    options: ["6", "7", "8", "9"],
-    correctAnswer: "8",
-  },
-  {
-    id: 8,
-    question: "Who painted the Mona Lisa?",
-    options: [
-      "Vincent van Gogh",
-      "Pablo Picasso",
-      "Leonardo da Vinci",
-      "Claude Monet",
-    ],
-    correctAnswer: "Leonardo da Vinci",
-  },
-  {
-    id: 9,
-    question: "What is the capital city of Australia?",
-    options: ["Sydney", "Melbourne", "Canberra", "Perth"],
-    correctAnswer: "Canberra",
-  },
-  {
-    id: 10,
-    question: "What is the smallest planet in our solar system?",
-    options: ["Earth", "Mars", "Mercury", "Venus"],
-    correctAnswer: "Mercury",
-  },
-];
+});
+
+const quizData = {
+  courseName: 'ACC101',
+  courseTitle: 'Accounting Principles',
+  quizId: 'PT1',
+  quizName: 'Practice Test 1',
+  questions: [
+    {
+      questionId: 1,
+      question: 'What is the primary purpose of financial accounting?',
+      options: [
+        'To track personal expenses',
+        'To prepare tax returns',
+        'To provide financial information to external users',
+        'To manage internal business operations',
+      ],
+      correctAnswer: 'To provide financial information to external users',
+    },
+    {
+      questionId: 2,
+      question: 'Which of the following is considered a current asset?',
+      options: ['Buildings', 'Equipment', 'Accounts Receivable', 'Land'],
+      correctAnswer: 'Accounts Receivable',
+    },
+  ],
+};
 
 const StudentDoQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [quizQuestions, setQuizQuestions] = useState([]);
-
-  useEffect(() => {
-    // Simulating fetching quiz questions from an API or local storage
-    setQuizQuestions(quizQuestionsData);
-  }, []);
 
   const handleChange = (questionId, value) => {
-    setAnswers({ ...answers, [questionId]: value });
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: value,
+    }));
   };
 
   const handleNext = () => {
-    setCurrentQuestion((prev) => Math.min(prev + 1, quizQuestions.length - 1));
+    setCurrentQuestion((prev) => Math.min(prev + 1, quizData.questions.length - 1));
   };
 
   const handlePrevious = () => {
@@ -117,137 +79,82 @@ const StudentDoQuiz = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <LeftMenu />
-      <Container>
-        <Grid container spacing={3}>
-          {/* Card 1: Quiz Title */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h3" align="center">
-                  Probability and Statistics - MAS291
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box className="student-do-quiz">
+        <Container>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h3" align="center">
+                    {quizData.courseName} {quizData.courseTitle} - {quizData.quizName}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
 
-          {/* Card 2: Question and Options */}
-          <Grid item xs={8}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">
-                  Question {currentQuestion + 1}
-                </Typography>
-                <Typography variant="body1">
-                  {quizQuestions.length > 0 &&
-                    quizQuestions[currentQuestion].question}
-                </Typography>
-                <FormControl component="fieldset">
-                  <FormLabel component="legend">Select one:</FormLabel>
-                  <RadioGroup
-                    name={`question_${quizQuestions.length > 0 &&
-                      quizQuestions[currentQuestion].id}`}
-                    value={
-                      answers[
-                        quizQuestions.length > 0 &&
-                          quizQuestions[currentQuestion].id
-                      ] || ""
-                    }
-                    onChange={(e) =>
-                      handleChange(
-                        quizQuestions.length > 0 &&
-                          quizQuestions[currentQuestion].id,
-                        e.target.value
-                      )
-                    }
-                  >
-                    {quizQuestions.length > 0 &&
-                      quizQuestions[currentQuestion].options.map(
-                        (option, index) => (
-                          <FormControlLabel
-                            key={index}
-                            value={option}
-                            control={<Radio />}
-                            label={option}
-                            disabled={submitted}
-                          />
-                        )
-                      )}
-                  </RadioGroup>
-                </FormControl>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Card 3: Quiz Navigation */}
-          <Grid item xs={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Quiz Navigation
-                </Typography>
-                <Box>
-                  {quizQuestions.length > 0 &&
-                    quizQuestions.map((_, index) => (
-                      <Button
-                        key={index}
-                        variant="outlined"
-                        color={
-                          currentQuestion === index ? "primary" : "default"
-                        }
-                        onClick={() => setCurrentQuestion(index)}
-                      >
-                        {index + 1}
-                      </Button>
-                    ))}
-                </Box>
-                {!submitted ? (
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleFinish}
-                      style={{ marginTop: "20px" }}
+            <Grid item xs={8}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">
+                    Question {currentQuestion + 1}
+                  </Typography>
+                  <Typography variant="body1">
+                    {quizData.questions[currentQuestion]?.question}
+                  </Typography>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Choose one:</FormLabel>
+                    <RadioGroup
+                      name={`question_${quizData.questions[currentQuestion]?.questionId}`}
+                      value={answers[quizData.questions[currentQuestion]?.questionId] || ''}
+                      onChange={(e) => handleChange(quizData.questions[currentQuestion]?.questionId, e.target.value)}
                     >
-                      Finish
+                      {quizData.questions[currentQuestion]?.options.map((option, index) => (
+                        <FormControlLabel
+                          key={index}
+                          value={option}
+                          control={<Radio />}
+                          label={option}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <Box mt={2}>
+                    <Button onClick={handlePrevious} disabled={currentQuestion === 0}>
+                      Previous
+                    </Button>
+                    <Button onClick={handleNext} disabled={currentQuestion === quizData.questions.length - 1}>
+                      Next
+                    </Button>
+                    <Button onClick={handleFinish} disabled={submitted}>
+                      Submit
                     </Button>
                   </Box>
-                ) : (
-                  <Typography
-                    variant="body1"
-                    style={{ marginTop: "20px" }}
-                  >
-                    Quiz completed!
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
 
-        <Grid container spacing={3} style={{ marginTop: "20px" }}>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-            >
-              Previous
-            </Button>
+            <Grid item xs={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Results</Typography>
+                  {submitted && (
+                    <Box>
+                      {quizData.questions.map((question) => (
+                        <Typography key={question.questionId} variant="body2">
+                          Question {question.questionId}: {answers[question.questionId] === question.correctAnswer ? 'Correct' : 'Incorrect'}
+                        </Typography>
+                      ))}
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={6} style={{ textAlign: "right" }}>
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              disabled={currentQuestion === quizQuestions.length - 1}
-            >
-              Next
-            </Button>
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 
