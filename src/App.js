@@ -23,6 +23,7 @@ import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
+import ChangePassword from "./components/ChangePassword/ChangePassword";
 
 function App() {
   return (
@@ -63,6 +64,11 @@ function App() {
           path="/teacher/add-question"
           element={<TeacherQuestionListPage />}
         />
+        <Route
+          path="/changePass"
+          element={<ChangePassword />}
+        />
+
 
         <Route path="/student" element={<StudentPage />} />
         <Route
