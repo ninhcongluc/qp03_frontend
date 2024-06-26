@@ -20,6 +20,9 @@ import TeacherQuizListPage from "./pages/Teacher/TeacherQuizList";
 import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
 import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
 import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 
 function App() {
@@ -29,6 +32,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/admin/manage-manager"
           element={<ManagerManagementPage />}
