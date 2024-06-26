@@ -77,6 +77,7 @@ const ManagerAccountTable = () => {
       firstName: account.firstName,
       lastName: account.lastName,
       email: account.email,
+      code: account.code,
       isActive: account.isActive,
       dob: account.dob,
       phoneNumber: account.phoneNumber,
@@ -95,7 +96,7 @@ const ManagerAccountTable = () => {
       };
       await axios.delete(`http://localhost:8000/manager/${account.id}`, config);
       setManagerAccounts(managerAccounts.filter((a) => a.id !== account.id));
-      toast.success("Manager account deleted successfully");
+      toast.success("You have deleted successfully");
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error deleting manager account:", error);
@@ -110,7 +111,7 @@ const ManagerAccountTable = () => {
       email: account.email,
       code: account.code,
       isActive: account.isActive,
-      dob: account.dob,
+      dob: account.dateOfBirth,
       phoneNumber: account.phoneNumber,
     });
     setOpen(true);
@@ -127,6 +128,11 @@ const ManagerAccountTable = () => {
 
   const handleSubmit = async () => {
     try {
+      // Validate required fields
+      if (!formData.code || !formData.email) {
+        toast.error("Code and Email are required");
+        return;
+      }
       const token = localStorage.getItem("token");
       const config = {
         headers: {
@@ -164,11 +170,10 @@ const ManagerAccountTable = () => {
           payload,
           config
         );
-        // setManagerAccounts([...managerAccounts, response.data.data]);
       }
       await fetchManagerAccounts();
 
-      toast.success("Manager account saved successfully");
+      toast.success("You have saved successfully");
       setOpen(false);
     } catch (error) {
       toast.error(error.response.data.error);
@@ -207,12 +212,13 @@ const ManagerAccountTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
+              <TableCell>Code</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               {viewMode && (
                 <>
                   <TableCell>Avatar</TableCell>
-                  <TableCell>DOB</TableCell>
+                  <TableCell>Date Of Birth</TableCell>
                   <TableCell>Phone Number</TableCell>
                 </>
               )}
@@ -224,6 +230,7 @@ const ManagerAccountTable = () => {
             {managerAccounts.map((account, index) => (
               <TableRow key={account.id}>
                 <TableCell>{index + 1}</TableCell>
+                <TableCell>{account.code}</TableCell>
                 <TableCell>
                   {account.firstName} {account.lastName}
                 </TableCell>
@@ -231,7 +238,7 @@ const ManagerAccountTable = () => {
                 {viewMode && (
                   <>
                     <TableCell>{account.avatar}</TableCell>
-                    <TableCell>{account.dob}</TableCell>
+                    <TableCell>{account.dateOfBirth}</TableCell>
                     <TableCell>{account.phoneNumber}</TableCell>
                   </>
                 )}
@@ -313,6 +320,9 @@ const ManagerAccountTable = () => {
             onChange={handleFormChange}
             margin="normal"
             fullWidth
+            required
+            error={!formData.code}
+            helperText={!formData.code && "Code is required"}
           />
           <TextField
             name="email"
@@ -322,12 +332,15 @@ const ManagerAccountTable = () => {
             onChange={handleFormChange}
             margin="normal"
             fullWidth
+            required
+            error={!formData.email}
+            helperText={!formData.email && "Email is required"}
           />
           {viewMode && (
             <>
               <TextField
                 name="dob"
-                label="DOB"
+                label="Birth Date"
                 value={formData.dob}
                 onChange={handleFormChange}
                 margin="normal"
