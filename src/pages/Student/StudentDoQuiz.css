@@ -1,67 +1,15 @@
 .student-do-quiz {
-  display: flex;
-}
-
-.student-do-quiz .MuiContainer-root {
+  background-color: #f4f6f8;
   padding: 20px;
- 
-}
-
-.student-do-quiz .MuiGrid-item {
-  margin-bottom: 20px;
-
-}
-
-.student-do-quiz .MuiCard-root {
-  padding: 20px;
-  background-color: azure;
-}
-
-.student-do-quiz .MuiCardContent-root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.student-do-quiz .MuiTypography-h3 {
-  margin-bottom: 20px;
-}
-
-.student-do-quiz .MuiTypography-h6 {
-  margin-bottom: 10px;
-}
-
-.student-do-quiz .MuiFormControl-root {
-  width: 100%;
-}
-
-.student-do-quiz .MuiFormLabel-root {
-  margin-bottom: 10px;
-}
-
-.student-do-quiz .MuiRadioGroup-root {
-  display: flex;
-  flex-direction: column;
-}
-
-.student-do-quiz .MuiButton-root {
-  margin-right: 10px;
 }
 
 .quiz-navigation {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 20px;
+  gap: 8px;
 }
 
-.quiz-nav-button {
-  margin: 5px;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-}
-
-.time-left {
-  margin-top: 20px;
+.quiz-navigation button {
+  width: 50px;
+  height: 50px;
 }

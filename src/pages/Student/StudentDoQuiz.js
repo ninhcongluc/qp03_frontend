@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
@@ -17,7 +16,9 @@ import {
   Button,
 } from '@mui/material';
 import './StudentDoQuiz.css';
-import StudentMenu from '../../components/LeftMenu/StudentMenu';
+
+
+
 
 const theme = createTheme({
   palette: {
@@ -26,6 +27,29 @@ const theme = createTheme({
     },
     secondary: {
       main: '#dc004e',
+    },
+    background: {
+      default: '#f4f6f8',
+    },
+    text: {
+      primary: '#333',
+      secondary: '#555',
+    },
+  },
+  typography: {
+    h3: {
+      fontSize: '2rem',
+      fontWeight: 500,
+    },
+    h6: {
+      fontSize: '1.2rem',
+      fontWeight: 500,
+    },
+    body1: {
+      fontSize: '1rem',
+    },
+    body2: {
+      fontSize: '0.875rem',
     },
   },
 });
@@ -60,6 +84,14 @@ const StudentDoQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleChange = (questionId, value) => {
     setAnswers((prevAnswers) => ({
@@ -80,11 +112,17 @@ const StudentDoQuiz = () => {
     setSubmitted(true);
   };
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        <StudentMenu/>
+        
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -141,16 +179,22 @@ const StudentDoQuiz = () => {
             <Grid item xs={4}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Results</Typography>
-                  {submitted && (
-                    <Box>
-                      {quizData.questions.map((question) => (
-                        <Typography key={question.questionId} variant="body2">
-                          Question {question.questionId}: {answers[question.questionId] === question.correctAnswer ? 'Correct' : 'Incorrect'}
-                        </Typography>
-                      ))}
-                    </Box>
-                  )}
+                  <Typography variant="h6">Quiz Navigation</Typography>
+                  <Box className="quiz-navigation">
+                    {quizData.questions.map((question, index) => (
+                      <Button
+                        key={question.questionId}
+                        variant={answers[question.questionId] ? 'contained' : 'outlined'}
+                        onClick={() => setCurrentQuestion(index)}
+                        color="primary"
+                      >
+                        {question.questionId}
+                      </Button>
+                    ))}
+                  </Box>
+                  <Typography variant="h6" align="center" mt={2}>
+                    Time left: {formatTime(timeLeft)}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
