@@ -4,14 +4,17 @@
 
 .student-do-quiz .MuiContainer-root {
   padding: 20px;
+ 
 }
 
 .student-do-quiz .MuiGrid-item {
   margin-bottom: 20px;
+
 }
 
 .student-do-quiz .MuiCard-root {
   padding: 20px;
+  background-color: azure;
 }
 
 .student-do-quiz .MuiCardContent-root {
@@ -43,4 +46,22 @@
 
 .student-do-quiz .MuiButton-root {
   margin-right: 10px;
+}
+
+.quiz-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.quiz-nav-button {
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+
+.time-left {
+  margin-top: 20px;
 }

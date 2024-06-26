@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,6 +17,7 @@ import {
   Button,
 } from '@mui/material';
 import './StudentDoQuiz.css';
+import StudentMenu from '../../components/LeftMenu/StudentMenu';
 
 const theme = createTheme({
   palette: {
@@ -82,6 +84,7 @@ const StudentDoQuiz = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
+        <StudentMenu/>
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
