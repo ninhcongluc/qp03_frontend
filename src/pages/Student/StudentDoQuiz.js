@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import React, { useState, useEffect } from "react";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import {
   Container,
   Typography,
@@ -14,68 +14,124 @@ import {
   CardContent,
   Grid,
   Button,
-} from '@mui/material';
-import './StudentDoQuiz.css';
-
-
-
+} from "@mui/material";
+import "./StudentDoQuiz.css";
+import StudentMenu from "../../components/LeftMenu/StudentMenu";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: "#1976d2",
     },
     secondary: {
-      main: '#dc004e',
+      main: "#dc004e",
     },
     background: {
-      default: '#f4f6f8',
+      default: "#f4f6f8",
     },
     text: {
-      primary: '#333',
-      secondary: '#555',
+      primary: "#333",
+      secondary: "#555",
     },
   },
   typography: {
     h3: {
-      fontSize: '2rem',
+      fontSize: "2rem",
       fontWeight: 500,
     },
     h6: {
-      fontSize: '1.2rem',
+      fontSize: "1.2rem",
       fontWeight: 500,
     },
     body1: {
-      fontSize: '1rem',
+      fontSize: "1rem",
     },
     body2: {
-      fontSize: '0.875rem',
+      fontSize: "0.875rem",
     },
   },
 });
 
 const quizData = {
-  courseName: 'ACC101',
-  courseTitle: 'Accounting Principles',
-  quizId: 'PT1',
-  quizName: 'Practice Test 1',
+  courseName: "ACC101",
+  courseTitle: "Accounting Principles",
+  quizId: "PT1",
+  quizName: "Practice Test 1",
   questions: [
     {
       questionId: 1,
-      question: 'What is the primary purpose of financial accounting?',
-      options: [
-        'To track personal expenses',
-        'To prepare tax returns',
-        'To provide financial information to external users',
-        'To manage internal business operations',
-      ],
-      correctAnswer: 'To provide financial information to external users',
+      question: "Which is the largest continent by area?",
+      options: ["Africa", "Asia", "Europe", "North America"],
+      correctAnswer: "Asia",
     },
     {
       questionId: 2,
-      question: 'Which of the following is considered a current asset?',
-      options: ['Buildings', 'Equipment', 'Accounts Receivable', 'Land'],
-      correctAnswer: 'Accounts Receivable',
+      question: "What is the longest river in the world?",
+      options: [
+        "Amazon River",
+        "Nile River",
+        "Yangtze River",
+        "Mississippi River",
+      ],
+      correctAnswer: "Nile River",
+    },
+    {
+      questionId: 3,
+      question: "Which country has the largest population?",
+      options: ["United States", "India", "China", "Indonesia"],
+      correctAnswer: "China",
+    },
+    {
+      questionId: 4,
+      question: "Which is the smallest country in the world by area?",
+      options: ["Monaco", "San Marino", "Liechtenstein", "Vatican City"],
+      correctAnswer: "Vatican City",
+    },
+    {
+      questionId: 5,
+      question: "Which desert is the largest in the world?",
+      options: [
+        "Sahara Desert",
+        "Arabian Desert",
+        "Gobi Desert",
+        "Kalahari Desert",
+      ],
+      correctAnswer: "Sahara Desert",
+    },
+    {
+      questionId: 6,
+      question: "What is the capital city of Australia?",
+      options: ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+      correctAnswer: "Canberra",
+    },
+    {
+      questionId: 7,
+      question: "Which country is known as the Land of the Rising Sun?",
+      options: ["China", "Japan", "South Korea", "Thailand"],
+      correctAnswer: "Japan",
+    },
+    {
+      questionId: 8,
+      question: "Which ocean is the deepest in the world?",
+      options: [
+        "Atlantic Ocean",
+        "Indian Ocean",
+        "Southern Ocean",
+        "Pacific Ocean",
+      ],
+      correctAnswer: "Pacific Ocean",
+    },
+    {
+      questionId: 9,
+      question: "What is the official language of Brazil?",
+      options: ["Spanish", "Portuguese", "French", "English"],
+      correctAnswer: "Portuguese",
+    },
+    {
+      questionId: 10,
+      question: "Which country is home to the ancient city of Petra?",
+      options: ["Egypt", "Jordan", "Turkey", "Greece"],
+      correctAnswer: "Jordan",
     },
   ],
 };
@@ -115,20 +171,20 @@ const StudentDoQuiz = () => {
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        
+        <StudentMenu />
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Card>
+              <Card className="quiz-header">
                 <CardContent>
-                  <Typography variant="h3" align="center">
+                  <Typography variant="h3" align="center" className="quiz-title">
                     {quizData.courseName} {quizData.courseTitle} - {quizData.quizName}
                   </Typography>
                 </CardContent>
@@ -136,19 +192,19 @@ const StudentDoQuiz = () => {
             </Grid>
 
             <Grid item xs={8}>
-              <Card>
+              <Card className="question-card">
                 <CardContent>
-                  <Typography variant="h6">
+                  <Typography variant="h6" className="question-number">
                     Question {currentQuestion + 1}
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" className="question-text">
                     {quizData.questions[currentQuestion]?.question}
                   </Typography>
-                  <FormControl component="fieldset">
+                  <FormControl component="fieldset" className="options-form">
                     <FormLabel component="legend">Choose one:</FormLabel>
                     <RadioGroup
                       name={`question_${quizData.questions[currentQuestion]?.questionId}`}
-                      value={answers[quizData.questions[currentQuestion]?.questionId] || ''}
+                      value={answers[quizData.questions[currentQuestion]?.questionId] || ""}
                       onChange={(e) => handleChange(quizData.questions[currentQuestion]?.questionId, e.target.value)}
                     >
                       {quizData.questions[currentQuestion]?.options.map((option, index) => (
@@ -157,19 +213,17 @@ const StudentDoQuiz = () => {
                           value={option}
                           control={<Radio />}
                           label={option}
+                          className="option"
                         />
                       ))}
                     </RadioGroup>
                   </FormControl>
-                  <Box mt={2}>
-                    <Button onClick={handlePrevious} disabled={currentQuestion === 0}>
+                  <Box mt={2} className="navigation-buttons">
+                    <Button onClick={handlePrevious} disabled={currentQuestion === 0} className="previous-button">
                       Previous
                     </Button>
-                    <Button onClick={handleNext} disabled={currentQuestion === quizData.questions.length - 1}>
+                    <Button onClick={handleNext} disabled={currentQuestion === quizData.questions.length - 1} className="next-button">
                       Next
-                    </Button>
-                    <Button onClick={handleFinish} disabled={submitted}>
-                      Submit
                     </Button>
                   </Box>
                 </CardContent>
@@ -177,23 +231,31 @@ const StudentDoQuiz = () => {
             </Grid>
 
             <Grid item xs={4}>
-              <Card>
+              <Card className="navigation-card">
                 <CardContent>
-                  <Typography variant="h6">Quiz Navigation</Typography>
+                  <Typography variant="h6" className="navigation-title">Quiz Navigation</Typography>
                   <Box className="quiz-navigation">
                     {quizData.questions.map((question, index) => (
                       <Button
                         key={question.questionId}
-                        variant={answers[question.questionId] ? 'contained' : 'outlined'}
+                        variant={answers[question.questionId] ? "contained" : "outlined"}
                         onClick={() => setCurrentQuestion(index)}
                         color="primary"
+                        className="navigation-button"
                       >
                         {question.questionId}
                       </Button>
                     ))}
                   </Box>
-                  <Typography variant="h6" align="center" mt={2}>
-                    Time left: {formatTime(timeLeft)}
+                  <Button onClick={handleFinish} disabled={submitted} className="submit-button">
+                    Submit
+                  </Button>
+                  <Typography
+                    variant="h18"
+                    className={`timer ${timeLeft <= 5 * 60 ? "timer-red" : ""}`}
+                    mt={2}
+                  >
+                    Time Remaining: {formatTime(timeLeft)}
                   </Typography>
                 </CardContent>
               </Card>

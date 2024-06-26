@@ -1,15 +1,24 @@
-.student-do-quiz {
-  background-color: #f4f6f8;
-  padding: 20px;
+.timer {
+  color: black; /* Màu mặc định */
+}
+
+.timer-red {
+  color: red; /* Màu đỏ khi thời gian còn 5 phút */
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
 }
 
 .quiz-navigation {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.quiz-navigation button {
-  width: 50px;
-  height: 50px;
-}
+
+
+
