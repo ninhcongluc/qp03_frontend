@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,22 +62,26 @@ function Login() {
   };
 
   return (
-    <div class="login-container">
+   
+       <div class="login-container">
+      <img src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png" alt="FPT Logo" className="corner-logo" />
       <div class="login-form">
-        <h2>LOGIN</h2>
+      <img src="https://seeklogo.com/images/F/fpt-university-logo-B3B6D84292-seeklogo.com.png" alt="FPT University Logo" className="logo" />
+        <h5>LOGIN</h5>
 
         <TextField
-          label="Enter email"
+          label="Enter Email"
           value={email}
           onChange={handleEmailChange}
-          InputLabelProps={{ style: { color: "black" } }}
+          InputLabelProps={{ style: { color: "white"  } }}
         />
+        <br/>
         <TextField
-          label="Enter password"
+          label="Enter Password"
           type="password"
           value={password}
           onChange={handlePasswordChange}
-          InputLabelProps={{ style: { color: "black" } }}
+          InputLabelProps={{ style: { color: "white" } }}
         />
         <div>
           <Checkbox
@@ -87,7 +92,7 @@ function Login() {
           />
           <label class="remember-me-label">Remember me</label>
 
-          <a href="!#" style={{ color: "#ff4a02" }}>
+          <a href="!#" style={{ color: "orange" }}>
             Forgot password?
           </a>
         </div>
@@ -112,6 +117,7 @@ function Login() {
         />
       </div>
     </div>
+   
   );
 }
 
