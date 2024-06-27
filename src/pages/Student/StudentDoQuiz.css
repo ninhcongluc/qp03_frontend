@@ -44,12 +44,21 @@
 
 .quiz-navigation {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
+.quiz-navigation .navigation-button {
+  font-size: 12px;
+  padding: 4px 8px;
+  min-width: 35px;
+}
+
+.submit-button {
+  color: rgb(247, 5, 57);
+}
 
 .timer {
   color: black; /* Màu mặc định */

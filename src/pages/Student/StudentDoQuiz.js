@@ -112,15 +112,15 @@ const quizData = {
       correctAnswer: "Japan",
     },
     {
-      "questionId": 8,
-      "question": "The Pacific Ocean is the world's largest and deepest ocean, covering an area of about 63 million square miles (163 million square kilometers) and reaching a maximum depth of approximately 36,000 feet (11,000 meters) in the Mariana Trench. Which of the following oceans is considered the deepest ocean in the world?",
-      "options": [
+      questionId: 8,
+      question: "Which ocean is the deepest in the world?",
+      options: [
         "Atlantic Ocean",
         "Indian Ocean",
         "Southern Ocean",
-        "Pacific Ocean"
+        "Pacific Ocean",
       ],
-      "correctAnswer": "Pacific Ocean"
+      correctAnswer: "Pacific Ocean",
     },
     {
       questionId: 9,
@@ -134,17 +134,211 @@ const quizData = {
       options: ["Egypt", "Jordan", "Turkey", "Greece"],
       correctAnswer: "Jordan",
     },
-    // New multiple-choice question
     {
       questionId: 11,
+      question: "What is the tallest mountain in the world?",
+      options: ["K2", "Kangchenjunga", "Lhotse", "Mount Everest"],
+      correctAnswer: "Mount Everest",
+    },
+    {
+      questionId: 12,
+      question: "What is the capital city of Canada?",
+      options: ["Toronto", "Vancouver", "Ottawa", "Montreal"],
+      correctAnswer: "Ottawa",
+    },
+    {
+      questionId: 13,
+      question: "Which is the largest island in the world?",
+      options: ["Borneo", "Greenland", "New Guinea", "Madagascar"],
+      correctAnswer: "Greenland",
+    },
+    {
+      questionId: 14,
+      question: "What is the longest wall in the world?",
+      options: [
+        "Berlin Wall",
+        "Great Wall of China",
+        "Hadrian's Wall",
+        "Western Wall",
+      ],
+      correctAnswer: "Great Wall of China",
+    },
+    {
+      questionId: 15,
+      question: "Which country has the largest number of lakes?",
+      options: ["Canada", "United States", "Finland", "Russia"],
+      correctAnswer: "Canada",
+    },
+    {
+      questionId: 16,
+      question: "Which is the largest ocean in the world?",
+      options: [
+        "Atlantic Ocean",
+        "Indian Ocean",
+        "Arctic Ocean",
+        "Pacific Ocean",
+      ],
+      correctAnswer: "Pacific Ocean",
+    },
+    {
+      questionId: 17,
+      question: "What is the largest country in the world by area?",
+      options: ["China", "Canada", "Russia", "United States"],
+      correctAnswer: "Russia",
+    },
+    {
+      questionId: 18,
+      question: "Which river flows through Paris?",
+      options: ["Seine", "Thames", "Danube", "Rhone"],
+      correctAnswer: "Seine",
+    },
+    {
+      questionId: 19,
+      question: "What is the smallest continent by area?",
+      options: ["Antarctica", "Europe", "Australia", "South America"],
+      correctAnswer: "Australia",
+    },
+    {
+      questionId: 20,
+      question: "Which is the most spoken language in the world?",
+      options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
+      correctAnswer: "Mandarin Chinese",
+    },
+    {
+      questionId: 21,
+      question: "What is the currency of Japan?",
+      options: ["Yuan", "Won", "Yen", "Dollar"],
+      correctAnswer: "Yen",
+    },
+    {
+      questionId: 22,
+      question: "Which planet is known as the Red Planet?",
+      options: ["Venus", "Mars", "Jupiter", "Saturn"],
+      correctAnswer: "Mars",
+    },
+    {
+      questionId: 23,
+      question: "What is the largest mammal in the world?",
+      options: [
+        "African Elephant",
+        "Blue Whale",
+        "Giraffe",
+        "White Rhinoceros",
+      ],
+      correctAnswer: "Blue Whale",
+    },
+    {
+      questionId: 24,
+      question: "Which country is famous for the Eiffel Tower?",
+      options: ["Germany", "Italy", "Spain", "France"],
+      correctAnswer: "France",
+    },
+    {
+      questionId: 25,
+      question: "What is the hottest planet in the solar system?",
+      options: ["Mercury", "Venus", "Earth", "Mars"],
+      correctAnswer: "Venus",
+    },
+    {
+      questionId: 26,
+      question: "Which is the most populated city in the world?",
+      options: ["New York", "Shanghai", "Tokyo", "Mumbai"],
+      correctAnswer: "Tokyo",
+    },
+    {
+      questionId: 27,
+      question: "What is the official language of Egypt?",
+      options: ["English", "French", "Arabic", "Spanish"],
+      correctAnswer: "Arabic",
+    },
+    {
+      questionId: 28,
+      question: "Which country is known as the Land of the Midnight Sun?",
+      options: ["Sweden", "Norway", "Finland", "Denmark"],
+      correctAnswer: "Norway",
+    },
+    {
+      questionId: 29,
+      question: "What is the largest rainforest in the world?",
+      options: [
+        "Congo Rainforest",
+        "Amazon Rainforest",
+        "Daintree Rainforest",
+        "Valdivian Rainforest",
+      ],
+      correctAnswer: "Amazon Rainforest",
+    },
+    {
+      questionId: 30,
+      question: "Which is the smallest planet in our solar system?",
+      options: ["Mercury", "Venus", "Earth", "Mars"],
+      correctAnswer: "Mercury",
+    },
+    {
+      questionId: 31,
+      question: "Which country has the most volcanoes?",
+      options: ["Indonesia", "Japan", "United States", "Philippines"],
+      correctAnswer: "Indonesia",
+    },
+    {
+      questionId: 32,
+      question: "What is the capital city of Brazil?",
+      options: ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"],
+      correctAnswer: "Brasília",
+    },
+    {
+      questionId: 33,
+      question: "Which country is known for the Great Barrier Reef?",
+      options: ["New Zealand", "Australia", "Indonesia", "Philippines"],
+      correctAnswer: "Australia",
+    },
+    {
+      questionId: 34,
+      question: "Which river is the longest in Africa?",
+      options: ["Congo River", "Zambezi River", "Niger River", "Nile River"],
+      correctAnswer: "Nile River",
+    },
+    {
+      questionId: 35,
+      question: "What is the currency of the United Kingdom?",
+      options: ["Euro", "Dollar", "Pound Sterling", "Yen"],
+      correctAnswer: "Pound Sterling",
+    },
+    {
+      questionId: 36,
+      question: "Which desert is the hottest in the world?",
+      options: [
+        "Gobi Desert",
+        "Sahara Desert",
+        "Arabian Desert",
+        "Mojave Desert",
+      ],
+      correctAnswer: "Sahara Desert",
+    },
+    {
+      questionId: 37,
+      question: "What is the capital city of Italy?",
+      options: ["Rome", "Venice", "Florence", "Milan"],
+      correctAnswer: "Rome",
+    },
+    {
+      questionId: 38,
+      question: "Which country is the largest producer of coffee?",
+      options: ["Colombia", "Vietnam", "Ethiopia", "Brazil"],
+      correctAnswer: "Brazil",
+    },
+    // New multiple-choice question
+    {
+      questionId: 39,
       question: "Select two countries in South America:",
       options: ["Brazil", "Canada", "Argentina", "Australia"],
       correctAnswer: ["Brazil", "Argentina"],
       multipleAnswers: true,
     },
+
     // New multiple-choice question
     {
-      questionId: 12,
+      questionId: 40,
       question: "Select two programming languages:",
       options: ["Python", "HTML", "JavaScript", "CSS"],
       correctAnswer: ["Python", "JavaScript"],
@@ -157,14 +351,16 @@ const StudentDoQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(5 * 60); // 30 minutes
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+      if (!submitted) {
+        setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+      }
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [submitted]);
 
   const handleChange = (questionId, value, isMultiple = false) => {
     setAnswers((prevAnswers) => {
@@ -238,7 +434,11 @@ const StudentDoQuiz = () => {
                     {quizData.questions[currentQuestion]?.question}
                   </Typography>
                   <FormControl component="fieldset" className="options-form">
-                    <FormLabel component="legend">Choose one:</FormLabel>
+                    {quizData.questions[currentQuestion]?.multipleAnswers ? (
+                      <FormLabel component="legend">Choose multiple:</FormLabel>
+                    ) : (
+                      <FormLabel component="legend">Choose one:</FormLabel>
+                    )}
                     {quizData.questions[currentQuestion]?.multipleAnswers ? (
                       quizData.questions[currentQuestion]?.options.map(
                         (option, index) => (
@@ -296,19 +496,24 @@ const StudentDoQuiz = () => {
                       </RadioGroup>
                     )}
                   </FormControl>
+
                   <Box mt={2} className="navigation-buttons">
                     <Button
                       onClick={handlePrevious}
                       disabled={currentQuestion === 0}
                       className="previous-button"
-                    ></Button>
+                    >
+                      Previous
+                    </Button>
                     <Button
                       onClick={handleNext}
                       disabled={
                         currentQuestion === quizData.questions.length - 1
                       }
                       className="next-button"
-                    ></Button>
+                    >
+                      Next
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>
@@ -344,12 +549,16 @@ const StudentDoQuiz = () => {
                   >
                     Submit
                   </Button>
-                  <Typography
-                    variant="h18"
-                    className={`timer ${timeLeft <= 5 * 60 ? "timer-red" : ""}`}
-                    mt={2}
-                  >
-                    Time Remaining: {formatTime(timeLeft)}
+
+                  <Typography variant="h6" mt={2}>
+                    Time Remaining:{" "}
+                    <span
+                      className={`timer ${
+                        timeLeft <= 5 * 60 ? "timer-red" : ""
+                      }`}
+                    >
+                      {formatTime(timeLeft)}
+                    </span>
                   </Typography>
                 </CardContent>
               </Card>
