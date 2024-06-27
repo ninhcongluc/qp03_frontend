@@ -112,15 +112,15 @@ const quizData = {
       correctAnswer: "Japan",
     },
     {
-      questionId: 8,
-      question: "Which ocean is the deepest in the world?",
-      options: [
+      "questionId": 8,
+      "question": "The Pacific Ocean is the world's largest and deepest ocean, covering an area of about 63 million square miles (163 million square kilometers) and reaching a maximum depth of approximately 36,000 feet (11,000 meters) in the Mariana Trench. Which of the following oceans is considered the deepest ocean in the world?",
+      "options": [
         "Atlantic Ocean",
         "Indian Ocean",
         "Southern Ocean",
-        "Pacific Ocean",
+        "Pacific Ocean"
       ],
-      correctAnswer: "Pacific Ocean",
+      "correctAnswer": "Pacific Ocean"
     },
     {
       questionId: 9,
@@ -214,7 +214,7 @@ const StudentDoQuiz = () => {
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>
-              <Card  className="quiz-header">
+              <Card className="quiz-header">
                 <CardContent>
                   <Typography
                     variant="h3"
@@ -301,18 +301,14 @@ const StudentDoQuiz = () => {
                       onClick={handlePrevious}
                       disabled={currentQuestion === 0}
                       className="previous-button"
-                    >
-                      Previous
-                    </Button>
+                    ></Button>
                     <Button
                       onClick={handleNext}
                       disabled={
                         currentQuestion === quizData.questions.length - 1
                       }
                       className="next-button"
-                    >
-                      Next
-                    </Button>
+                    ></Button>
                   </Box>
                 </CardContent>
               </Card>
