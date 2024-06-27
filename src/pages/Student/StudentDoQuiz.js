@@ -5,8 +5,7 @@ import {
   Container,
   Typography,
   Box,
-  Radio,
-  RadioGroup,
+  Checkbox,
   FormControlLabel,
   FormControl,
   FormLabel,
@@ -14,6 +13,8 @@ import {
   CardContent,
   Grid,
   Button,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import "./StudentDoQuiz.css";
 import StudentMenu from "../../components/LeftMenu/StudentMenu";
@@ -133,6 +134,22 @@ const quizData = {
       options: ["Egypt", "Jordan", "Turkey", "Greece"],
       correctAnswer: "Jordan",
     },
+    // New multiple-choice question
+    {
+      questionId: 11,
+      question: "Select two countries in South America:",
+      options: ["Brazil", "Canada", "Argentina", "Australia"],
+      correctAnswer: ["Brazil", "Argentina"],
+      multipleAnswers: true,
+    },
+    // New multiple-choice question
+    {
+      questionId: 12,
+      question: "Select two programming languages:",
+      options: ["Python", "HTML", "JavaScript", "CSS"],
+      correctAnswer: ["Python", "JavaScript"],
+      multipleAnswers: true,
+    },
   ],
 };
 
@@ -149,15 +166,30 @@ const StudentDoQuiz = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleChange = (questionId, value) => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: value,
-    }));
+  const handleChange = (questionId, value, isMultiple = false) => {
+    setAnswers((prevAnswers) => {
+      if (isMultiple) {
+        const currentAnswers = prevAnswers[questionId] || [];
+        const newAnswers = currentAnswers.includes(value)
+          ? currentAnswers.filter((answer) => answer !== value)
+          : [...currentAnswers, value];
+        return {
+          ...prevAnswers,
+          [questionId]: newAnswers,
+        };
+      } else {
+        return {
+          ...prevAnswers,
+          [questionId]: value,
+        };
+      }
+    });
   };
 
   const handleNext = () => {
-    setCurrentQuestion((prev) => Math.min(prev + 1, quizData.questions.length - 1));
+    setCurrentQuestion((prev) =>
+      Math.min(prev + 1, quizData.questions.length - 1)
+    );
   };
 
   const handlePrevious = () => {
@@ -181,11 +213,16 @@ const StudentDoQuiz = () => {
         <StudentMenu />
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Card className="quiz-header">
+            <Grid item xs={8}>
+              <Card  className="quiz-header">
                 <CardContent>
-                  <Typography variant="h3" align="center" className="quiz-title">
-                    {quizData.courseName} {quizData.courseTitle} - {quizData.quizName}
+                  <Typography
+                    variant="h3"
+                    align="center"
+                    className="quiz-title"
+                  >
+                    {quizData.courseName} {quizData.courseTitle} -{" "}
+                    {quizData.quizName}
                   </Typography>
                 </CardContent>
               </Card>
@@ -202,27 +239,78 @@ const StudentDoQuiz = () => {
                   </Typography>
                   <FormControl component="fieldset" className="options-form">
                     <FormLabel component="legend">Choose one:</FormLabel>
-                    <RadioGroup
-                      name={`question_${quizData.questions[currentQuestion]?.questionId}`}
-                      value={answers[quizData.questions[currentQuestion]?.questionId] || ""}
-                      onChange={(e) => handleChange(quizData.questions[currentQuestion]?.questionId, e.target.value)}
-                    >
-                      {quizData.questions[currentQuestion]?.options.map((option, index) => (
-                        <FormControlLabel
-                          key={index}
-                          value={option}
-                          control={<Radio />}
-                          label={option}
-                          className="option"
-                        />
-                      ))}
-                    </RadioGroup>
+                    {quizData.questions[currentQuestion]?.multipleAnswers ? (
+                      quizData.questions[currentQuestion]?.options.map(
+                        (option, index) => (
+                          <FormControlLabel
+                            key={index}
+                            control={
+                              <Checkbox
+                                checked={
+                                  answers[
+                                    quizData.questions[currentQuestion]
+                                      ?.questionId
+                                  ]?.includes(option) || false
+                                }
+                                onChange={(e) =>
+                                  handleChange(
+                                    quizData.questions[currentQuestion]
+                                      ?.questionId,
+                                    option,
+                                    true
+                                  )
+                                }
+                              />
+                            }
+                            label={option}
+                            className="option"
+                          />
+                        )
+                      )
+                    ) : (
+                      <RadioGroup
+                        name={`question_${quizData.questions[currentQuestion]?.questionId}`}
+                        value={
+                          answers[
+                            quizData.questions[currentQuestion]?.questionId
+                          ] || ""
+                        }
+                        onChange={(e) =>
+                          handleChange(
+                            quizData.questions[currentQuestion]?.questionId,
+                            e.target.value
+                          )
+                        }
+                      >
+                        {quizData.questions[currentQuestion]?.options.map(
+                          (option, index) => (
+                            <FormControlLabel
+                              key={index}
+                              value={option}
+                              control={<Radio />}
+                              label={option}
+                              className="option"
+                            />
+                          )
+                        )}
+                      </RadioGroup>
+                    )}
                   </FormControl>
                   <Box mt={2} className="navigation-buttons">
-                    <Button onClick={handlePrevious} disabled={currentQuestion === 0} className="previous-button">
+                    <Button
+                      onClick={handlePrevious}
+                      disabled={currentQuestion === 0}
+                      className="previous-button"
+                    >
                       Previous
                     </Button>
-                    <Button onClick={handleNext} disabled={currentQuestion === quizData.questions.length - 1} className="next-button">
+                    <Button
+                      onClick={handleNext}
+                      disabled={
+                        currentQuestion === quizData.questions.length - 1
+                      }
+                      className="next-button"
+                    >
                       Next
                     </Button>
                   </Box>
@@ -233,12 +321,18 @@ const StudentDoQuiz = () => {
             <Grid item xs={4}>
               <Card className="navigation-card">
                 <CardContent>
-                  <Typography variant="h6" className="navigation-title">Quiz Navigation</Typography>
+                  <Typography variant="h6" className="navigation-title">
+                    Quiz Navigation
+                  </Typography>
                   <Box className="quiz-navigation">
                     {quizData.questions.map((question, index) => (
                       <Button
                         key={question.questionId}
-                        variant={answers[question.questionId] ? "contained" : "outlined"}
+                        variant={
+                          answers[question.questionId]
+                            ? "contained"
+                            : "outlined"
+                        }
                         onClick={() => setCurrentQuestion(index)}
                         color="primary"
                         className="navigation-button"
@@ -247,7 +341,11 @@ const StudentDoQuiz = () => {
                       </Button>
                     ))}
                   </Box>
-                  <Button onClick={handleFinish} disabled={submitted} className="submit-button">
+                  <Button
+                    onClick={handleFinish}
+                    disabled={submitted}
+                    className="submit-button"
+                  >
                     Submit
                   </Button>
                   <Typography
