@@ -15,6 +15,10 @@ import {
   Button,
   Radio,
   RadioGroup,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import "./StudentDoQuiz.css";
 import StudentMenu from "../../components/LeftMenu/StudentMenu";
@@ -352,6 +356,7 @@ const StudentDoQuiz = () => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(5 * 60); // 30 minutes
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -393,7 +398,20 @@ const StudentDoQuiz = () => {
   };
 
   const handleFinish = () => {
+    if (currentQuestion === quizData.questions.length - 1) {
+      setSubmitted(true);
+    } else {
+      setConfirmSubmit(true);
+    }
+  };
+
+  const handleConfirmSubmit = () => {
     setSubmitted(true);
+    setConfirmSubmit(false);
+  };
+
+  const handleCancelSubmit = () => {
+    setConfirmSubmit(false);
   };
 
   const formatTime = (seconds) => {
@@ -522,7 +540,7 @@ const StudentDoQuiz = () => {
             <Grid item xs={4}>
               <Card className="navigation-card">
                 <CardContent>
-                  <Typography variant="h6" className="navigation-title">
+                  <Typography variant="h28" className="navigation-title">
                     Quiz Navigation
                   </Typography>
                   <Box className="quiz-navigation">
@@ -566,6 +584,24 @@ const StudentDoQuiz = () => {
           </Grid>
         </Container>
       </Box>
+
+      <Dialog open={confirmSubmit} onClose={handleCancelSubmit}>
+        <DialogTitle>Confirm Submit</DialogTitle>
+        <DialogContent>
+          <Typography>
+            You have not completed all questions. Are you sure you want to
+            submit?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelSubmit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSubmit} color="primary">
+            Submit Anyway
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 };
