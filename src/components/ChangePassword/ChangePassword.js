@@ -64,7 +64,7 @@ function ChangePassword() {
 
   return (
     <div className="change-password-container">
-      <Button onClick={() => setIsModalOpen(true)}>
+      <Button style={{color:'white'}}onClick={() => setIsModalOpen(true)}>
        Change Password
       </Button>
       <Modal
