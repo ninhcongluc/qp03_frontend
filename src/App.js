@@ -24,6 +24,7 @@ import StudentQuizReview from "./pages/Student/StudentQuizReview";
 import TeacherQuestionListPage from "./pages/Teacher/TeacherAddQuetions";
 import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
 import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
+import ChangePassword from "./components/ChangePassword/ChangePassword";
 
 function App() {
   return (
@@ -65,6 +66,11 @@ function App() {
           path="/teacher/add-question"
           element={<TeacherQuestionListPage />}
         />
+        <Route
+          path="/changePass"
+          element={<ChangePassword />}
+        />
+
 
         <Route path="/student" element={<StudentPage />} />
         <Route

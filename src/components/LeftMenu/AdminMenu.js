@@ -46,6 +46,9 @@ const LeftMenu = () => {
   const handleManagerManagementClick = () => {
     navigate("/admin/manage-manager");
   };
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
 
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
@@ -66,7 +69,7 @@ const LeftMenu = () => {
       <List>
         <div class="menu">
           <Stack direction="row" spacing={2}>
-            <Avatar alt="Admin" src="" sx={{ width: 64, height: 64 }} />
+            <Avatar alt="Admin" src="" sx={{ width: 64, height: 64 }} onClick={handleProfileClick}/>
             <h3>
               {userData.firstName} {userData.lastName}
             </h3>
