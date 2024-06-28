@@ -13,12 +13,13 @@
 .question-card{
   margin-top: 20px;
   height: 110%;
-  background-color: azure;
+  background-image: url("https://wallpapercg.com/media/ts_2x/10586.webp");
 }
 
 .navigation-card {
   margin-top: 20px;
   margin-left: 20px;
+  background-color: azure;
 }
 
 .navigation-buttons {

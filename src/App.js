@@ -94,7 +94,7 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/:courseId/quiz/:quizId/review"
+          path="/student/course-management/class/:courseId/:quizId/review"
           element={<StudentQuizReview />}
         />
       </Routes>
