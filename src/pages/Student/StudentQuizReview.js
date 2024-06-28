@@ -9,6 +9,12 @@ import {
   CardContent,
   Grid,
   Button,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import "./StudentQuizReview.css";
 import StudentMenu from "../../components/LeftMenu/StudentMenu";
@@ -52,64 +58,19 @@ const quizReviewData = {
   score: 8, // Assume a score out of 10
   questions: [
     {
-      id: 1,
-      question: "What is the capital of France?",
-      yourAnswer: "Paris",
-      isCorrect: true,
+      questionId: 1,
+      question: "Which is the largest continent by area?",
+      options: ["Africa", "Asia", "Europe", "North America"],
+      correctAnswer: "Asia",
+      yourAnswer: "Asia",
     },
     {
-      id: 2,
-      question: "Which planet is known as the Red Planet?",
-      yourAnswer: "Earth",
-      isCorrect: false,
-    },
-    {
-      id: 3,
-      question: 'Who wrote "Romeo and Juliet"?',
-      yourAnswer: "Shakespeare",
-      isCorrect: true,
-    },
-    {
-      id: 4,
-      question: "What is the largest ocean on Earth?",
-      yourAnswer: "Atlantic Ocean",
-      isCorrect: false,
-    },
-    {
-      id: 5,
-      question: "Which is the largest desert in the world?",
-      yourAnswer: "Sahara Desert",
-      isCorrect: true,
-    },
-    {
-      id: 6,
-      question: "What is the currency of Japan?",
-      yourAnswer: "Yen",
-      isCorrect: true,
-    },
-    {
-      id: 7,
-      question: "Who painted the Mona Lisa?",
-      yourAnswer: "Leonardo da Vinci",
-      isCorrect: true,
-    },
-    {
-      id: 8,
-      question: "Which country is known as the Land of the Rising Sun?",
-      yourAnswer: "Japan",
-      isCorrect: true,
-    },
-    {
-      id: 9,
-      question: "What is the largest mammal in the world?",
-      yourAnswer: "Blue Whale",
-      isCorrect: true,
-    },
-    {
-      id: 10,
-      question: "Which country has the largest population?",
-      yourAnswer: "China",
-      isCorrect: true,
+      questionId: 2,
+      question: "Which country is the largest producer of coffee?",
+      options: ["Colombia", "Vietnam", "Ethiopia", "Brazil"],
+      correctAnswer: ["Brazil"],
+      yourAnswer: ["Brazil", "Vietnam"],
+      multipleAnswers: true,
     },
   ],
 };
@@ -127,6 +88,16 @@ const StudentQuizReview = () => {
     setCurrentQuestion((prev) => Math.max(prev - 1, 0));
   };
 
+  const isCorrectAnswer = (question) => {
+    if (question.multipleAnswers) {
+      return (
+        question.yourAnswer.sort().toString() ===
+        question.correctAnswer.sort().toString()
+      );
+    }
+    return question.yourAnswer === question.correctAnswer;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -137,18 +108,14 @@ const StudentQuizReview = () => {
             <Grid item xs={8}>
               <Card className="quiz-review-header">
                 <CardContent>
-                  <Typography
-                    variant="h3"
-                    align="center"
-                    className="quiz-title"
-                  >
+                  <Typography variant="h3" align="center" className="quiz-title">
                     Review {quizReviewData.quizName}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <Card className="quiz-review-question-card">
                 <CardContent>
                   <Typography variant="h6" className="quiz-review-question-number">
@@ -157,19 +124,60 @@ const StudentQuizReview = () => {
                   <Typography variant="body1" className="quiz-review-question-text">
                     {quizReviewData.questions[currentQuestion]?.question}
                   </Typography>
+
+                  <FormControl component="fieldset" className="quiz-review-options">
+                    <FormLabel component="legend">Options:</FormLabel>
+                    {quizReviewData.questions[currentQuestion]?.multipleAnswers ? (
+                      quizReviewData.questions[currentQuestion]?.options.map(
+                        (option, index) => (
+                          <FormControlLabel
+                            key={index}
+                            control={
+                              <Checkbox
+                                checked={quizReviewData.questions[
+                                  currentQuestion
+                                ]?.yourAnswer.includes(option)}
+                                disabled
+                              />
+                            }
+                            label={option}
+                          />
+                        )
+                      )
+                    ) : (
+                      <RadioGroup value={quizReviewData.questions[currentQuestion]?.yourAnswer} disabled>
+                        {quizReviewData.questions[currentQuestion]?.options.map(
+                          (option, index) => (
+                            <FormControlLabel
+                              key={index}
+                              value={option}
+                              control={<Radio />}
+                              label={option}
+                              disabled
+                            />
+                          )
+                        )}
+                      </RadioGroup>
+                    )}
+                  </FormControl>
+
                   <Typography variant="body1" className="quiz-review-your-answer">
                     Your Answer:{" "}
-                    {quizReviewData.questions[currentQuestion]?.yourAnswer}
+                    {quizReviewData.questions[currentQuestion]?.yourAnswer.toString()}
+                  </Typography>
+                  <Typography variant="body1" className="quiz-review-correct-answer">
+                    Correct Answer:{" "}
+                    {quizReviewData.questions[currentQuestion]?.correctAnswer.toString()}
                   </Typography>
                   <Typography
                     variant="body1"
                     className={
-                      quizReviewData.questions[currentQuestion]?.isCorrect
+                      isCorrectAnswer(quizReviewData.questions[currentQuestion])
                         ? "quiz-review-answer-status quiz-review-correct-answer"
                         : "quiz-review-answer-status quiz-review-wrong-answer"
                     }
                   >
-                    {quizReviewData.questions[currentQuestion]?.isCorrect
+                    {isCorrectAnswer(quizReviewData.questions[currentQuestion])
                       ? "Correct"
                       : "Incorrect"}
                   </Typography>
@@ -196,7 +204,7 @@ const StudentQuizReview = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <Card className="quiz-review-navigation-card">
                 <CardContent>
                   <Typography variant="h6" className="quiz-review-navigation-title">
@@ -205,26 +213,18 @@ const StudentQuizReview = () => {
                   <Box className="quiz-review-navigation">
                     {quizReviewData.questions.map((question, index) => (
                       <Button
-                        key={question.id}
-                        variant={
-                          currentQuestion === index ? "contained" : "outlined"
-                        }
+                        key={question.questionId}
+                        variant={currentQuestion === index ? "contained" : "outlined"}
                         onClick={() => setCurrentQuestion(index)}
                         className={`quiz-review-navigation-button ${
-                          question.isCorrect
-                            ? "correct"
-                            : "incorrect"
+                          isCorrectAnswer(question) ? "correct" : "incorrect"
                         }`}
                       >
-                        {question.id}
+                        {question.questionId}
                       </Button>
                     ))}
                   </Box>
-                  <Typography
-                    variant="h5"
-                    align="center"
-                    className="quiz-review-final-score"
-                  >
+                  <Typography variant="h5" align="center" className="quiz-review-final-score">
                     Final Score: {quizReviewData.score}/10
                   </Typography>
                 </CardContent>
