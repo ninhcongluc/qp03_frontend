@@ -72,6 +72,7 @@ const quizReviewData = {
       yourAnswer: ["Brazil", "Vietnam"],
       multipleAnswers: true,
     },
+    
   ],
 };
 
@@ -108,26 +109,40 @@ const StudentQuizReview = () => {
             <Grid item xs={8}>
               <Card className="quiz-review-header">
                 <CardContent>
-                  <Typography variant="h3" align="center" className="quiz-title">
+                  <Typography
+                    variant="h3"
+                    align="center"
+                    className="quiz-title"
+                  >
                     Review {quizReviewData.quizName}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
 
-            <Grid item xs={8}>
+            <Grid item xs={7}>
               <Card className="quiz-review-question-card">
                 <CardContent>
-                  <Typography variant="h6" className="quiz-review-question-number">
+                  <Typography
+                    variant="h6"
+                    className="quiz-review-question-number"
+                  >
                     Question {currentQuestion + 1}
                   </Typography>
-                  <Typography variant="body1" className="quiz-review-question-text">
+                  <Typography
+                    variant="body1"
+                    className="quiz-review-question-text"
+                  >
                     {quizReviewData.questions[currentQuestion]?.question}
                   </Typography>
 
-                  <FormControl component="fieldset" className="quiz-review-options">
+                  <FormControl
+                    component="fieldset"
+                    className="quiz-review-options"
+                  >
                     <FormLabel component="legend">Options:</FormLabel>
-                    {quizReviewData.questions[currentQuestion]?.multipleAnswers ? (
+                    {quizReviewData.questions[currentQuestion]
+                      ?.multipleAnswers ? (
                       quizReviewData.questions[currentQuestion]?.options.map(
                         (option, index) => (
                           <FormControlLabel
@@ -145,7 +160,12 @@ const StudentQuizReview = () => {
                         )
                       )
                     ) : (
-                      <RadioGroup value={quizReviewData.questions[currentQuestion]?.yourAnswer} disabled>
+                      <RadioGroup
+                        value={
+                          quizReviewData.questions[currentQuestion]?.yourAnswer
+                        }
+                        disabled
+                      >
                         {quizReviewData.questions[currentQuestion]?.options.map(
                           (option, index) => (
                             <FormControlLabel
@@ -161,13 +181,23 @@ const StudentQuizReview = () => {
                     )}
                   </FormControl>
 
-                  <Typography variant="body1" className="quiz-review-your-answer">
+                  <Typography
+                    variant="body1"
+                    className="quiz-review-your-answer"
+                  >
                     Your Answer:{" "}
-                    {quizReviewData.questions[currentQuestion]?.yourAnswer.toString()}
+                    {quizReviewData.questions[
+                      currentQuestion
+                    ]?.yourAnswer.toString()}
                   </Typography>
-                  <Typography variant="body1" className="quiz-review-correct-answer">
+                  <Typography
+                    variant="body1"
+                    className="quiz-review-correct-answer"
+                  >
                     Correct Answer:{" "}
-                    {quizReviewData.questions[currentQuestion]?.correctAnswer.toString()}
+                    {quizReviewData.questions[
+                      currentQuestion
+                    ]?.correctAnswer.toString()}
                   </Typography>
                   <Typography
                     variant="body1"
@@ -187,35 +217,36 @@ const StudentQuizReview = () => {
                       onClick={handlePrevious}
                       disabled={currentQuestion === 0}
                       className="quiz-review-previous-button"
-                    >
-                      Previous
-                    </Button>
+                    ></Button>
                     <Button
                       onClick={handleNext}
                       disabled={
                         currentQuestion === quizReviewData.questions.length - 1
                       }
                       className="quiz-review-next-button"
-                    >
-                      Next
-                    </Button>
+                    ></Button>
                   </Box>
                 </CardContent>
               </Card>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={5}>
               <Card className="quiz-review-navigation-card">
                 <CardContent>
-                  <Typography variant="h6" className="quiz-review-navigation-title">
+                  <Typography
+                    variant="h6"
+                    className="quiz-review-navigation-title"
+                  >
                     Quiz Navigation
                   </Typography>
                   <Box className="quiz-review-navigation">
                     {quizReviewData.questions.map((question, index) => (
-                      <Button
+                      <Button 
                         key={question.questionId}
-                        variant={currentQuestion === index ? "contained" : "outlined"}
-                        onClick={() => setCurrentQuestion(index)}
+                        variant={
+                          currentQuestion === index ? "contained" : "outlined"
+                        }
+                        onClick={() => setCurrentQuestion(index)} 
                         className={`quiz-review-navigation-button ${
                           isCorrectAnswer(question) ? "correct" : "incorrect"
                         }`}
@@ -224,7 +255,11 @@ const StudentQuizReview = () => {
                       </Button>
                     ))}
                   </Box>
-                  <Typography variant="h5" align="center" className="quiz-review-final-score">
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    className="quiz-review-final-score"
+                  >
                     Final Score: {quizReviewData.score}/10
                   </Typography>
                 </CardContent>

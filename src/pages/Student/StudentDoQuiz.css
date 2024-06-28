@@ -10,23 +10,19 @@
   z-index: 1;  
 }
 
-.question-card{
+/* CARD 2 */
+.do-quiz-question-card{
   margin-top: 20px;
   height: 110%;
-  /* background-image: url("https://wallpapercg.com/media/ts_2x/10586.webp"); */
+  background-image: url("https://wallpapercg.com/media/ts_2x/10586.webp");
 }
 
-.navigation-card {
-  margin-top: 20px;
-  margin-left: 20px;
-  background-color: azure;
-}
-
-.navigation-buttons {
+.do-quiz-navigation-buttons {
   display: flex;
   justify-content: space-between;
-  padding-top: 20px;
+  align-items: center;
 }
+
 
 .previous-button:before {
   content: "\2190"; /* Unicode for left arrow */
@@ -43,35 +39,56 @@
   font-weight: bold;
 }
 
-.quiz-navigation {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+
+/* CARD 3 */
+.do-quiz-navigation-card {
+  margin-top: 20px;
+  background-color: azure !important;
+  transform-origin: top left;
+  transition: transform 0.3s ease;
 }
 
-.quiz-navigation .navigation-button {
-  font-size: 12px;
-  padding: 4px 8px;
-  min-width: 35px;
+.do-quiz-navigation {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transform-origin: top left;
+  transition: transform 0.3s ease;
+}
+
+.do-quiz-navigation-button {
+  transform-origin: top left;
+  transition: transform 0.3s ease;
 }
 
 .submit-button {
-  color: rgb(247, 5, 57);
+  color: rgb(232, 77, 77) !important;
+  transform-origin: top left;
+  transition: transform 0.3s ease;
 }
 
 .timer {
   color: black; /* Màu mặc định */
+  transform-origin: top left;
+  transition: transform 0.3s ease;
 }
 
 .timer-red {
   color: red; /* Màu đỏ khi thời gian còn 5 phút */
+  transform-origin: top left;
+  transition: transform 0.3s ease;
 }
 
-
-
-
-
-
-
+/* Smaller size for all screens */
+@media (max-width: 1440px) {
+  .do-quiz-navigation-card,
+  .do-quiz-navigation,
+  .do-quiz-navigation-button,
+  .submit-button,
+  .timer,
+  .timer-red {
+    transform: scale(0.5);
+  }
+}

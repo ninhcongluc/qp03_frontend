@@ -288,6 +288,12 @@ const quizData = {
       correctAnswer: "Rome",
     },
     {
+      questionId: 38,
+      question: "Select countries in North America:",
+      options: ["Brazil", "Canada", "Argentina", "Australia"],
+      correctAnswer: "Canada",
+    },
+    {
       questionId: 39,
       question: "Select two countries in South America:",
       options: ["Brazil", "Canada", "Argentina", "Australia"],
@@ -383,12 +389,12 @@ const StudentDoQuiz = () => {
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>
-              <Card className="quiz-header">
+              <Card className="do-quiz-header">
                 <CardContent>
                   <Typography
                     variant="h3"
                     align="center"
-                    className="quiz-title"
+                    className="do-quiz-title"
                   >
                     {quizData.courseName} {quizData.courseTitle} -{" "}
                     {quizData.quizName}
@@ -398,15 +404,15 @@ const StudentDoQuiz = () => {
             </Grid>
 
             <Grid item xs={8}>
-              <Card className="question-card">
+              <Card className="do-quiz-question-card">
                 <CardContent>
-                  <Typography variant="h6" className="question-number">
+                  <Typography variant="h6" className="do-quiz-question-number">
                     Question {currentQuestion + 1}
                   </Typography>
-                  <Typography variant="body1" className="question-text">
+                  <Typography variant="body1" className="do-quiz-question-text">
                     {quizData.questions[currentQuestion]?.question}
                   </Typography>
-                  <FormControl component="fieldset" className="options-form">
+                  <FormControl component="fieldset" className="do-quiz-options-form">
                     {quizData.questions[currentQuestion]?.multipleAnswers ? (
                       <FormLabel component="legend">Choose multiple:</FormLabel>
                     ) : (
@@ -470,7 +476,7 @@ const StudentDoQuiz = () => {
                     )}
                   </FormControl>
 
-                  <Box mt={2} className="navigation-buttons">
+                  <Box mt={2} className="do-quiz-navigation-buttons">
                     <Button
                       onClick={handlePrevious}
                       disabled={currentQuestion === 0}
@@ -489,12 +495,12 @@ const StudentDoQuiz = () => {
             </Grid>
 
             <Grid item xs={4}>
-              <Card className="navigation-card">
+              <Card className="do-quiz-navigation-card">
                 <CardContent>
                   <Typography variant="h28" className="navigation-title">
                     Quiz Navigation
                   </Typography>
-                  <Box className="quiz-navigation">
+                  <Box className="do-quiz-navigation">
                     {quizData.questions.map((question, index) => (
                       <Button
                         key={question.questionId}
@@ -505,7 +511,7 @@ const StudentDoQuiz = () => {
                         }
                         onClick={() => setCurrentQuestion(index)}
                         color="primary"
-                        className="navigation-button"
+                        className="do-quiz-navigation-button"
                       >
                         {question.questionId}
                       </Button>
