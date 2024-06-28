@@ -1,42 +1,98 @@
-.quiz-review-container {
-  flex-grow: 1;
-  padding: 20px;
+.student-quiz-review {
+  padding-left: 150px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 90%;
+  margin: 2%;
+  z-index: 1;  
 }
 
-.student-quiz-review-title {
+.quiz-review-header {
+  margin-top: 20px;
+}
+
+.quiz-review-question-card {
+  margin-top: 20px;
+  height: auto;
+}
+
+.quiz-review-question-text {
+  font-weight: bold;
+}
+
+.quiz-review-your-answer {
+  margin-top: 10px;
+}
+
+.quiz-review-answer-status {
+  margin-top: 10px;
+}
+
+.quiz-review-correct-answer {
+  color: green;
+}
+
+.quiz-review-wrong-answer {
+  color: red;
+}
+
+.quiz-review-navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+.quiz-review-previous-button:before {
+  content: "\2190"; /* Unicode for left arrow */
+  margin-right: 5px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.quiz-review-next-button:after {
+  content: "\2192"; /* Unicode for right arrow */
+  margin-left: 5px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.quiz-review-navigation-card {
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: azure;
+}
+
+.quiz-review-navigation-title {
   text-align: center;
   margin-bottom: 10px;
 }
 
-.student-quiz-review-score {
-  text-align: center;
-  margin-bottom: 20px;
+.quiz-review-navigation {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.quiz-review-card {
+.quiz-review-navigation-button {
+  font-size: 12px;
+  padding: 4px 8px;
+  min-width: 35px;
+}
+
+.quiz-review-navigation-button.correct {
+  background-color: green;
+  color: white;
+}
+
+.quiz-review-navigation-button.incorrect {
+  background-color: red;
+  color: white;
+}
+
+.quiz-review-final-score {
   margin-top: 20px;
-}
-
-.question-item {
-  margin-bottom: 20px;
-}
-
-.question-text {
-  font-weight: bold;
-}
-
-.your-answer {
-  margin-top: 10px;
-}
-
-.answer-status {
-  margin-top: 10px;
-}
-
-.correct-answer {
-  color: green;
-}
-
-.wrong-answer {
-  color: red;
 }
