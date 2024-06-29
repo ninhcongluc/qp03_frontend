@@ -21,6 +21,8 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import ApiInstance from "../../axios";
 import { formatDate } from "../../commons/function";
+import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -88,18 +90,26 @@ const ManageSemesterTable = () => {
     <Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button
-          sx={{ width: "200px" }}
+          sx={{ 
+            width: "40px",
+             height: "40px",
+             backgroundColor: "#229342",
+            }}
           variant="contained"
           color="primary"
           size="small"
           onClick={handleCreateSemester}
         >
-          Create+
+          <CreateOutlinedIcon sx={{fontSize:"30px"}}/>
         </Button>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{ maxHeight: "100%", width: "1000px", marginLeft: "300px" }}
+        sx={{
+          height: "540px",
+          width: "1200px",
+          marginLeft: "270px"
+        }}
       >
         <Table stickyHeader>
           <TableHead>
@@ -126,7 +136,7 @@ const ManageSemesterTable = () => {
                     onClick={() => handleDeleteSemester(semester)}
                     style={{ width: "70px" }}
                   >
-                    Delete
+                    <DeleteSweepOutlinedIcon sx={{fontSize:"20px"}}/>
                   </Button>
                 </TableCell>
               </TableRow>
