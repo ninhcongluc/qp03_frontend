@@ -1,0 +1,42 @@
+.container {
+  margin-left: 300px;
+  flex-grow: 1;
+}
+
+.title {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-left: 30px;
+}
+
+.grid-item {
+  width: calc(50% - 10px);
+  padding-left: 30px;
+}
+
+.card {
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.card-button {
+  margin-top: auto;
+  width: 100%;
+}

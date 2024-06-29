@@ -6,7 +6,13 @@ import "./ManagerManagement.css";
 
 const ManagerManagementPage = () => {
   return (
-    <div class="form_table">
+    <div>
+      <img
+        src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png"
+        alt="FPT Logo"
+        style={{ width: '9%', marginLeft: '90%', marginTop: '-46%' }}
+      />
+      <div class="form_table">
       <LeftMenu />
       <Box
         sx={{
@@ -20,6 +26,8 @@ const ManagerManagementPage = () => {
         <ManagerAccountTable />
       </Box>
     </div>
+    </div>
+    
   );
 };
 

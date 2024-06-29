@@ -133,9 +133,8 @@ const StudentCourseListPage = () => {
   return (
     <div>
       <LeftMenu />
-
       <Container sx={{ marginLeft: '240px' }}>
-        <Grid container spacing={4} sx={{ marginTop: 2 , left: '30%',}}>
+        <Grid container spacing={4} sx={{ marginTop: 2, left: '30%' }}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"
@@ -159,9 +158,7 @@ const StudentCourseListPage = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item>
-             
-          </Grid>
+          <Grid item></Grid>
         </Grid>
         <Grid
           container={displayedCourses.length}
@@ -179,9 +176,7 @@ const StudentCourseListPage = () => {
                 <p>{course.description}</p>
                 <p>Semester: {course.semesterName}</p>
                 <p>Created by: {course.createdBy}</p>
-                <div className="course-actions">
-          
-                </div>
+                <div className="course-actions"></div>
               </div>
             </Grid>
           ))}
@@ -194,7 +189,7 @@ const StudentCourseListPage = () => {
             color="primary"
           />
         </Stack>
-      </Container>    
+      </Container>
     </div>
   );
 };
