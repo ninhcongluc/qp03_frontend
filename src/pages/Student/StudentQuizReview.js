@@ -72,7 +72,6 @@ const quizReviewData = {
       yourAnswer: ["Brazil", "Vietnam"],
       multipleAnswers: true,
     },
-    
   ],
 };
 
@@ -241,12 +240,12 @@ const StudentQuizReview = () => {
                   </Typography>
                   <Box className="quiz-review-navigation">
                     {quizReviewData.questions.map((question, index) => (
-                      <Button 
+                      <Button
                         key={question.questionId}
                         variant={
                           currentQuestion === index ? "contained" : "outlined"
                         }
-                        onClick={() => setCurrentQuestion(index)} 
+                        onClick={() => setCurrentQuestion(index)}
                         className={`quiz-review-navigation-button ${
                           isCorrectAnswer(question) ? "correct" : "incorrect"
                         }`}

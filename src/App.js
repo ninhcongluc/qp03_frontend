@@ -66,11 +66,7 @@ function App() {
           path="/teacher/add-question"
           element={<TeacherQuestionListPage />}
         />
-        <Route
-          path="/changePass"
-          element={<ChangePassword />}
-        />
-
+        <Route path="/changePass" element={<ChangePassword />} />
 
         <Route path="/student" element={<StudentPage />} />
         <Route
