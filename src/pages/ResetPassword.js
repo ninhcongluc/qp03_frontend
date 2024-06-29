@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
-
-
+import React, { useState } from "react";
+import { TextField, Button, Container, Typography } from "@mui/material";
 
 const ResetPassword = () => {
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   const handleOtpChange = (event) => {
     setOtp(event.target.value);
@@ -16,28 +13,25 @@ const ResetPassword = () => {
     setNewPassword(event.target.value);
   };
 
- 
-
-  const email = new URLSearchParams(window.location.search).get("email");
+  // const email = new URLSearchParams(window.location.search).get("email");
   const handleResetPassword = async () => {
-
     // Gửi yêu cầu tới server để đặt lại mật khẩu
     try {
-      const response = await fetch('http://localhost:8000/reset-password', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/reset-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ otp, newPassword }),
       });
 
       if (response.ok) {
-        alert('Password has been reset successfully.');
+        alert("Password has been reset successfully.");
       } else {
-        alert('Failed to reset password.');
+        alert("Failed to reset password.");
       }
     } catch (error) {
-      console.error('Error resetting password:', error);
+      console.error("Error resetting password:", error);
     }
   };
 

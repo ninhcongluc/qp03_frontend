@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios";
 import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
 import "./CourseManagement.css";
-import ManagerMenu from "../../components/LeftMenu/ManagerMenu"
 
 const CourseManagementPage = () => {
   const navigate = useNavigate();
