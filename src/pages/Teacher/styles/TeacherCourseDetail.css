@@ -1,0 +1,39 @@
+.teacher-course-detail-page {
+  margin-left: 15%;
+}
+.custom-row:nth-of-type(odd) {
+  background-color: #f9f9f9; /* Change the color to your preference */
+}
+
+.custom-row:hover {
+  background-color: #f1f1f1; /* Change the color to your preference */
+}
+
+.class-select {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  background: white;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-management {
+  margin-top: 200px; /* Adjust based on your filter container's height */
+  max-height: calc(
+    100vh - 100px
+  ); /* Adjust based on your filter container's height */
+}
+
+.button-group {
+  display: flex;
+  width: 500px;
+  justify-content: "space-between";
+  align-items: center;
+}
+
+.create-button {
+}
+
+.view-student {
+}

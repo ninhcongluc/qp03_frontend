@@ -13,7 +13,7 @@ import {
   MenuItem,
   FormControl,
 } from "@mui/material";
-import "./TeacherAddQuestion.css";
+import "./styles/TeacherAddQuestion.css";
 import MenuComponent from "../../components/LeftMenu/Menu";
 
 const TeacherQuestionListPage = () => {

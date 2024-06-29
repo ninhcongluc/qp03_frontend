@@ -1,36 +1,26 @@
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Modal from "@mui/material/Modal";
 import Pagination from "@mui/material/Pagination";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios";
-import { debounce } from "lodash";
 import MenuComponent from "../../components/LeftMenu/Menu";
-import "./TeacherCourseList.css";
+import "./styles/TeacherCourseList.css";
 
 const TeacherCourseListPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
   const [semesters, setSemesters] = useState([]);
   const coursesPerPage = 6;
   const teacherId = JSON.parse(localStorage.getItem("user")).id;
@@ -64,46 +54,30 @@ const TeacherCourseListPage = () => {
 
   const pageCount = Math.ceil(totalItem / coursesPerPage);
 
-  const handleAddCourse = () => {
-    setSelectedCourse(null);
-    setIsCreateModalOpen(true);
-  };
-
-  const handleEditCourse = (id) => {
-    const course = courses.find((c) => c.id === id);
-    setSelectedCourse(course);
-    setIsEditModalOpen(true);
-  };
-
-  const handleDeleteCourse = (id) => {
-    console.log(`Deleting course with ID: ${id}`);
-  };
-
   const handlePageChange = (event, value) => {
     setPage(value);
     fetchCourseData(value, coursesPerPage, teacherId, selectedSemester);
   };
 
-  const handleSearchTermChange = debounce((event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
+  const debouncedHandleSearchTermChange = debounce((newSearchTerm) => {
+    if (newSearchTerm.trim() === "") {
+      fetchCourseData(1, coursesPerPage, teacherId, selectedSemester);
+    } else {
+      const filteredCourses = courses.filter((course) => {
+        const regex = new RegExp(newSearchTerm, "i");
+        return regex.test(course.code);
+      });
 
-    // Filter the courses based on the search term
-    const filteredCourses = courses.filter((course) => {
-      // Use a case-insensitive search
-      const regex = new RegExp(searchTerm, "i");
-      return (
-        regex.test(course.code) ||
-        regex.test(course.name) ||
-        regex.test(course.description)
-      );
-    });
-
-    // Update the courses and reset the page
-    setCourses(filteredCourses);
-    setPage(1);
+      setCourses(filteredCourses);
+      setPage(1);
+    }
   }, 500);
 
+  const handleSearchInputChange = (event) => {
+    const newValue = event.target.value;
+    setInputValue(newValue);
+    debouncedHandleSearchTermChange(newValue);
+  };
   const handleSemesterChange = (event) => {
     setSelectedSemester(event.target.value);
     setPage(1);
@@ -115,7 +89,7 @@ const TeacherCourseListPage = () => {
     }
   };
   const handleCourseDetailClick = (id) => {
-    navigate(`/manager/course/${id}`);
+    navigate(`/teacher/course-management/${id}`);
   };
 
   return (
@@ -127,8 +101,8 @@ const TeacherCourseListPage = () => {
             <TextField
               label="Search by Course Code"
               variant="outlined"
-              value={searchTerm}
-              onChange={handleSearchTermChange}
+              value={inputValue}
+              onChange={handleSearchInputChange}
             />
           </Grid>
           <Grid item flex={1} maxWidth={150}>
@@ -148,26 +122,6 @@ const TeacherCourseListPage = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item>
-            <button
-              class="add-course-btn"
-              onClick={handleAddCourse}
-              style={{
-                backgroundColor: "#58A2C8",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                textAlign: "center",
-                textDecoration: "none",
-                display: "inline-block",
-                fontSize: "16px",
-                marginTop: "10px",
-                cursor: "pointer",
-              }}
-            >
-              <AddIcon /> Add Course
-            </button>
           </Grid>
         </Grid>
         <Grid
@@ -198,20 +152,7 @@ const TeacherCourseListPage = () => {
                     {course.code}
                   </h3>
 
-                  <div class="course-actions">
-                    <EditIcon
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleEditCourse(course.id);
-                      }}
-                    />
-                    <DeleteIcon
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleDeleteCourse(course.id);
-                      }}
-                    />
-                  </div>
+                  <div class="course-actions"></div>
                 </div>
                 <p>{course.description}</p>
                 <p>Semester: {course?.semester.name}</p>
@@ -229,155 +170,7 @@ const TeacherCourseListPage = () => {
           />
         </Stack>
       </Container>
-      {isCreateModalOpen && (
-        <CreateCourseModal
-          open={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-        />
-      )}
-      {isEditModalOpen && selectedCourse && (
-        <EditCourseModal
-          open={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          course={selectedCourse}
-        />
-      )}
     </div>
-  );
-};
-
-const CreateCourseModal = ({ open, onClose }) => {
-  const [courseCode, setCourseCode] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
-  const [courseSemester, setCourseSemester] = useState("");
-
-  const handleSave = () => {
-    // Add logic to save the new course
-    onClose();
-  };
-
-  return (
-    <Modal open={open} onClose={onClose}>
-      <MenuComponent role="teacher" />
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          Create New Course
-        </Typography>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Course Code"
-            value={courseCode}
-            onChange={(e) => setCourseCode(e.target.value)}
-          />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Course Description"
-            value={courseDescription}
-            onChange={(e) => setCourseDescription(e.target.value)}
-          />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="course-semester-label">Semester</InputLabel>
-          <Select
-            labelId="course-semester-label"
-            value={courseSemester}
-            onChange={(e) => setCourseSemester(e.target.value)}
-          >
-            <MenuItem value="Fall 2024">Fall 2024</MenuItem>
-            <MenuItem value="Spring 2024">Spring 2024</MenuItem>
-          </Select>
-        </FormControl>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={handleSave} variant="contained" sx={{ mr: 2 }}>
-            Save
-          </Button>
-          <Button onClick={onClose} variant="outlined">
-            Cancel
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
-  );
-};
-
-const EditCourseModal = ({ open, onClose, course }) => {
-  const [courseCode, setCourseCode] = useState(course.code);
-  const [courseDescription, setCourseDescription] = useState(
-    course.description
-  );
-  const [courseSemester, setCourseSemester] = useState(course.semester);
-
-  const handleSave = () => {
-    // Add logic to update the course
-    onClose();
-  };
-
-  return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          Edit Course
-        </Typography>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Course Code"
-            value={courseCode}
-            onChange={(e) => setCourseCode(e.target.value)}
-          />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Course Description"
-            value={courseDescription}
-            onChange={(e) => setCourseDescription(e.target.value)}
-          />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="course-semester-label">Semester</InputLabel>
-          <Select
-            labelId="course-semester-label"
-            value={courseSemester}
-            onChange={(e) => setCourseSemester(e.target.value)}
-          >
-            <MenuItem value="Fall 2024">Fall 2024</MenuItem>
-            <MenuItem value="Spring 2024">Spring 2024</MenuItem>
-          </Select>
-        </FormControl>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={handleSave} variant="contained" sx={{ mr: 2 }}>
-            Save
-          </Button>
-          <Button onClick={onClose} variant="outlined">
-            Cancel
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
   );
 };
 
