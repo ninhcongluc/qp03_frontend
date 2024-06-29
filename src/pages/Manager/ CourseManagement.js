@@ -1,122 +1,66 @@
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Modal from "@mui/material/Modal";
 import Pagination from "@mui/material/Pagination";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import ApiInstance from "../../axios";
+import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
 import "./CourseManagement.css";
-
-const courses = [
-  {
-    id: "4713fc09-2967-4e59-a832-04db1379baad",
-    code: "ACC101",
-    description: "Introductory Accounting",
-    semesterName: "Fall 2024",
-    createdBy: "John Doe",
-  },
-  {
-    id: "f5a016b9-97c2-4832-ba68-490d8825225e",
-    code: "SWR302",
-    description: "Advanced Software Engineering",
-    semesterName: "Spring 2024",
-    createdBy: "Jane Smith",
-  },
-  {
-    id: "84ec946c-7b70-45c5-9ac5-7c6123644e4b",
-    code: "ECO201",
-    description: "Principles of Macroeconomics",
-    semesterName: "Fall 2024",
-    createdBy: "Michael Johnson",
-  },
-  {
-    id: "5e7fbf37-4a7e-4a82-b298-8cbcba4a0c6b",
-    code: "BIO150",
-    description: "General Biology",
-    semesterName: "Spring 2024",
-    createdBy: "Sarah Lee",
-  },
-  {
-    id: "a2c5ea9e-4d7b-4e18-82fc-d0a269acaf5a",
-    code: "CSC110",
-    description: "Introduction to Computer Science",
-    semesterName: "Fall 2024",
-    createdBy: "David Kim",
-  },
-  {
-    id: "8e9be1a0-cef6-4893-8a0d-e37d6e8abc11",
-    code: "ENG201",
-    description: "English Composition",
-    semesterName: "Spring 2024",
-    createdBy: "Emily Chen",
-  },
-  {
-    id: "c4ac0d73-a279-4e91-9d67-5f4b35032766",
-    code: "MAT201",
-    description: "Calculus I",
-    semesterName: "Fall 2024",
-    createdBy: "Daniel Park",
-  },
-  {
-    id: "f6b44d20-3fa2-476a-8c6c-1c4cdf79b6c1",
-    code: "HIS101",
-    description: "World History to 1500",
-    semesterName: "Spring 2024",
-    createdBy: "Olivia Lim",
-  },
-  {
-    id: "3b5b2e2c-aa54-4e9a-8f9a-d6a6f5ba9d31",
-    code: "PHY101",
-    description: "Introduction to Physics",
-    semesterName: "Fall 2024",
-    createdBy: "Alex Tan",
-  },
-  {
-    id: "7d1f2a9a-d2d4-4d06-b2c9-84e991f2aa69",
-    code: "ART120",
-    description: "Art Appreciation",
-    semesterName: "Spring 2024",
-    createdBy: "Jessica Wang",
-  },
-];
 
 const CourseManagementPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [semesters, setSemesters] = useState([]);
   const coursesPerPage = 6;
 
-  const pageCount = Math.ceil(courses.length / coursesPerPage);
+  const fetchCourseData = async (page, limit, semesterId = "") => {
+    try {
+      const response = await ApiInstance.get(
+        `/course?page=${page}&limit=${limit}&semesterId=${semesterId}`
+      );
+      console.log("response", response);
+      setCourses(response.data.data.courses);
+      setTotalItem(response.data.data.total);
+    } catch (error) {
+      console.error("Error fetching semester information:", error);
+    }
+  };
 
-  const filteredCourses = courses.filter((course) =>
-    course.code.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const fetchSemesterData = async () => {
+    try {
+      const response = await ApiInstance.get("/semester");
+      setSemesters(response.data.data);
+    } catch (error) {
+      console.error("Error fetching semester information:", error);
+    }
+  };
 
-  const filteredAndSortedCourses = selectedSemester
-    ? filteredCourses.filter(
-        (course) => course.semesterName === selectedSemester
-      )
-    : filteredCourses;
+  useEffect(() => {
+    fetchSemesterData();
+    fetchCourseData(1, coursesPerPage);
+  }, []);
 
-  const displayedCourses = filteredAndSortedCourses.slice(
-    (page - 1) * coursesPerPage,
-    page * coursesPerPage
-  );
+  const pageCount = Math.ceil(totalItem / coursesPerPage);
 
   const handleAddCourse = () => {
     setSelectedCourse(null);
@@ -130,12 +74,12 @@ const CourseManagementPage = () => {
   };
 
   const handleDeleteCourse = (id) => {
-    // Add your delete course logic here
     console.log(`Deleting course with ID: ${id}`);
   };
 
   const handlePageChange = (event, value) => {
     setPage(value);
+    fetchCourseData(value, coursesPerPage, selectedSemester);
   };
 
   const handleSearchTermChange = (event) => {
@@ -146,14 +90,20 @@ const CourseManagementPage = () => {
   const handleSemesterChange = (event) => {
     setSelectedSemester(event.target.value);
     setPage(1);
-  };
 
+    if (event.target.value) {
+      fetchCourseData(1, coursesPerPage, event.target.value);
+    } else {
+      fetchCourseData(1, coursesPerPage);
+    }
+  };
   const handleCourseDetailClick = (id) => {
     navigate(`/manager/course/${id}`);
   };
 
   return (
     <div>
+      <ManagerMenu />
       <Container>
         <Grid container spacing={4} sx={{ marginTop: 2 }}>
           <Grid item flex={1}>
@@ -174,8 +124,11 @@ const CourseManagementPage = () => {
                 onChange={handleSemesterChange}
               >
                 <MenuItem value="">All Semesters</MenuItem>
-                <MenuItem value="Fall 2024">Fall 2024</MenuItem>
-                <MenuItem value="Spring 2024">Spring 2024</MenuItem>
+                {semesters.map((semester) => (
+                  <MenuItem key={semester.id} value={semester.id}>
+                    {semester.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -184,7 +137,7 @@ const CourseManagementPage = () => {
               class="add-course-btn"
               onClick={handleAddCourse}
               style={{
-                backgroundColor: "#4CAF50",
+                backgroundColor: "#58A2C8",
                 color: "white",
                 border: "none",
                 padding: "10px 20px",
@@ -201,40 +154,56 @@ const CourseManagementPage = () => {
           </Grid>
         </Grid>
         <Grid
-          container={displayedCourses.length}
+          container={courses.length}
           spacing={4}
-          sx={{ marginTop: 2, minHeight: 100 }}
+          sx={{ marginTop: 2, minHeight: 100, width: "900px" }}
         >
-          {displayedCourses.map((course, index) => (
+          {courses.map((course, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div
                 class="course-card"
                 style={{ padding: 16 }}
                 onClick={() => handleCourseDetailClick(course.id)}
               >
-                <h3>{course.code}</h3>
-                <p>{course.description}</p>
-                <p>Semester: {course.semesterName}</p>
-                <p>Created by: {course.createdBy}</p>
-                <div class="course-actions">
-                  <EditIcon
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleEditCourse(course.id);
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <h3
+                    style={{
+                      marginBottom: 0,
                     }}
-                  />
-                  <DeleteIcon
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleDeleteCourse(course.id);
-                    }}
-                  />
+                  >
+                    {course.code}
+                  </h3>
+
+                  <div class="course-actions">
+                    <EditIcon
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleEditCourse(course.id);
+                      }}
+                    />
+                    <DeleteIcon
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDeleteCourse(course.id);
+                      }}
+                    />
+                  </div>
                 </div>
+                <p>{course.description}</p>
+                <p>Semester: {course?.semester.name}</p>
+                <p>Created by: {course.createdBy}</p>
               </div>
             </Grid>
           ))}
         </Grid>
-        <Stack spacing={2} sx={{ marginTop: 4, alignItems: "center" }}>
+        <Stack spacing={2} sx={{ marginTop: 10, alignItems: "center" }}>
           <Pagination
             count={pageCount}
             page={page}
@@ -272,6 +241,7 @@ const CreateCourseModal = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
+      <ManagerMenu />
       <Box
         sx={{
           position: "absolute",
