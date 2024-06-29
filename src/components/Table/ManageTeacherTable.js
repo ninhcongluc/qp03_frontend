@@ -206,9 +206,9 @@ const ManageTeacherTable = () => {
       <TableContainer
         component={Paper}
         sx={{
-          maxHeight: "100%",
-          width: "1000px",
-          marginLeft: "300px",
+          height: "550px",
+          width: "1200px",
+          marginLeft: "270px",
         }}
       >
         <Table stickyHeader>

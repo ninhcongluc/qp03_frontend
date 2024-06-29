@@ -6,7 +6,7 @@ import ManageSemesterTable from "../../components/Table/ManageSemester";
 
 const SemesterManagement = () => {
   return (
-    <div class="table_manageTeacher">
+    <div className="table_manageTeacher">
       <ManagerMenu />
       <Box
         sx={{
@@ -14,6 +14,7 @@ const SemesterManagement = () => {
           flexDirection: "column",
           alignItems: "center",
           marginTop: "2rem",
+          width: "700px",
         }}
       >
         <h1 style={{ marginBottom: "1.5rem" }}>Semester Management</h1>

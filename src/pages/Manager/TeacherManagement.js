@@ -14,6 +14,7 @@ const TeacherManagementPage = () => {
           flexDirection: "column",
           alignItems: "center",
           marginTop: "2rem",
+          width: "700px",
         }}
       >
         <h1 style={{ marginBottom: "1.5rem" }}>

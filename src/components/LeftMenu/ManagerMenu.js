@@ -5,6 +5,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Box,
+  Typography
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +14,7 @@ import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import PortraitIcon from "@mui/icons-material/Portrait";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import "./LeftMenu.css";
+import "./ManagerMenu.css";
 import axios from "axios";
 
 const ManagerMenu = () => {
@@ -33,6 +35,7 @@ const ManagerMenu = () => {
           "http://localhost:8000/user/profile",
           config
         );
+
         console.log(response.data);
         setUserData({
           firstName: response.data.data.firstName,
@@ -64,57 +67,78 @@ const ManagerMenu = () => {
   };
 
   return (
-    <div>
+    <Box className="leftSideBar" >
       <Drawer
         variant="permanent"
         anchor="left"
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundColor: "#fff",
+            backgroundColor: "#101214",
           },
         }}
       >
-        <List>
-          <div class="menu">
-            <Stack direction="row" spacing={2}>
-              <Avatar alt="Manager" src="" sx={{ width: 64, height: 64 }} />
-              <h3>
-                {userData.firstName} {userData.lastName}
-              </h3>
-            </Stack>
-          </div>
+        <div class="menu">
+          <Stack alignItems={"center"}>
+            <Avatar alt="Manager" 
+            src="https://th.bing.com/th/id/R.79ffc87ca100b039540692db6de15913?rik=xGPt1mwMRUlg2w&riu=http%3a%2f%2fwww.thisisanfield.com%2fwp-content%2fuploads%2fPROP150218-018-Liverpool_Press_Conf.jpg&ehk=munj9fKuzHU4K86gRLtsP9wJFCvRPeJ%2f7BKKBLLQACI%3d&risl=&pid=ImgRaw&r=0" 
+            sx={{ width: 70, height: 70 }} />
+            <Typography className="avatarText" sx={{ fontSize: 20}}>
+              {userData.firstName} {userData.lastName}
+            </Typography>
+          </Stack>
+        </div>
+        <div>
+          <List>
+            <ListItem button onClick={handleSemesterClick} className="itemList">
+              <ListItemIcon >
+                <DashboardOutlined className="itemIcon" />
+              </ListItemIcon>
+              <ListItemText >
+                <Typography className="itemText" sx={{ fontSize:18}}>
+                  Semester
+                </Typography>
+              </ListItemText>
+            </ListItem>
 
-          <ListItem button onClick={handleSemesterClick}>
-            <ListItemIcon className="itemIcon">
-              <DashboardOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Semester" />
-          </ListItem>
+            <ListItem button onClick={handleTeacherInformationClick} className="itemList">
+              <ListItemIcon >
+                <PermIdentityIcon className="itemIcon" />
+              </ListItemIcon>
+              <ListItemText >
+                <Typography className="itemText" sx={{ fontSize:18}}>Teacher List</Typography>
+              </ListItemText>
+            </ListItem>
 
-          <ListItem button onClick={handleTeacherInformationClick}>
-            <ListItemIcon className="itemIcon">
-              <PermIdentityIcon />
-            </ListItemIcon>
-            <ListItemText primary="Teacher Information" />
-          </ListItem>
+            <ListItem button onClick={handleCourseClick} className="itemList">
+              <ListItemIcon >
+                <PortraitIcon className="itemIcon" />
+              </ListItemIcon>
+              <ListItemText >
+                <Typography className="itemText" sx={{ fontSize:18}}>Course</Typography>
+              </ListItemText>
+            </ListItem>
 
-          <ListItem button onClick={handleCourseClick}>
-            <ListItemIcon className="itemIcon">
-              <PortraitIcon />
-            </ListItemIcon>
-            <ListItemText primary="Course" />
-          </ListItem>
+            <ListItem button onClick={handleLogoutClick}
+              className="Logout"
+              sx={{
+                marginTop: "300px",
+              }}
+            >
+              <ListItemIcon >
+                <ExitToAppOutlined className="itemIcon" />
+              </ListItemIcon>
+              <ListItemText >
+                <Typography className="itemText" sx={{ fontSize:18}}>Logout</Typography>
+              </ListItemText>
+            </ListItem>
+          </List>
+        </div>
 
-          <ListItem button onClick={handleLogoutClick}>
-            <ListItemIcon className="itemIcon">
-              <ExitToAppOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
       </Drawer>
-    </div>
+    </Box>
   );
 };
 
 export default ManagerMenu;
+
+
