@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,20 +61,27 @@ function Login() {
   };
 
   return (
-   
-       <div class="login-container">
-      <img src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png" alt="FPT Logo" className="corner-logo" />
+    <div class="login-container">
+      <img
+        src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png"
+        alt="FPT Logo"
+        className="corner-logo"
+      />
       <div class="login-form">
-      <img src="https://seeklogo.com/images/F/fpt-university-logo-B3B6D84292-seeklogo.com.png" alt="FPT University Logo" className="logo" />
+        <img
+          src="https://seeklogo.com/images/F/fpt-university-logo-B3B6D84292-seeklogo.com.png"
+          alt="FPT University Logo"
+          className="logo"
+        />
         <h5>LOGIN</h5>
 
         <TextField
           label="Enter Email"
           value={email}
           onChange={handleEmailChange}
-          InputLabelProps={{ style: { color: "white"  } }}
+          InputLabelProps={{ style: { color: "white" } }}
         />
-        <br/>
+        <br />
         <TextField
           label="Enter Password"
           type="password"
@@ -84,17 +90,20 @@ function Login() {
           InputLabelProps={{ style: { color: "white" } }}
         />
         <div>
-          <Checkbox
-            checked={rememberMe}
-            onChange={handleRememberMeChange}
-            label="Remember me"
-            style={{ color: "orange" }}
-          />
-          <label class="remember-me-label">Remember me</label>
-
-          <a href="!#" style={{ color: "orange" }}>
-            Forgot password?
-          </a>
+          <div>
+            <Checkbox
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+              label="Remember me"
+              style={{ color: "orange" }}
+            />
+            <label class="remember-me-label">Remember me</label>
+          </div>
+          <div>
+            <a href="/forgot-password" style={{ color: "orange" }}>
+              Forgot password?
+            </a>
+          </div>
         </div>
 
         <Button
@@ -117,7 +126,6 @@ function Login() {
         />
       </div>
     </div>
-   
   );
 }
 
