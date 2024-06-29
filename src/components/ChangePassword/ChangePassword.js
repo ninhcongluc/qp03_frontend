@@ -20,6 +20,10 @@ function ChangePassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const validatePassword = (password) => {
+    return password.length >= 8;
+  };
+  
   const handleCurrentPasswordChange = (event) => {
     setCurrentPassword(event.target.value);
   };
@@ -33,6 +37,11 @@ function ChangePassword() {
   };
 
   const handleChangePassword = () => {
+    if (!validatePassword(newPassword)) {
+      toast.error("New password must be at least 8 characters long");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast.error("New passwords do not match");
       return;
@@ -104,6 +113,7 @@ function ChangePassword() {
             fullWidth
             required
           />
+          
           <TextField
             label="New Password"
             type={showNewPassword ? "text" : "password"}
@@ -123,6 +133,7 @@ function ChangePassword() {
               ),
             }}
           />
+          
           <TextField
             label="Confirm New Password"
             type={showConfirmPassword ? "text" : "password"}

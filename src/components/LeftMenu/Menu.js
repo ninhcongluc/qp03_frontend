@@ -35,6 +35,11 @@ const MenuComponent = ({ role }) => {
     fetchUserData();
   }, []);
 
+  const handleAvatarClick = () => {
+    window.location.replace("/profile");
+  };
+
+
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -47,7 +52,9 @@ const MenuComponent = ({ role }) => {
         text: "Manager Management",
         icon: <DashboardOutlined />,
         onClick: () => navigate("/admin/manage-manager"),
+
       },
+
     ],
     manager: [
       {
@@ -95,7 +102,7 @@ const MenuComponent = ({ role }) => {
       <List>
         <div class="menu">
           <Stack direction="row" spacing={2}>
-            <Avatar alt={role} src="" sx={{ width: 64, height: 64 }} />
+            <Avatar alt={role} src="" sx={{ width: 64, height: 64 }} onClick={handleAvatarClick} />
             <h3>
               {userData.firstName} {userData.lastName}
             </h3>

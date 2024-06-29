@@ -1,15 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MenuComponent from "../components/LeftMenu/Menu";
+import ApiInstance from "../axios";
 
-const ProfilePage = () => {
+const ProfilePage = ({ role }) => {
+  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await ApiInstance.get("/user/profile");
+        setUserData({
+          firstName: response.data.data.firstName,
+          lastName: response.data.data.lastName,
+          email: response.data.data.email,
+          phoneNumber: response.data.data.phoneNumber,
+          dateOfBirth: response.data.data.dateOfBirth,
+          code: response.data.data.code,
+          gender:response.data.data.gender,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+  const getGenderText = (gender) => {
+    return gender === 1 ? "Man" : "Woman";
+  };
+
   return (
     <div>
       <img
         src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png"
         alt="FPT Logo"
-        style={{ width: "9%", marginLeft: "90%", marginTop: "-6%" }}
+        style={{ width: "9%", marginLeft: "90%", marginTop: "-2%" }}
       />
       <MenuComponent role="admin" />
       <div
@@ -40,10 +66,10 @@ const ProfilePage = () => {
                     src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
                     alt="avatar"
                     className="rounded-circle"
-                    style={{ width: "150px" }}
+                    style={{ width: "150px", marginLeft: '-8px'}}
                     fluid="true"
                   />
-                  <p className="text-muted mb-1">USER</p>
+                  <p className="text-muted mb-1" style={{width:'200px', marginLeft:'-36px', marginTop:'7px'}}>{userData.firstName} {userData.lastName}</p>
                 </div>
               </div>
             </div>
@@ -52,48 +78,51 @@ const ProfilePage = () => {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-sm-3">
-                      <p>Full Name</p>
+                      <p>Full Name :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">Johnatan Smith</p>
+                      <p className="text-muted">{userData.firstName} {userData.lastName}</p>
+                    </div>
+                  </div>
+                  <hr />
+
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p>Code :</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <p className="text-muted">{userData.code}</p>
                     </div>
                   </div>
                   <hr />
                   <div className="row">
                     <div className="col-sm-3">
-                      <p>Email</p>
+                      <p>Gender :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">example@example.com</p>
+                      <p className="text-muted">{getGenderText(userData.gender)}</p>
                     </div>
                   </div>
                   <hr />
                   <div className="row">
                     <div className="col-sm-3">
-                      <p>Phone</p>
+                      <p>Email :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">(097) 234-5678</p>
+                      <p className="text-muted">{userData.email}</p>
                     </div>
                   </div>
-                  <hr />
-                  <div className="row">
+                   <hr/>
+                   <div className="row">
                     <div className="col-sm-3">
-                      <p>Mobile</p>
+                      <p>Phone :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">(098) 765-4321</p>
+                      <p className="text-muted">{userData.phoneNumber}</p>
                     </div>
                   </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col-sm-3">
-                      <p>Address</p>
-                    </div>
-                    <div className="col-sm-9">
-                      <p className="text-muted">Bay Area, San Francisco, CA</p>
-                    </div>
-                  </div>
+
+
                 </div>
               </div>
             </div>
