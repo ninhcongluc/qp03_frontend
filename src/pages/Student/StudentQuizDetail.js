@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container, Grid, Typography, Box } from "@mui/material";
-import LeftMenu from "../../components/LeftMenu/StudentMenu";
-import "./StudentQuizDetail.css"; // Assuming you have a CSS file for styling
+import MenuComponent from "../../components/LeftMenu/Menu";
+import "./StudentQuizDetail.css";
 
 const quizData = [
   {
@@ -60,7 +60,7 @@ const StudentQuizDetail = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <LeftMenu />
+      <MenuComponent role="student" />
       <Container className="quiz-detail-container">
         {isLoading ? (
           <Typography variant="body1">Loading quiz detail...</Typography>

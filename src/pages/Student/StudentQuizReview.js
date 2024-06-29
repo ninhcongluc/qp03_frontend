@@ -17,7 +17,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import "./StudentQuizReview.css";
-import StudentMenu from "../../components/LeftMenu/StudentMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const theme = createTheme({
   palette: {
@@ -102,7 +102,7 @@ const StudentQuizReview = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-quiz-review">
-        <StudentMenu />
+        <MenuComponent role="student" />
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>

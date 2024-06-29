@@ -17,8 +17,8 @@ import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
 import { debounce } from "lodash";
+import MenuComponent from "../../components/LeftMenu/Menu";
 import "./TeacherCourseList.css";
 
 const TeacherCourseListPage = () => {
@@ -120,7 +120,7 @@ const TeacherCourseListPage = () => {
 
   return (
     <div>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
       <Container>
         <Grid container spacing={4} sx={{ marginTop: 2 }}>
           <Grid item flex={1}>
@@ -258,7 +258,7 @@ const CreateCourseModal = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
       <Box
         sx={{
           position: "absolute",

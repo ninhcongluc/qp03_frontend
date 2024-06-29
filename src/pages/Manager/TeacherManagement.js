@@ -1,13 +1,13 @@
 import React from "react";
 import { Box } from "@mui/material";
 import ManageTeacherTable from "../../components/Table/ManageTeacherTable";
-import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
 import "./TeacherManagement.css";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const TeacherManagementPage = () => {
   return (
     <div class="table_manageTeacher">
-      <ManagerMenu />
+      <MenuComponent role="manager" />
       <Box
         sx={{
           display: "flex",

@@ -1,10 +1,10 @@
 import React from "react";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const TeacherPage = () => {
   return (
     <div>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
     </div>
   );
 };

@@ -1,33 +1,4 @@
 import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  List,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  Select,
-  Switch,
-  Snackbar,
-  TextField,
-  Typography,
-  Avatar,
-} from "@mui/material"; // Fix incorrect import statement
-import axios from "axios";
-import { toast } from "react-toastify";
-import React, { useEffect, useState } from "react";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
-import { useNavigate } from "react-router-dom";
-import {
   Add as AddIcon,
   CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
@@ -35,6 +6,35 @@ import {
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import {
+  Alert,
+  Avatar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Select,
+  Snackbar,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material"; // Fix incorrect import statement
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import MenuComponent from "../../components/LeftMenu/Menu";
 import "./TeacherCourseDetail.css";
 const TeacherCourseDetailPage = () => {
   const [course, setCourse] = useState(null);
@@ -263,7 +263,7 @@ const TeacherCourseDetailPage = () => {
 
   return (
     <div>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
       <Typography variant="h4">Course Details</Typography>
       {course && (
         <>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
 import {
   Box,
   Button,
@@ -15,13 +14,12 @@ import {
   FormControl,
 } from "@mui/material";
 import "./TeacherAddQuestion.css";
-
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const TeacherQuestionListPage = () => {
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", options: [""] },
   ]);
-
 
   const handleOnChange = (event, questionId) => {
     const newQuestions = questions.map((question) => {
@@ -33,7 +31,6 @@ const TeacherQuestionListPage = () => {
     setQuestions(newQuestions);
   };
 
-
   const handleAddQuestion = () => {
     const newQuestion = {
       id: questions.length + 1,
@@ -42,7 +39,6 @@ const TeacherQuestionListPage = () => {
     };
     setQuestions([...questions, newQuestion]);
   };
-
 
   const handleDeleteQuestion = (questionId) => {
     console.log(questionId);
@@ -58,10 +54,8 @@ const TeacherQuestionListPage = () => {
       question.id = index + 1;
     });
 
-
     setQuestions(newQuestions);
   };
-
 
   const handleAddOption = (questionId) => {
     const newQuestions = questions.map((question) => {
@@ -72,7 +66,6 @@ const TeacherQuestionListPage = () => {
     });
     setQuestions(newQuestions);
   };
-
 
   const handleDeleteOption = (questionId, optionIndex) => {
     const newQuestions = questions.map((question) => {
@@ -87,10 +80,9 @@ const TeacherQuestionListPage = () => {
     setQuestions(newQuestions);
   };
 
-
   return (
     <div>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
       <Box className="container1">
         <Box className="header">
           <b>Quiz name:</b>
@@ -101,7 +93,13 @@ const TeacherQuestionListPage = () => {
           <br />
           <span>Time Limit:</span>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mb={2} className="">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          mb={2}
+          className=""
+        >
           <TableContainer component={Paper} className="tableContainer">
             <Table stickyHeader>
               <TableBody>
@@ -120,7 +118,7 @@ const TeacherQuestionListPage = () => {
                           className="textField"
                         />
                       </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top' }}>
+                      <TableCell sx={{ verticalAlign: "top" }}>
                         <FormControl fullWidth>
                           <Select
                             value={question.type}
@@ -158,8 +156,6 @@ const TeacherQuestionListPage = () => {
                           />
                         </TableCell>
                         <TableCell>
-
-
                           <Button
                             variant="contained"
                             color="secondary"
@@ -227,6 +223,5 @@ const TeacherQuestionListPage = () => {
     </div>
   );
 };
-
 
 export default TeacherQuestionListPage;

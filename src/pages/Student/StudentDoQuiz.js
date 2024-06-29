@@ -21,7 +21,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import "./StudentDoQuiz.css";
-import StudentMenu from "../../components/LeftMenu/StudentMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const theme = createTheme({
   palette: {
@@ -394,7 +394,7 @@ const StudentDoQuiz = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        <StudentMenu />
+        <MenuComponent role="student" />
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>

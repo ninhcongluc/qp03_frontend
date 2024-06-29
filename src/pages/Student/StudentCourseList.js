@@ -9,7 +9,7 @@ import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LeftMenu from "../../components/LeftMenu/StudentMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const courses = [
   {
@@ -132,9 +132,9 @@ const StudentCourseListPage = () => {
 
   return (
     <div>
-      <LeftMenu />
-      <Container sx={{ marginLeft: '240px' }}>
-        <Grid container spacing={4} sx={{ marginTop: 2, left: '30%' }}>
+      <MenuComponent role="student" />
+      <Container sx={{ marginLeft: "240px" }}>
+        <Grid container spacing={4} sx={{ marginTop: 2, left: "30%" }}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"

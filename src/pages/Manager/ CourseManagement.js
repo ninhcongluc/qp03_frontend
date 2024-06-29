@@ -17,8 +17,8 @@ import Typography from "@mui/material/Typography";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios";
-import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
 import "./CourseManagement.css";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const CourseManagementPage = () => {
   const navigate = useNavigate();
@@ -103,7 +103,7 @@ const CourseManagementPage = () => {
 
   return (
     <div>
-      <ManagerMenu />
+      <MenuComponent role="manager" />
       <Container>
         <Grid container spacing={4} sx={{ marginTop: 2 }}>
           <Grid item flex={1}>
@@ -241,7 +241,7 @@ const CreateCourseModal = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <ManagerMenu />
+      <MenuComponent role="manager" />
       <Box
         sx={{
           position: "absolute",

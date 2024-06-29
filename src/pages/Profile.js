@@ -1,7 +1,7 @@
-import React, {  } from "react";
-import LeftMenu from "../components/LeftMenu/AdminMenu";
+import React from "react";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
+import MenuComponent from "../components/LeftMenu/Menu";
 
 const ProfilePage = () => {
   return (
@@ -9,22 +9,29 @@ const ProfilePage = () => {
       <img
         src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png"
         alt="FPT Logo"
-        style={{ width: '9%', marginLeft: '90%', marginTop: '-6%' }}
-      />  
-      <LeftMenu /> 
+        style={{ width: "9%", marginLeft: "90%", marginTop: "-6%" }}
+      />
+      <MenuComponent role="admin" />
       <div
         style={{
-          backgroundColor:'#eee',
-          transform: 'scale(1.1)',         
-          marginLeft: '35%',
-          border: '2px solid rgb(197 194 194 / 0%)',                 
-          borderRadius: '8px',       
-          maxWidth: '650px',                  
-          marginBottom: '3%'           
+          backgroundColor: "#eee",
+          transform: "scale(1.1)",
+          marginLeft: "35%",
+          border: "2px solid rgb(197 194 194 / 0%)",
+          borderRadius: "8px",
+          maxWidth: "650px",
+          marginBottom: "3%",
         }}
         className="form-profile"
       >
-        <div className="py-5" style={{ justifyContent: 'center', alignItems: 'center', padding: '5px'}}>
+        <div
+          className="py-5"
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "5px",
+          }}
+        >
           <div className="row">
             <div className="col-lg-4">
               <div className="card mb-4">
@@ -33,7 +40,7 @@ const ProfilePage = () => {
                     src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
                     alt="avatar"
                     className="rounded-circle"
-                    style={{ width: '150px' }}
+                    style={{ width: "150px" }}
                     fluid="true"
                   />
                   <p className="text-muted mb-1">USER</p>
