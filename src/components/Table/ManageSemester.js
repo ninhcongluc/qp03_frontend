@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
+  TextField,
 } from "@mui/material";
-import axios from "axios";
-import { formatDate } from "../../commons/function";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { TextField } from "@mui/material";
-import { Formik, Field } from "formik";
+import { Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
+import ApiInstance from "../../axios";
+import { formatDate } from "../../commons/function";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -36,30 +34,20 @@ const ManageSemesterTable = () => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [semesterToDelete, setSemesterToDelete] = useState(null);
 
+  const fetchSemesters = async () => {
+    try {
+      const response = await ApiInstance.get("/semester");
+      setSemesters(response.data.data);
+    } catch (error) {
+      console.error("Error fetching semester information:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchSemesters = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        const response = await axios.get(
-          "http://localhost:8000/semester",
-          config
-        );
-        setSemesters(response.data.data);
-      } catch (error) {
-        console.error("Error fetching semester information:", error);
-      }
-    };
     fetchSemesters();
   }, []);
 
   const handleCreateSemester = () => {
-    console.log("Create semester", open);
-
     setOpen(true);
   };
 
@@ -68,31 +56,32 @@ const ManageSemesterTable = () => {
   };
 
   const handleSubmit = async (values, formikBag) => {
-    console.log("values", values);
-
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      // Make your API call here
-      await axios.post("http://localhost:8000/semester", values, config);
-
-      // Close the dialog and reset the form
+      await ApiInstance.post("/semester", values);
+      toast.success("Create semester successfully");
       handleClose();
       formikBag.resetForm();
     } catch (error) {
+      toast.error(error.response.data.error);
       console.error("Error creating semester:", error);
-      // Handle any errors here
     }
   };
 
   const handleDeleteSemester = (semester) => {
     setSemesterToDelete(semester);
     setConfirmationOpen(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await ApiInstance.delete(`/semester/${semesterToDelete?.id}`);
+      toast.success("Delete semester successfully");
+      fetchSemesters();
+      setConfirmationOpen(false);
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error deleting semester:", error);
+    }
   };
 
   return (
@@ -163,108 +152,83 @@ const ManageSemesterTable = () => {
           <Button onClick={() => setConfirmationOpen(false)} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={async () => {
-              try {
-                const token = localStorage.getItem("token");
-                const config = {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                };
-                await axios.delete(
-                  `http://localhost:8000/semester/${semesterToDelete?.id}`,
-                  config
-                );
-                setSemesters(
-                  semesters.filter((s) => s.id !== semesterToDelete?.id)
-                );
-                setConfirmationOpen(false);
-              } catch (error) {
-                console.error("Error deleting semester:", error);
-              }
-            }}
-            color="error"
-            autoFocus
-          >
+          <Button onClick={handleDelete} color="error" autoFocus>
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
       <div>
-        <Formik
-          initialValues={{
-            name: "",
-            startDate: null,
-            endDate: null,
-          }}
-          validationSchema={validationSchema}
-        >
-          {({ values, errors, touched, setFieldValue }) => (
-            <form onSubmit={handleSubmit}>
-              <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create Semester</DialogTitle>
-                <DialogContent>
-                  <Field
-                    name="name"
-                    as={TextField}
-                    label="Semester Name"
-                    required
-                    value={values.name}
-                    margin="normal"
-                    fullWidth
-                    error={touched.name && !!errors.name}
-                    helperText={touched.name && errors.name}
-                  />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DesktopDatePicker
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Create Semester</DialogTitle>
+          <DialogContent>
+            <Formik
+              initialValues={{
+                name: "",
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
+              {({ values, errors, touched, setFieldValue }) => {
+                return (
+                  <Form>
+                    <Field
+                      name="name"
+                      as={TextField}
+                      label="Semester Name"
+                      required
+                      value={values.name}
+                      margin="normal"
+                      fullWidth
+                      error={touched.name && !!errors.name}
+                      helperText={touched.name && errors.name}
+                    />
+                    <TextField
+                      type="date"
                       label="Start Date"
                       required
                       value={values.startDate}
-                      onChange={(date) => setFieldValue("startDate", date)}
-                    >
-                      {({ inputRef, inputProps, InputProps }) => (
-                        <TextField
-                          {...inputProps}
-                          ref={inputRef}
-                          InputProps={InputProps}
-                          error={touched.startDate && !!errors.startDate}
-                          helperText={touched.startDate && errors.startDate}
-                        />
-                      )}
-                    </DesktopDatePicker>
-                    <DesktopDatePicker
+                      onChange={(event) =>
+                        setFieldValue("startDate", event.target.value)
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      error={!!errors.startDate}
+                      helperText={errors.startDate}
+                    />
+                    <TextField
+                      type="date"
                       label="End Date"
                       required
                       value={values.endDate}
-                      onChange={(date) => setFieldValue("endDate", date)}
-                      minDate={values.startDate}
-                    >
-                      {({ inputRef, inputProps, InputProps }) => (
-                        <TextField
-                          {...inputProps}
-                          ref={inputRef}
-                          InputProps={InputProps}
-                          error={touched.endDate && !!errors.endDate}
-                          helperText={touched.endDate && errors.endDate}
-                        />
-                      )}
-                    </DesktopDatePicker>
-                  </LocalizationProvider>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose} color="secondary">
-                    Cancel
-                  </Button>
+                      onChange={(event) => {
+                        setFieldValue("endDate", event.target.value);
+                        console.log(event.target.value, "date");
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        min: values.startDate,
+                      }}
+                      error={touched.endDate && !!errors.endDate}
+                      helperText={touched.endDate && errors.endDate}
+                    />
+                    <DialogActions>
+                      <Button onClick={handleClose} color="secondary">
+                        Cancel
+                      </Button>
 
-                  <Button type="submit" color="primary">
-                    Save
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </form>
-          )}
-        </Formik>
+                      <Button type="submit" color="primary">
+                        Save
+                      </Button>
+                    </DialogActions>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </DialogContent>
+        </Dialog>
       </div>
     </Box>
   );
