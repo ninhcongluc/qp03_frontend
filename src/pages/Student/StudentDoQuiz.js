@@ -397,7 +397,7 @@ const StudentDoQuiz = () => {
         <MenuComponent role="student" />
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={8}>
+            <Grid item xs={10}>
               <Card className="do-quiz-header">
                 <CardContent>
                   <Typography
@@ -405,8 +405,7 @@ const StudentDoQuiz = () => {
                     align="center"
                     className="do-quiz-title"
                   >
-                    {quizData.courseName} {quizData.courseTitle} -{" "}
-                    {quizData.quizName}
+                    {quizData.courseTitle}{" "}-{" "}{quizData.courseName}{" "}{quizData.quizName}
                   </Typography>
                 </CardContent>
               </Card>

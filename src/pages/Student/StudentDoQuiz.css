@@ -10,11 +10,18 @@
   z-index: 1;  
 }
 
+/* CARD 1 */
+.do-quiz-header{
+  margin-left: 40%;
+  background-color: rgb(255, 247, 234) !important;
+}
+
 /* CARD 2 */
 .do-quiz-question-card{
   margin-top: 20px;
-  height: 110%;
-  background-image: url("https://wallpapercg.com/media/ts_2x/10586.webp");
+  margin-left: 20%;
+  background-color: rgb(207, 240, 207) !important;
+  /* background-image: url("https://wallpapercg.com/media/ts_2x/10586.webp"); */
 }
 
 .do-quiz-navigation-buttons {

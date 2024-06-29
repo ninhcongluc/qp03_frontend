@@ -88,7 +88,7 @@ const MenuComponent = ({ role }) => {
       anchor="left"
       sx={{
         "& .MuiDrawer-paper": {
-          backgroundColor: "#fff",
+          backgroundColor: "#FFFAFA",
         },
       }}
     >
