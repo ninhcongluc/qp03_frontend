@@ -64,7 +64,6 @@
 }
 
 .submit-button {
-  color: rgb(232, 77, 77) !important;
   transform-origin: top left;
   transition: transform 0.3s ease;
 }

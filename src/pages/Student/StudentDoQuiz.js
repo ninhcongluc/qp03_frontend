@@ -322,9 +322,18 @@ const StudentDoQuiz = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       if (!submitted) {
-        setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+        setTimeLeft((prevTime) => {
+          if (prevTime > 0) {
+            return prevTime - 1;
+          } else {
+            handleConfirmSubmit(); // Tự động nộp bài khi hết thời gian
+            clearInterval(timer);
+            return 0;
+          }
+        });
       }
     }, 1000);
+
     return () => clearInterval(timer);
   }, [submitted]);
 
@@ -412,7 +421,10 @@ const StudentDoQuiz = () => {
                   <Typography variant="body1" className="do-quiz-question-text">
                     {quizData.questions[currentQuestion]?.question}
                   </Typography>
-                  <FormControl component="fieldset" className="do-quiz-options-form">
+                  <FormControl
+                    component="fieldset"
+                    className="do-quiz-options-form"
+                  >
                     {quizData.questions[currentQuestion]?.multipleAnswers ? (
                       <FormLabel component="legend">Choose multiple:</FormLabel>
                     ) : (
@@ -546,16 +558,19 @@ const StudentDoQuiz = () => {
         <DialogTitle>Confirm Submit</DialogTitle>
         <DialogContent>
           <Typography>
-            You have not completed all questions. Are you sure you want to
-            submit?
+            {/* You have not completed all questions. Are you sure you want to
+            submit? */}
+            Mày đã làm hết đâu mà đòi nộp bài, Ken xồ ra mà làm tiếp đi còn gì
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelSubmit} color="primary">
-            Cancel
+            {/* Cancel */}
+            Ken xồ
           </Button>
           <Button onClick={handleConfirmSubmit} color="primary">
-            Submit Anyway
+            {/* Submit Anyway */}
+            Vẫn Nộp = Ngu
           </Button>
         </DialogActions>
       </Dialog>
