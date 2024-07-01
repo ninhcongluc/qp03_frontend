@@ -1,10 +1,11 @@
 import {
   Add as AddIcon,
-  RemoveRedEye as ViewIcon,
+  CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
-  CloudUpload as CloudUploadIcon,
+  RemoveRedEye as ViewIcon,
 } from "@mui/icons-material";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Avatar,
   Box,
@@ -28,13 +29,12 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
 // import MenuComponent from "../../components/LeftMenu/Menu";
-import "./styles/TeacherCourseDetail.css";
 import { useNavigate } from "react-router-dom";
+import "./styles/TeacherCourseDetail.css";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -47,17 +47,27 @@ const columns = [
   {
     id: "timeLimitMinutes",
     label: "TimeLimit\u00a0minutes",
-    minWidth: 170,
+    minWidth: 120,
+  },
+  {
+    id: "maxLimitAttempts",
+    label: "LimitAttempts",
+    minWidth: 120,
   },
   {
     id: "score",
     label: "Score",
-    minWidth: 170,
+    minWidth: 120,
   },
   {
-    id: "hidden",
-    label: "Hidden",
-    minWidth: 170,
+    id: "showAnswer",
+    label: "ShowAnswer",
+    minWidth: 150,
+  },
+  {
+    id: "active",
+    label: "Active",
+    minWidth: 150,
   },
   {
     id: "action",
@@ -83,9 +93,12 @@ const TeacherCourseDetailPage = () => {
     description: "",
     startDate: null,
     endDate: null,
+    classId: selectedClassId,
     timeLimitMinutes: 0,
+    isLimitedAttempts: false,
+    maxAttempts: 0,
     score: 10,
-    isHidden: false,
+    showAnswer: false,
   });
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
 
@@ -162,7 +175,16 @@ const TeacherCourseDetailPage = () => {
     setSelectedClassId(event.target.value);
   };
 
-  const handleToggleHidden = () => {};
+  const handleToggleActive = async (quizId) => {
+    console.log("quizId", quizId);
+    try {
+      await ApiInstance.put(`/quiz/${quizId}/set-active`);
+      fetchData();
+      toast.success("Change status successfully");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleCreateQuiz = () => {
     setSelectedQuiz(null);
@@ -172,9 +194,11 @@ const TeacherCourseDetailPage = () => {
       description: "",
       startDate: null,
       endDate: null,
+      isLimitedAttempts: false,
+      maxAttempts: 0,
       timeLimitMinutes: 0,
       score: 10,
-      isHidden: false,
+      showAnswer: false,
     });
   };
 
@@ -184,14 +208,18 @@ const TeacherCourseDetailPage = () => {
       name: "",
       description: "",
       startDate: null,
+      isLimitedAttempts: false,
+      classId: selectedClassId,
       endDate: null,
       timeLimitMinutes: 0,
       score: 10,
-      isHidden: false,
+      showAnswer: false,
     });
   };
 
-  const handleViewQuiz = (quiz) => {};
+  const handleViewQuiz = (quiz) => {
+    navigate(`/teacher/quiz/${quiz.id}/question-list`);
+  };
 
   const handleEditQuiz = (quiz) => {
     setSelectedQuiz(quiz);
@@ -200,9 +228,12 @@ const TeacherCourseDetailPage = () => {
       description: quiz.description,
       startDate: new Date(quiz.startDate),
       endDate: new Date(quiz.endDate),
+      classId: selectedClassId,
+      isLimitedAttempts: quiz.isLimitedAttempts,
+      maxAttempts: quiz.maxAttempts,
       timeLimitMinutes: quiz.timeLimitMinutes,
       score: quiz.score,
-      isHidden: quiz.isHidden,
+      showAnswer: quiz.showAnswer,
     });
     setShowCreateQuizDialog(true);
   };
@@ -342,11 +373,21 @@ const TeacherCourseDetailPage = () => {
                     <TableCell>{formatDateDay(quiz.startDate)}</TableCell>
                     <TableCell>{formatDateDay(quiz.endDate)}</TableCell>
                     <TableCell>{quiz.timeLimitMinutes}</TableCell>
+                    <TableCell>
+                      {quiz.isLimitedAttempts ? quiz.maxAttempts : "No"}
+                    </TableCell>
                     <TableCell>{quiz.score}</TableCell>
+                    <TableCell
+                      style={{
+                        color: quiz.showAnswer ? "blue" : "red",
+                      }}
+                    >
+                      {quiz.showAnswer ? "True" : "False"}
+                    </TableCell>{" "}
                     <TableCell>
                       <Switch
-                        checked={quiz.isHidden}
-                        onChange={() => handleToggleHidden(quiz.id)}
+                        checked={quiz.isActive}
+                        onChange={() => handleToggleActive(quiz.id)}
                       />
                     </TableCell>
                     <TableCell id="action-button">
@@ -475,14 +516,43 @@ const TeacherCourseDetailPage = () => {
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={100}>100</MenuItem>
               </TextField>
+              <div>
+                <Typography variant="subtitle1">Limit Attempts:</Typography>
+                <Switch
+                  checked={newQuiz.isLimitedAttempts}
+                  onChange={(e) =>
+                    setNewQuiz({
+                      ...newQuiz,
+                      isLimitedAttempts: e.target.checked,
+                    })
+                  }
+                />
+              </div>
+
+              {newQuiz.isLimitedAttempts && (
+                <TextField
+                  label="Max Attempts"
+                  type="number"
+                  value={newQuiz.maxAttempts}
+                  onChange={(e) =>
+                    setNewQuiz({
+                      ...newQuiz,
+                      maxAttempts: parseInt(e.target.value),
+                    })
+                  }
+                  fullWidth
+                  margin="normal"
+                  required
+                />
+              )}
               <div className="hidden-switch">
                 <Typography variant="subtitle1">
                   Show Student Answers:
                 </Typography>
                 <Switch
-                  checked={newQuiz.isHidden}
+                  checked={newQuiz.showAnswer}
                   onChange={(e) =>
-                    setNewQuiz({ ...newQuiz, isHidden: e.target.checked })
+                    setNewQuiz({ ...newQuiz, showAnswer: e.target.checked })
                   }
                 />
               </div>

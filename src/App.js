@@ -68,7 +68,7 @@ function App() {
         <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
 
         <Route
-          path="/teacher/add-question"
+          path="/teacher/quiz/:quizId/question-list"
           element={<TeacherQuestionListPage />}
         />
         <Route path="/changePass" element={<ChangePassword />} />
