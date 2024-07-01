@@ -1,28 +1,30 @@
-.teacher-course-detail-page {
-  margin-left: 15%;
-}
 .custom-row:nth-of-type(odd) {
-  background-color: #f9f9f9; /* Change the color to your preference */
+  background-color: #f9f9f9;
 }
 
 .custom-row:hover {
-  background-color: #f1f1f1; /* Change the color to your preference */
+  background-color: #f1f1f1;
+}
+
+#view-student {
+  margin-left: 10px;
+  background-color: cadetblue;
+}
+.icon-button {
+  width: fit-content;
+}
+
+.content {
+  height: 100vh;
+  width: 100%;
 }
 
 .class-select {
-  position: fixed;
-  top: 0;
-  width: 50%;
-  background: white;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 110px;
 }
 
 .quiz-management {
-  margin-top: 200px; /* Adjust based on your filter container's height */
-  max-height: calc(
-    100vh - 100px
-  ); /* Adjust based on your filter container's height */
+  height: calc(100vh - 110px);
 }
 
 .button-group {
@@ -32,8 +34,26 @@
   align-items: center;
 }
 
-.create-button {
+.quiz-table {
+  overflow: scroll;
 }
 
-.view-student {
+#action-button {
+  display: flex;
+}
+
+.back-button {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(135deg);
+  cursor: pointer;
+}
+
+.back-button:hover {
+  border-color: #666;
 }

@@ -1,5 +1,6 @@
 import {
   Add as AddIcon,
+  RemoveRedEye as ViewIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
   CloudUpload as CloudUploadIcon,
@@ -31,8 +32,39 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
-import MenuComponent from "../../components/LeftMenu/Menu";
+// import MenuComponent from "../../components/LeftMenu/Menu";
 import "./styles/TeacherCourseDetail.css";
+import { useNavigate } from "react-router-dom";
+
+const columns = [
+  { id: "name", label: "Name", minWidth: 170 },
+  { id: "startDate", label: "StartDate", minWidth: 100 },
+  {
+    id: "endDate",
+    label: "EndDate",
+    minWidth: 170,
+  },
+  {
+    id: "timeLimitMinutes",
+    label: "TimeLimit\u00a0minutes",
+    minWidth: 170,
+  },
+  {
+    id: "score",
+    label: "Score",
+    minWidth: 170,
+  },
+  {
+    id: "hidden",
+    label: "Hidden",
+    minWidth: 170,
+  },
+  {
+    id: "action",
+    label: "Action",
+    minWidth: 170,
+  },
+];
 
 const TeacherCourseDetailPage = () => {
   const [page, setPage] = useState(0);
@@ -44,6 +76,7 @@ const TeacherCourseDetailPage = () => {
   const [showStudentDialog, setShowStudentDialog] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const { courseId } = useParams();
+  let navigate = useNavigate();
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
@@ -158,6 +191,8 @@ const TeacherCourseDetailPage = () => {
     });
   };
 
+  const handleViewQuiz = (quiz) => {};
+
   const handleEditQuiz = (quiz) => {
     setSelectedQuiz(quiz);
     setNewQuiz({
@@ -213,7 +248,7 @@ const TeacherCourseDetailPage = () => {
       } else {
         // Create new quiz
         await ApiInstance.post(
-          `/quiz`,
+          `/quiz/create`,
           { ...newQuiz, classId: selectedClassId },
           config
         );
@@ -230,8 +265,9 @@ const TeacherCourseDetailPage = () => {
 
   return (
     <Box className="teacher-course-detail-page">
-      <MenuComponent role="teacher" />
+      {/* <MenuComponent role="teacher" /> */}
       <div className="content">
+        <button className="back-button" onClick={() => navigate(-1)}></button>
         <div className="class-select">
           <Typography variant="h4" gutterBottom>
             {course ? course.name : "Loading..."}
@@ -271,7 +307,7 @@ const TeacherCourseDetailPage = () => {
 
             <Button
               variant="contained"
-              className="view-student"
+              id="view-student"
               startIcon={<PeopleAltIcon />}
               color="primary"
               onClick={() => handleViewStudents()}
@@ -279,19 +315,26 @@ const TeacherCourseDetailPage = () => {
               View Students
             </Button>
           </div>
-          <Box sx={{ mt: 5 }}>
-            <Table sx={{ minWidth: 800 }}>
+          <Box>
+            <Table
+              stickyHeader
+              aria-label="sticky table"
+              className="quiz-table"
+            >
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Start Date</TableCell>
-                  <TableCell>End Date</TableCell>
-                  <TableCell>TimeLimit</TableCell>
-                  <TableCell>Score</TableCell>
-                  <TableCell>Hidden</TableCell>
-                  <TableCell>Actions</TableCell>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {paginatedQuizzes.map((quiz) => (
                   <TableRow key={quiz.id} className="custom-row">
@@ -306,11 +349,23 @@ const TeacherCourseDetailPage = () => {
                         onChange={() => handleToggleHidden(quiz.id)}
                       />
                     </TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditQuiz(quiz)}>
+                    <TableCell id="action-button">
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleViewQuiz(quiz)}
+                      >
+                        <ViewIcon />
+                      </IconButton>
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleEditQuiz(quiz)}
+                      >
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteQuiz(quiz.id)}>
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleDeleteQuiz(quiz.id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -320,6 +375,7 @@ const TeacherCourseDetailPage = () => {
             </Table>
           </Box>
           <TablePagination
+            rowsPerPageOptions={[10, 20, 50]}
             component="div"
             count={quizzes.length}
             page={page}
@@ -356,7 +412,6 @@ const TeacherCourseDetailPage = () => {
                 }
                 fullWidth
                 margin="normal"
-                required
               />
               <TextField
                 label="Start Date"
@@ -412,12 +467,18 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, score: parseInt(e.target.value) })
                 }
+                select
                 fullWidth
                 margin="normal"
                 required
-              />
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </TextField>
               <div className="hidden-switch">
-                <Typography variant="subtitle1">Hidden</Typography>
+                <Typography variant="subtitle1">
+                  Show Student Answers:
+                </Typography>
                 <Switch
                   checked={newQuiz.isHidden}
                   onChange={(e) =>
