@@ -15,7 +15,7 @@ import "./StudentQuizPage.css";
 
 const quizData = [
   {
-    id: "4713fc09-2967-4e59-a832-04db1379baad",
+    id: "4990d380-9f43-485e-90c7-90bfb986829d",
     courseId: "ACC 101",
     courseName: "Accounting Principles",
     class: "1848",
