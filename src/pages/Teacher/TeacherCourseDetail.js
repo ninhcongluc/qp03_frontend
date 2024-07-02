@@ -1,51 +1,49 @@
 import {
   Add as AddIcon,
-  CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
-  Visibility as VisibilityIcon,
+  CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import {
-  Alert,
   Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
   MenuItem,
   Select,
-  Snackbar,
   Switch,
   Table,
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
   Typography,
-} from "@mui/material"; // Fix incorrect import statement
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+} from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { toast } from "react-toastify";
+import ApiInstance from "../../axios";
+import { formatDateDay } from "../../commons/function";
 import MenuComponent from "../../components/LeftMenu/Menu";
-import "./TeacherCourseDetail.css";
+import "./styles/TeacherCourseDetail.css";
+
 const TeacherCourseDetailPage = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [course, setCourse] = useState(null);
   const [selectedClassId, setSelectedClassId] = useState("");
   const [quizzes, setQuizzes] = useState([]);
   const [students, setStudents] = useState([]);
   const [showStudentDialog, setShowStudentDialog] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const navigate = useNavigate();
+  const { courseId } = useParams();
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
@@ -59,61 +57,79 @@ const TeacherCourseDetailPage = () => {
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/course/805df5f7-e05f-4062-9357-47be2ea053f2")
+    ApiInstance.get(`/course/${courseId}`)
       .then((response) => {
         setCourse(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
       });
-  }, []);
+  }, [courseId]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       if (selectedClassId) {
-        const response = await axios.get(
-          `http://localhost:8000/quiz/${selectedClassId}`
-        );
+        const response = await ApiInstance.get(`/quiz/${selectedClassId}`);
         setQuizzes(response.data.data);
 
-        const students = await axios.get(
-          `http://localhost:8000/student/${selectedClassId}`
-        );
+        const students = await ApiInstance.get(`/student/${selectedClassId}`);
         setStudents(students.data.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [selectedClassId]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (selectedClassId) {
-          const response = await axios.get(
-            `http://localhost:8000/quiz/${selectedClassId}`
-          );
-          setQuizzes(response.data.data);
-
-          const students = await axios.get(
-            `http://localhost:8000/student/${selectedClassId}`
-          );
-          setStudents(students.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     if (selectedClassId) {
       fetchData();
     }
-  }, [selectedClassId]);
+  }, [selectedClassId, fetchData]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleImportStudents = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        await ApiInstance.post(`/import-student/${selectedClassId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        ApiInstance.get(`/student/${selectedClassId}`)
+          .then((response) => {
+            setStudents(response.data.data);
+            toast.success("Import student successfully");
+          })
+          .catch((error) => {
+            console.error("Error fetching student data:", error);
+          });
+      } catch (error) {
+        console.error("Error importing students:", error);
+      }
+    }
+  };
+
+  const paginatedQuizzes = quizzes.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const handleClassChange = (event) => {
     setSelectedClassId(event.target.value);
   };
+
+  const handleToggleHidden = () => {};
 
   const handleCreateQuiz = () => {
     setSelectedQuiz(null);
@@ -164,260 +180,173 @@ const TeacherCourseDetailPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.delete(`http://localhost:8000/quiz/${quizId}`, config);
+      await ApiInstance.delete(`/quiz/${quizId}`, config);
       fetchData();
-      toast.success("Manager account deleted successfully");
+      toast.success("Quiz deleted successfully");
     } catch (error) {
       toast.error(error.response.data.error);
-      console.error("Error deleting manager account:", error);
+      console.error("Error deleting quiz:", error);
     }
   };
 
   const handleViewStudents = () => {
     setShowStudentDialog(true);
   };
-
-  const handleImportStudents = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      try {
-        await axios.post(
-          `http://localhost:8000/teacher/import-student/${selectedClassId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        axios
-          .get(`http://localhost:8000/student/${selectedClassId}`)
-          .then((response) => {
-            console.log("response", response);
-            setStudents(response.data.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching student data:", error);
-          });
-        setShowSnackbar(true);
-        setSnackbarMessage("Students imported successfully!");
-      } catch (error) {
-        console.error("Error importing students:", error);
-      }
-    }
-  };
   const handleCloseStudentDialog = () => {
     setShowStudentDialog(false);
   };
 
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
-  const handleQA = (quizId) => {
-    navigate(`/teacher/quiz/${quizId}`);
-  };
-
-  const handleSubmit = async () => {
+  const handleQuizFormSubmit = async (event) => {
+    event.preventDefault();
     try {
       const token = localStorage.getItem("token");
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
       };
 
-      const payload = {
-        classId: selectedClassId,
-        name: newQuiz.name,
-        description: newQuiz?.description,
-        startDate: newQuiz.startDate,
-        endDate: newQuiz.endDate,
-        timeLimitMinutes: newQuiz?.timeLimitMinutes,
-        score: newQuiz?.score || 10,
-        isHidden: newQuiz?.isHidden || false,
-      };
-
       if (selectedQuiz) {
-        // Update existing account
-        await axios.put(
-          `http://localhost:8000/quiz/${selectedQuiz.id}`,
-          payload,
+        // Update existing quiz
+        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz, config);
+        toast.success("Quiz updated successfully");
+      } else {
+        // Create new quiz
+        await ApiInstance.post(
+          `/quiz`,
+          { ...newQuiz, classId: selectedClassId },
           config
         );
-      } else {
-        // Create new account
-        await axios.post("http://localhost:8000/quiz/create", payload, config);
+        toast.success("Quiz created successfully");
       }
-      await fetchData();
 
-      toast.success("Quiz saved successfully");
-      setShowCreateQuizDialog(false);
+      fetchData();
+      handleCloseCreateQuizDialog();
     } catch (error) {
       toast.error(error.response.data.error);
-      console.error("Error saving manager account:", error);
+      console.error("Error submitting quiz form:", error);
     }
   };
 
   return (
-    <div>
+    <Box className="teacher-course-detail-page">
       <MenuComponent role="teacher" />
-      <Typography variant="h4">Course Details</Typography>
-      {course && (
-        <>
-          <div className="course-info">
-            <Typography variant="h5">{course.name}</Typography>
-            <Typography variant="body1">{course.description}</Typography>
-            <Select value={selectedClassId} onChange={handleClassChange}>
-              <MenuItem value="" disabled>
-                Select a class
-              </MenuItem>
-              {course.classes.map((cls) => (
-                <MenuItem key={cls.id} value={cls.id}>
-                  {cls.name}
+      <div className="content">
+        <div className="class-select">
+          <Typography variant="h4" gutterBottom>
+            {course ? course.name : "Loading..."}
+          </Typography>
+          <Select
+            value={selectedClassId}
+            onChange={handleClassChange}
+            displayEmpty
+            fullWidth
+          >
+            <MenuItem value="" disabled>
+              Select Class
+            </MenuItem>
+            {course &&
+              course.classes.map((classItem) => (
+                <MenuItem key={classItem.id} value={classItem.id}>
+                  {classItem.name}
                 </MenuItem>
               ))}
-            </Select>
-          </div>
-          {selectedClassId && (
-            <>
-              <div>
-                <IconButton color="primary" onClick={() => handleCreateQuiz()}>
-                  <AddIcon /> Create New
-                </IconButton>
-                <IconButton
-                  color="default"
-                  onClick={() => handleViewStudents()}
-                >
-                  <VisibilityIcon /> Student list
-                </IconButton>
-              </div>
+          </Select>
+        </div>
 
-              <List style={{ overflowY: "scroll", maxHeight: "700px" }}>
-                {quizzes.map((quiz) => (
-                  <ListItem key={quiz.id}>
-                    <ListItemText
-                      primary={quiz.name}
-                      secondary={
-                        <>
-                          <Typography variant="body2">
-                            {quiz.description}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Score:</strong> {quiz.score}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Time Limit (minutes):</strong>{" "}
-                            {quiz.timeLimitMinutes}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Start Date:</strong>{" "}
-                            {new Date(quiz.startDate).toLocaleString()}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>End Date:</strong>{" "}
-                            {new Date(quiz.endDate).toLocaleString()}
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <div className="action">
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleEditQuiz(quiz)}
-                      >
+        <div className="quiz-management">
+          <Typography variant="h4" gutterBottom>
+            Quiz Management
+          </Typography>
+          <div className="button-group">
+            <Button
+              className="create-button"
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleCreateQuiz}
+            >
+              Create Quiz
+            </Button>
+
+            <Button
+              variant="contained"
+              className="view-student"
+              startIcon={<PeopleAltIcon />}
+              color="primary"
+              onClick={() => handleViewStudents()}
+            >
+              View Students
+            </Button>
+          </div>
+          <Box sx={{ mt: 5 }}>
+            <Table sx={{ minWidth: 800 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Start Date</TableCell>
+                  <TableCell>End Date</TableCell>
+                  <TableCell>TimeLimit</TableCell>
+                  <TableCell>Score</TableCell>
+                  <TableCell>Hidden</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedQuizzes.map((quiz) => (
+                  <TableRow key={quiz.id} className="custom-row">
+                    <TableCell>{quiz.name}</TableCell>
+                    <TableCell>{formatDateDay(quiz.startDate)}</TableCell>
+                    <TableCell>{formatDateDay(quiz.endDate)}</TableCell>
+                    <TableCell>{quiz.timeLimitMinutes}</TableCell>
+                    <TableCell>{quiz.score}</TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={quiz.isHidden}
+                        onChange={() => handleToggleHidden(quiz.id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditQuiz(quiz)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() => handleDeleteQuiz(quiz.id)}
-                      >
+                      <IconButton onClick={() => handleDeleteQuiz(quiz.id)}>
                         <DeleteIcon />
                       </IconButton>
-                      <IconButton
-                        color="default"
-                        onClick={() => handleQA(quiz.id)}
-                      >
-                        <QuestionAnswerIcon />
-                      </IconButton>
-                    </div>
-                  </ListItem>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </List>
-            </>
-          )}
-        </>
-      )}
-      <Dialog open={showStudentDialog} onClose={handleCloseStudentDialog}>
-        <DialogTitle>Student List</DialogTitle>
+              </TableBody>
+            </Table>
+          </Box>
+          <TablePagination
+            component="div"
+            count={quizzes.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </div>
 
-        <DialogContent>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<CloudUploadIcon />}
-            component="label"
-          >
-            Import Students
-            <input type="file" hidden onChange={handleImportStudents} />
-          </Button>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Avatar</TableCell>
-                <TableCell>Student Code</TableCell>
-                <TableCell>Student Name</TableCell>
-                <TableCell>Date of Birth</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {students.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell>
-                    <Avatar src={student.avatar} />
-                  </TableCell>
-                  <TableCell>{student.code}</TableCell>
-                  <TableCell>{`${student?.firstName || ""} ${
-                    student?.lastName || ""
-                  }`}</TableCell>
-                  <TableCell>{student.dob}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseStudentDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert severity="success">{snackbarMessage}</Alert>
-      </Snackbar>
-
-      <div className="create-dialog">
         <Dialog
           open={showCreateQuizDialog}
           onClose={handleCloseCreateQuizDialog}
         >
           <DialogTitle>
-            {selectedQuiz ? "Edit Quiz" : "Create New Quiz"}
+            {selectedQuiz ? "Edit Quiz" : "Create Quiz"}
           </DialogTitle>
           <DialogContent>
-            <div>
+            <form onSubmit={handleQuizFormSubmit}>
               <TextField
-                label="Name"
+                label="Quiz Name"
                 value={newQuiz.name}
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, name: e.target.value })
                 }
+                fullWidth
+                margin="normal"
                 required
-                style={{ marginBottom: "10px", marginRight: "10px" }}
               />
               <TextField
                 label="Description"
@@ -425,16 +354,16 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, description: e.target.value })
                 }
-                style={{ marginBottom: "10px" }}
+                fullWidth
+                margin="normal"
+                required
               />
-            </div>
-            <div>
               <TextField
                 label="Start Date"
-                type="date"
+                type="datetime-local"
                 value={
                   newQuiz.startDate
-                    ? newQuiz.startDate.toISOString().slice(0, 10)
+                    ? newQuiz.startDate.toISOString().slice(0, -1)
                     : ""
                 }
                 onChange={(e) =>
@@ -443,25 +372,25 @@ const TeacherCourseDetailPage = () => {
                     startDate: new Date(e.target.value),
                   })
                 }
+                fullWidth
+                margin="normal"
                 required
-                style={{ marginBottom: "10px", marginRight: "10px" }}
               />
               <TextField
                 label="End Date"
-                type="date"
+                type="datetime-local"
                 value={
                   newQuiz.endDate
-                    ? newQuiz.endDate.toISOString().slice(0, 10)
+                    ? newQuiz.endDate.toISOString().slice(0, -1)
                     : ""
                 }
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, endDate: new Date(e.target.value) })
                 }
+                fullWidth
+                margin="normal"
                 required
-                style={{ marginBottom: "10px" }}
               />
-            </div>
-            <div>
               <TextField
                 label="Time Limit (minutes)"
                 type="number"
@@ -472,7 +401,9 @@ const TeacherCourseDetailPage = () => {
                     timeLimitMinutes: parseInt(e.target.value),
                   })
                 }
-                style={{ marginBottom: "10px", marginRight: "10px" }}
+                fullWidth
+                margin="normal"
+                required
               />
               <TextField
                 label="Score"
@@ -481,34 +412,75 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, score: parseInt(e.target.value) })
                 }
-                style={{ marginBottom: "10px" }}
+                fullWidth
+                margin="normal"
+                required
               />
-            </div>
-            Hidden:{" "}
-            <Switch
-              checked={newQuiz.isHidden}
-              onChange={(e) =>
-                setNewQuiz({ ...newQuiz, isHidden: Boolean(e.target.checked) })
-              }
+              <div className="hidden-switch">
+                <Typography variant="subtitle1">Hidden</Typography>
+                <Switch
+                  checked={newQuiz.isHidden}
+                  onChange={(e) =>
+                    setNewQuiz({ ...newQuiz, isHidden: e.target.checked })
+                  }
+                />
+              </div>
+              <DialogActions>
+                <Button onClick={handleCloseCreateQuizDialog} color="secondary">
+                  Cancel
+                </Button>
+                <Button type="submit" color="primary">
+                  {selectedQuiz ? "Update" : "Create"}
+                </Button>
+              </DialogActions>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showStudentDialog} onClose={handleCloseStudentDialog}>
+          <DialogTitle>Student List</DialogTitle>
+
+          <DialogContent>
+            <Button
+              variant="contained"
               color="primary"
-            />
+              startIcon={<CloudUploadIcon />}
+              component="label"
+            >
+              Import Students
+              <input type="file" hidden onChange={handleImportStudents} />
+            </Button>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Avatar</TableCell>
+                  <TableCell>Student Code</TableCell>
+                  <TableCell>Student Email</TableCell>
+                  <TableCell>Student Name</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {students.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell>
+                      <Avatar src={student.avatar} />
+                    </TableCell>
+                    <TableCell>{student.code}</TableCell>
+                    <TableCell>{student.email}</TableCell>
+                    <TableCell>{`${student?.firstName || ""} ${
+                      student?.lastName || ""
+                    }`}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseCreateQuizDialog}>Cancel</Button>
-            <Button
-              onClick={() => {
-                // Handle creating the new quiz
-                console.log(newQuiz);
-                handleSubmit();
-              }}
-              color="primary"
-            >
-              {selectedQuiz ? "Update" : "Create"}
-            </Button>
+            <Button onClick={handleCloseStudentDialog}>Close</Button>
           </DialogActions>
         </Dialog>
       </div>
-    </div>
+    </Box>
   );
 };
 
