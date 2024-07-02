@@ -62,7 +62,7 @@
 }
 
 #submit-button {
-  width: 300px;
-  margin: 0 auto;
-  display: block;
+  width: 200px;
+  margin-right: 2%;
+  margin-bottom: 50px;
 }

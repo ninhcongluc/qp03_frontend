@@ -65,8 +65,8 @@ const columns = [
     minWidth: 150,
   },
   {
-    id: "active",
-    label: "Active",
+    id: "status",
+    label: "Status",
     minWidth: 150,
   },
   {
@@ -173,17 +173,6 @@ const TeacherCourseDetailPage = () => {
 
   const handleClassChange = (event) => {
     setSelectedClassId(event.target.value);
-  };
-
-  const handleToggleActive = async (quizId) => {
-    console.log("quizId", quizId);
-    try {
-      await ApiInstance.put(`/quiz/${quizId}/set-active`);
-      fetchData();
-      toast.success("Change status successfully");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
   };
 
   const handleCreateQuiz = () => {
@@ -384,12 +373,7 @@ const TeacherCourseDetailPage = () => {
                     >
                       {quiz.showAnswer ? "True" : "False"}
                     </TableCell>{" "}
-                    <TableCell>
-                      <Switch
-                        checked={quiz.isActive}
-                        onChange={() => handleToggleActive(quiz.id)}
-                      />
-                    </TableCell>
+                    <TableCell>{quiz?.status}</TableCell>
                     <TableCell id="action-button">
                       <IconButton
                         className="icon-button"
