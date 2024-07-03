@@ -1,47 +1,64 @@
 import React, { useState, useEffect } from "react";
-import ChangePassword from "../components/ChangePassword/ChangePassword";
 import "bootstrap/dist/css/bootstrap.min.css";
-import MenuComponent from "../components/LeftMenu/Menu";
-import ApiInstance from "../axios";
+import MenuComponent from "../../components/LeftMenu/Menu";
+import ApiInstance from "../../axios";
 import Button from '@material-ui/core/Button';
-import { useNavigate } from "react-router-dom";
 
-const ProfilePage = ({ role }) => {
+const EditProfile = () => {
   const [userData, setUserData] = useState({
+    id: "",
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
     dateOfBirth: "",
     code: "",
-    gender: 1
+    gender: "",
   });
-  const navigate = useNavigate();
+
+  const fetchUserData = async () => {
+    try {
+      const response = await ApiInstance.get("/user/profile");
+      setUserData({
+        id: response.data.data.id,
+        firstName: response.data.data.firstName,
+        lastName: response.data.data.lastName,
+        email: response.data.data.email,
+        phoneNumber: response.data.data.phoneNumber,
+        dateOfBirth: response.data.data.dateOfBirth,
+        code: response.data.data.code,
+        gender: response.data.data.gender,
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await ApiInstance.get("/user/profile");
-        setUserData({
-          firstName: response.data.data.firstName,
-          lastName: response.data.data.lastName,
-          email: response.data.data.email,
-          phoneNumber: response.data.data.phoneNumber,
-          dateOfBirth: response.data.data.dateOfBirth,
-          code: response.data.data.code,
-          gender:response.data.data.gender,
-        });
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
     fetchUserData();
   }, []);
+
   const getGenderText = (gender) => {
     return gender === 1 ? "Man" : "Woman";
   };
-  const handleEditProfile = () => {
-    navigate("/profile/edit-profile"); // Navigate to the edit profile page
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUserData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateProfile = async (userData) => {
+    try {
+      await ApiInstance.put(`/profile/updateProfile/${userData.id}`, userData);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error updating profile");
+    }
   };
 
 
@@ -52,7 +69,7 @@ const ProfilePage = ({ role }) => {
         alt="FPT Logo"
         style={{ width: "9%", marginLeft: "90%", marginTop: "2%" }}
       />
-     <MenuComponent role="admin" />
+      <MenuComponent role="admin" />
       <div
         style={{
           backgroundColor: "#eee",
@@ -80,10 +97,15 @@ const ProfilePage = ({ role }) => {
                     src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
                     alt="avatar"
                     className="rounded-circle"
-                    style={{ width: "150px", marginLeft: '-8px'}}
+                    style={{ width: "150px", marginLeft: "-8px" }}
                     fluid="true"
                   />
-                  <p className="text-muted mb-1" style={{width:'200px', marginLeft:'-36px', marginTop:'7px'}}>{userData.firstName} {userData.lastName}</p>
+                  <p
+                    className="text-muted mb-1"
+                    style={{ width: "200px", textAlign: "center" }}
+                  >
+                    {userData.firstName} {userData.lastName}
+                  </p>
                 </div>
               </div>
             </div>
@@ -95,7 +117,29 @@ const ProfilePage = ({ role }) => {
                       <p>Full Name :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">{userData.firstName} {userData.lastName}</p>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={userData.firstName}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={userData.lastName}
+                        onChange={handleInputChange}
+                        className="form-control mt-2"
+                      />
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p>Code :</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <p className="text-muted">{userData.code}</p>
                     </div>
                   </div>
                   <hr />
@@ -104,16 +148,13 @@ const ProfilePage = ({ role }) => {
                       <p>Birth: </p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">{userData.dateOfBirth}</p>
-                    </div>
-                  </div>
-                  <hr/>
-                  <div className="row">
-                    <div className="col-sm-3">
-                      <p>Code :</p>
-                    </div>
-                    <div className="col-sm-9">
-                      <p className="text-muted">{userData.code}</p>
+                      <input
+                        type="date"
+                        name="dateOfBirth"
+                        value={userData.dateOfBirth}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
                     </div>
                   </div>
                   <hr />
@@ -131,30 +172,43 @@ const ProfilePage = ({ role }) => {
                       <p>Email :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">{userData.email}</p>
+                      <p>{userData.email}</p>
+
                     </div>
                   </div>
-                   <hr/>
-                   <div className="row">
+                  <hr />
+                  <div className="row">
                     <div className="col-sm-3">
                       <p>Phone :</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted">{userData.phoneNumber}</p>
+                      <input
+                        type="text"
+                        name="phoneNumber"
+                        value={userData.phoneNumber}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ width: '26%', marginLeft: '70%', marginBottom: '-59px' }}
+            onClick={handleUpdateProfile(userData.id)}
+          >
+            Save
+          </Button>
         </div>
-        <Button variant="contained" color="primary" style={{ width:'26%', marginLeft:'40%', marginBottom: '-59px' }} onClick={handleEditProfile}>
-          Edit Profile
-        </Button>
-        <ChangePassword />
+
       </div>
+
     </div>
   );
 };
 
-export default ProfilePage;
+export default EditProfile;
