@@ -208,7 +208,7 @@ const CourseDetailPage = () => {
   return (
     <div>
       <MenuComponent role="manager" />
-      <Container>
+      <Container maxWidth={false}>
         <Typography variant="h4" component="h1" gutterBottom>
           {course.code}: {course.description}
         </Typography>

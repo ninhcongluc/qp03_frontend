@@ -14,15 +14,17 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Switch,
 } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import ApiInstance from "../../axios";
-import { formatDate } from "../../commons/function";
+import { formatDateDay } from "../../commons/function";
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import "./ManagerCss/ManagerSemester.css";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -60,6 +62,7 @@ const ManageSemesterTable = () => {
   const handleSubmit = async (values, formikBag) => {
     try {
       await ApiInstance.post("/semester", values);
+      fetchSemesters();
       toast.success("Create semester successfully");
       handleClose();
       formikBag.resetForm();
@@ -76,31 +79,49 @@ const ManageSemesterTable = () => {
 
   const handleDelete = async () => {
     try {
-      await ApiInstance.delete(`/semester/${semesterToDelete?.id}`);
+      await ApiInstance.delete(`/semester/${semesterToDelete.id}`);
       toast.success("Delete semester successfully");
       fetchSemesters();
       setConfirmationOpen(false);
     } catch (error) {
       toast.error(error.response.data.error);
+      setConfirmationOpen(false);
       console.error("Error deleting semester:", error);
     }
   };
+
+  const handleActiveChange = async (semester) => {
+    try {
+      await ApiInstance.put(`/semester/${semester.id}`, {
+        
+        isActive: !semester.isActive,
+      });
+      toast.success("Change semester active status successfully");
+      fetchSemesters();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error changing semester active status:", error);
+    }
+  }
 
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button
-          sx={{ 
-            width: "40px",
-             height: "40px",
-             backgroundColor: "#229342",
-            }}
+          sx={{
+            width: "30px",
+            height: "30px",
+            backgroundColor: "#229342",
+            '&:hover': {
+              backgroundColor: '#1e7b36',
+            },
+          }}
           variant="contained"
           color="primary"
           size="small"
           onClick={handleCreateSemester}
         >
-          <CreateOutlinedIcon sx={{fontSize:"30px"}}/>
+          <PostAddIcon sx={{ fontSize: "25px" }} />
         </Button>
       </Box>
       <TableContainer
@@ -116,8 +137,9 @@ const ManageSemesterTable = () => {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>StartDate</TableCell>
-              <TableCell>EndDate</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -126,8 +148,15 @@ const ManageSemesterTable = () => {
               <TableRow key={semester.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{semester.name}</TableCell>
-                <TableCell>{formatDate(semester.startDate)}</TableCell>
-                <TableCell>{formatDate(semester.endDate)}</TableCell>
+                <TableCell>{formatDateDay(semester.startDate)}</TableCell>
+                <TableCell>{formatDateDay(semester.endDate)}</TableCell>
+                <TableCell>
+                  <Switch
+                    checked={semester.isActive}
+                    onChange={() => handleActiveChange(semester)}
+                    color="primary"
+                  />
+                </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -136,7 +165,7 @@ const ManageSemesterTable = () => {
                     onClick={() => handleDeleteSemester(semester)}
                     style={{ width: "70px" }}
                   >
-                    <DeleteSweepOutlinedIcon sx={{fontSize:"20px"}}/>
+                    <DeleteSweepOutlinedIcon sx={{ fontSize: "20px" }} />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -159,18 +188,47 @@ const ManageSemesterTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmationOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
+          <Button onClick={handleDelete} autoFocus
+            sx={{
+              color: "white",
+              backgroundColor: "#E00201",
+              '&:hover': {
+                backgroundColor: '#c70404',
+              },
+            }}
+          >
             Confirm
+          </Button>
+          <Button onClick={() => setConfirmationOpen(false)} 
+              sx={{
+                color: "white",
+                backgroundColor: "#6C757D",
+                '&:hover': {
+                  backgroundColor: '#5a6268',
+                },
+              }}
+            >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
       <div>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Create Semester</DialogTitle>
-          <DialogContent>
+          <DialogTitle
+            sx={{
+              backgroundColor: "#229342",
+              color: "white",
+              textAlign: "center",
+              fontSize: "30px",
+            }}>
+            Create Semester
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              backgroundColor: "#f0f0f0",
+              textAlign: "center",
+            }}
+          >
             <Formik
               initialValues={{
                 name: "",
@@ -181,57 +239,80 @@ const ManageSemesterTable = () => {
               {({ values, errors, touched, setFieldValue }) => {
                 return (
                   <Form>
-                    <Field
-                      name="name"
-                      as={TextField}
-                      label="Semester Name"
-                      required
-                      value={values.name}
-                      margin="normal"
-                      fullWidth
-                      error={touched.name && !!errors.name}
-                      helperText={touched.name && errors.name}
-                    />
-                    <TextField
-                      type="date"
-                      label="Start Date"
-                      required
-                      value={values.startDate}
-                      onChange={(event) =>
-                        setFieldValue("startDate", event.target.value)
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      error={!!errors.startDate}
-                      helperText={errors.startDate}
-                    />
-                    <TextField
-                      type="date"
-                      label="End Date"
-                      required
-                      value={values.endDate}
-                      onChange={(event) => {
-                        setFieldValue("endDate", event.target.value);
-                        console.log(event.target.value, "date");
-                      }}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        min: values.startDate,
-                      }}
-                      error={touched.endDate && !!errors.endDate}
-                      helperText={touched.endDate && errors.endDate}
-                    />
-                    <DialogActions>
-                      <Button onClick={handleClose} color="secondary">
-                        Cancel
-                      </Button>
-
-                      <Button type="submit" color="primary">
-                        Save
-                      </Button>
+                    <div className="inputField">
+                      <Field
+                        name="name"
+                        as={TextField}
+                        label="Semester Name"
+                        required
+                        value={values.name}
+                        margin="normal"
+                        fullWidth
+                        error={touched.name && !!errors.name}
+                        helperText={touched.name && errors.name}
+                      />
+                    </div>
+                    <div className="inputField">
+                      <TextField
+                        type="date"
+                        label="Start Date"
+                        required
+                        value={values.startDate}
+                        onChange={(event) =>
+                          setFieldValue("startDate", event.target.value)
+                        }
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        error={!!errors.startDate}
+                        helperText={errors.startDate}
+                      />
+                    </div>
+                    <div className="inputField">
+                      <TextField
+                        type="date"
+                        label="End Date"
+                        required
+                        value={values.endDate}
+                        onChange={(event) => {
+                          setFieldValue("endDate", event.target.value);
+                          console.log(event.target.value, "date");
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          min: values.startDate,
+                        }}
+                        error={touched.endDate && !!errors.endDate}
+                        helperText={touched.endDate && errors.endDate}
+                      />
+                    </div>
+                    <DialogActions >
+                      <div className="handleSubmit">
+                        <Button type="submit" sx={{
+                          backgroundColor: "#229342",
+                          color: "white",
+                          '&:hover': {
+                            backgroundColor: '#1e7b36',
+                          },
+                        }}>
+                          Save
+                        </Button>
+                      </div>
+                      <div className="handleCancel">
+                        <Button onClick={handleClose}
+                          sx={{
+                            backgroundColor: "#f44336",
+                            color: "white",
+                            '&:hover': {
+                              backgroundColor: '#d32f2f',
+                            },
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </DialogActions>
                   </Form>
                 );
