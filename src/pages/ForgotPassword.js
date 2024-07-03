@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 
 const ForgotPassword = () => {
@@ -12,7 +13,7 @@ const ForgotPassword = () => {
   };
 
   const isEmailValid = (email) => {
-    // Basic email validation
+    // Email validation
     const emailRegex = /^[\w+]+([.-]?[\w+])*@[\w+]+([.-]?[\w+])*(\.\w{2,3})+$/;
     return emailRegex.test(email);
   };
@@ -22,31 +23,34 @@ const ForgotPassword = () => {
         alert('Please enter a valid email address.');
         return;
       }
-  
-    navigate(`/reset-password?email=${email}`);
+      navigate(`/reset-password?email=${email}`);
+
     // Gửi yêu cầu tới server để gửi OTP
     try {
-      const response = await fetch('http://localhost:8000/forgot-password', {
+      const response = await fetch('http://localhost:8000/user/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
       });
+      console.log(response);
       
       if (response.ok) {
-        alert('OTP has been sent to your email.');
+        toast.success('OTP has been sent to your email.');
+
       } else {
-        alert('Failed to send OTP.');
+        const error = await response.json();
+        toast.error(`Failed to send OTP: ${error.message}`);
       }
     } catch (error) {
-      console.error('Error sending OTP:', error);
+      console.error('Error sending OTP:', error)
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom >
         Forgot Password
       </Typography>
       <TextField
