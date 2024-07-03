@@ -1,5 +1,5 @@
 .leftSideBar {
-  background-color: #101214;
+  background-color: orange;
 }
 /* Container styling */
 .menu {
@@ -71,5 +71,5 @@
 } 
 
 .MuiDrawer-paper {
-  background-color: #101214 !important;
+  background-color: rgb(4, 100, 4)!important;
 }
