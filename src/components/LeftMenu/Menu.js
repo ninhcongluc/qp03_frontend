@@ -10,6 +10,8 @@ import {
   ListItemText,
   Avatar,
   Stack,
+  Button,
+  Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -92,30 +94,47 @@ const MenuComponent = ({ role }) => {
         },
       }}
     >
-      <List>
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "100%",
+          width: "270px",
+        }}
+      >
         <div class="menu">
-          <Stack direction="row" spacing={2}>
-            <Avatar alt={role} src="" sx={{ width: 64, height: 64 }} />
-            <h3>
+          <Stack alignItems={"center"} spacing={2}>
+            <Avatar alt={role} src="" sx={{ width: 80, height: 80 }} />
+            <Typography variant="h6">
               {userData.firstName} {userData.lastName}
-            </h3>
+            </Typography>
           </Stack>
         </div>
 
         {menuItems[role].map((item) => (
-          <ListItem button onClick={item.onClick}>
-            <ListItemIcon className="itemIcon">{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
+          <div className="itemList">
+            <ListItem button onClick={item.onClick}>
+              <ListItemIcon
+                className="itemIcon"
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText>
+                <Typography className="textItem" variant="subtitle1">
+                  {item.text}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          </div>
         ))}
-
-        <ListItem button onClick={handleLogoutClick}>
-          <ListItemIcon className="itemIcon">
-            <ExitToAppOutlined />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
       </List>
+      <div className="Logout">
+        <Button onClick={handleLogoutClick}>
+          <ExitToAppOutlined className="itemIcon" />
+          <Typography className="textLogout">Logout</Typography>
+        </Button>
+      </div>
     </Drawer>
   );
 };

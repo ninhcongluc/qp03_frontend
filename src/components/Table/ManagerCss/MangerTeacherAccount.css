@@ -1,0 +1,43 @@
+.nameUser{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.codeAndMail{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.phoneAndDate{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.firstName{
+    width: 100%;
+    margin-right: 15px;
+}
+.lastName{
+    width: 100%;
+}
+
+.code{
+    width: 20%;
+}
+
+.mail{
+    width: 1000px;
+}
+
+.phone{
+    width: 50%;
+    margin-right: 15px;
+}
+
+.date{
+    width: 50%;
+    margin-top: 16px;
+}
