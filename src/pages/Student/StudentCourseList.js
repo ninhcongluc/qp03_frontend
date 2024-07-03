@@ -25,7 +25,7 @@ const StudentCourseList = () => {
   const fetchCourseData = async (page, limit, semesterId = "", searchTerm = "") => {
     try {
       const response = await ApiInstance.get(
-        `/course?page=${page}&limit=${limit}&semesterId=${semesterId}&code=${searchTerm}`
+        `/course/student-courses?page=${page}&limit=${limit}&semesterId=${semesterId}&code=${searchTerm}`
       );
       setCourses(response.data.data.courses);
       setTotalItem(response.data.data.total);
@@ -48,7 +48,7 @@ const StudentCourseList = () => {
     fetchCourseData(1, coursesPerPage);
     const interval = setInterval(() => {
       fetchCourseData(page, coursesPerPage, selectedSemester, searchTerm);
-    }, 30000); // Làm mới dữ liệu mỗi 30 giây
+    }, 30000); // Refresh data every 30 seconds
     return () => clearInterval(interval);
   }, [page, selectedSemester, searchTerm]);
 
@@ -71,8 +71,8 @@ const StudentCourseList = () => {
     fetchCourseData(1, coursesPerPage, event.target.value, searchTerm);
   };
 
-  const handleCourseDetailClick = (id) => {
-    navigate(`/student/course-management/class/${id}`);
+  const handleCourseDetailClick = (classId) => {
+    navigate(`/student/course-management/class/${classId}`);
   };
 
   return (
@@ -107,21 +107,18 @@ const StudentCourseList = () => {
             </FormControl>
           </Grid>
         </Grid>
-        <Grid
-          container spacing={4}
-          sx={{ marginTop: 2, minHeight: 100 }}
-        >
+        <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
           {courses.map((course, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div
                 className="course-card"
                 style={{ padding: 16 }}
-                onClick={() => handleCourseDetailClick(course.id)}
+                onClick={() => handleCourseDetailClick(course.classId)}
               >
                 <h3>{course.code}</h3>
                 <p>{course.description}</p>
                 <p>Semester: {course?.semester?.name}</p>
-                <p>Created by: {course.createdBy}</p>
+                <p>Class: {course.className}</p>
               </div>
             </Grid>
           ))}
