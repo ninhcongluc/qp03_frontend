@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
+  TextField,
+  Switch,
 } from "@mui/material";
-import axios from "axios";
-import { formatDate } from "../../commons/function";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { TextField } from "@mui/material";
-import { Formik, Field } from "formik";
+import { Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
+import ApiInstance from "../../axios";
+import { formatDateDay } from "../../commons/function";
+import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import "./ManagerCss/ManagerSemester.css";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -36,30 +38,20 @@ const ManageSemesterTable = () => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [semesterToDelete, setSemesterToDelete] = useState(null);
 
+  const fetchSemesters = async () => {
+    try {
+      const response = await ApiInstance.get("/semester");
+      setSemesters(response.data.data);
+    } catch (error) {
+      console.error("Error fetching semester information:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchSemesters = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        const response = await axios.get(
-          "http://localhost:8000/semester",
-          config
-        );
-        setSemesters(response.data.data);
-      } catch (error) {
-        console.error("Error fetching semester information:", error);
-      }
-    };
     fetchSemesters();
   }, []);
 
   const handleCreateSemester = () => {
-    console.log("Create semester", open);
-
     setOpen(true);
   };
 
@@ -68,25 +60,15 @@ const ManageSemesterTable = () => {
   };
 
   const handleSubmit = async (values, formikBag) => {
-    console.log("values", values);
-
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      // Make your API call here
-      await axios.post("http://localhost:8000/semester", values, config);
-
-      // Close the dialog and reset the form
+      await ApiInstance.post("/semester", values);
+      fetchSemesters();
+      toast.success("Create semester successfully");
       handleClose();
       formikBag.resetForm();
     } catch (error) {
+      toast.error(error.response.data.error);
       console.error("Error creating semester:", error);
-      // Handle any errors here
     }
   };
 
@@ -95,30 +77,69 @@ const ManageSemesterTable = () => {
     setConfirmationOpen(true);
   };
 
+  const handleDelete = async () => {
+    try {
+      await ApiInstance.delete(`/semester/${semesterToDelete.id}`);
+      toast.success("Delete semester successfully");
+      fetchSemesters();
+      setConfirmationOpen(false);
+    } catch (error) {
+      toast.error(error.response.data.error);
+      setConfirmationOpen(false);
+      console.error("Error deleting semester:", error);
+    }
+  };
+
+  const handleActiveChange = async (semester) => {
+    try {
+      await ApiInstance.put(`/semester/${semester.id}`, {
+        
+        isActive: !semester.isActive,
+      });
+      toast.success("Change semester active status successfully");
+      fetchSemesters();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error changing semester active status:", error);
+    }
+  }
+
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button
-          sx={{ width: "200px" }}
+          sx={{
+            width: "30px",
+            height: "30px",
+            backgroundColor: "#229342",
+            '&:hover': {
+              backgroundColor: '#1e7b36',
+            },
+          }}
           variant="contained"
           color="primary"
           size="small"
           onClick={handleCreateSemester}
         >
-          Create+
+          <PostAddIcon sx={{ fontSize: "25px" }} />
         </Button>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{ maxHeight: "100%", width: "1000px", marginLeft: "300px" }}
+        sx={{
+          height: "540px",
+          width: "1200px",
+          marginLeft: "270px"
+        }}
       >
         <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>StartDate</TableCell>
-              <TableCell>EndDate</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -127,8 +148,15 @@ const ManageSemesterTable = () => {
               <TableRow key={semester.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{semester.name}</TableCell>
-                <TableCell>{formatDate(semester.startDate)}</TableCell>
-                <TableCell>{formatDate(semester.endDate)}</TableCell>
+                <TableCell>{formatDateDay(semester.startDate)}</TableCell>
+                <TableCell>{formatDateDay(semester.endDate)}</TableCell>
+                <TableCell>
+                  <Switch
+                    checked={semester.isActive}
+                    onChange={() => handleActiveChange(semester)}
+                    color="primary"
+                  />
+                </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -137,7 +165,7 @@ const ManageSemesterTable = () => {
                     onClick={() => handleDeleteSemester(semester)}
                     style={{ width: "70px" }}
                   >
-                    Delete
+                    <DeleteSweepOutlinedIcon sx={{ fontSize: "20px" }} />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -160,111 +188,138 @@ const ManageSemesterTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmationOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={async () => {
-              try {
-                const token = localStorage.getItem("token");
-                const config = {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                };
-                await axios.delete(
-                  `http://localhost:8000/semester/${semesterToDelete?.id}`,
-                  config
-                );
-                setSemesters(
-                  semesters.filter((s) => s.id !== semesterToDelete?.id)
-                );
-                setConfirmationOpen(false);
-              } catch (error) {
-                console.error("Error deleting semester:", error);
-              }
+          <Button onClick={handleDelete} autoFocus
+            sx={{
+              color: "white",
+              backgroundColor: "#E00201",
+              '&:hover': {
+                backgroundColor: '#c70404',
+              },
             }}
-            color="error"
-            autoFocus
           >
             Confirm
+          </Button>
+          <Button onClick={() => setConfirmationOpen(false)} 
+              sx={{
+                color: "white",
+                backgroundColor: "#6C757D",
+                '&:hover': {
+                  backgroundColor: '#5a6268',
+                },
+              }}
+            >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
       <div>
-        <Formik
-          initialValues={{
-            name: "",
-            startDate: null,
-            endDate: null,
-          }}
-          validationSchema={validationSchema}
-        >
-          {({ values, errors, touched, setFieldValue }) => (
-            <form onSubmit={handleSubmit}>
-              <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create Semester</DialogTitle>
-                <DialogContent>
-                  <Field
-                    name="name"
-                    as={TextField}
-                    label="Semester Name"
-                    required
-                    value={values.name}
-                    margin="normal"
-                    fullWidth
-                    error={touched.name && !!errors.name}
-                    helperText={touched.name && errors.name}
-                  />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DesktopDatePicker
-                      label="Start Date"
-                      required
-                      value={values.startDate}
-                      onChange={(date) => setFieldValue("startDate", date)}
-                    >
-                      {({ inputRef, inputProps, InputProps }) => (
-                        <TextField
-                          {...inputProps}
-                          ref={inputRef}
-                          InputProps={InputProps}
-                          error={touched.startDate && !!errors.startDate}
-                          helperText={touched.startDate && errors.startDate}
-                        />
-                      )}
-                    </DesktopDatePicker>
-                    <DesktopDatePicker
-                      label="End Date"
-                      required
-                      value={values.endDate}
-                      onChange={(date) => setFieldValue("endDate", date)}
-                      minDate={values.startDate}
-                    >
-                      {({ inputRef, inputProps, InputProps }) => (
-                        <TextField
-                          {...inputProps}
-                          ref={inputRef}
-                          InputProps={InputProps}
-                          error={touched.endDate && !!errors.endDate}
-                          helperText={touched.endDate && errors.endDate}
-                        />
-                      )}
-                    </DesktopDatePicker>
-                  </LocalizationProvider>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose} color="secondary">
-                    Cancel
-                  </Button>
-
-                  <Button type="submit" color="primary">
-                    Save
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </form>
-          )}
-        </Formik>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle
+            sx={{
+              backgroundColor: "#229342",
+              color: "white",
+              textAlign: "center",
+              fontSize: "30px",
+            }}>
+            Create Semester
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              backgroundColor: "#f0f0f0",
+              textAlign: "center",
+            }}
+          >
+            <Formik
+              initialValues={{
+                name: "",
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
+              {({ values, errors, touched, setFieldValue }) => {
+                return (
+                  <Form>
+                    <div className="inputField">
+                      <Field
+                        name="name"
+                        as={TextField}
+                        label="Semester Name"
+                        required
+                        value={values.name}
+                        margin="normal"
+                        fullWidth
+                        error={touched.name && !!errors.name}
+                        helperText={touched.name && errors.name}
+                      />
+                    </div>
+                    <div className="inputField">
+                      <TextField
+                        type="date"
+                        label="Start Date"
+                        required
+                        value={values.startDate}
+                        onChange={(event) =>
+                          setFieldValue("startDate", event.target.value)
+                        }
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        error={!!errors.startDate}
+                        helperText={errors.startDate}
+                      />
+                    </div>
+                    <div className="inputField">
+                      <TextField
+                        type="date"
+                        label="End Date"
+                        required
+                        value={values.endDate}
+                        onChange={(event) => {
+                          setFieldValue("endDate", event.target.value);
+                          console.log(event.target.value, "date");
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          min: values.startDate,
+                        }}
+                        error={touched.endDate && !!errors.endDate}
+                        helperText={touched.endDate && errors.endDate}
+                      />
+                    </div>
+                    <DialogActions >
+                      <div className="handleSubmit">
+                        <Button type="submit" sx={{
+                          backgroundColor: "#229342",
+                          color: "white",
+                          '&:hover': {
+                            backgroundColor: '#1e7b36',
+                          },
+                        }}>
+                          Save
+                        </Button>
+                      </div>
+                      <div className="handleCancel">
+                        <Button onClick={handleClose}
+                          sx={{
+                            backgroundColor: "#f44336",
+                            color: "white",
+                            '&:hover': {
+                              backgroundColor: '#d32f2f',
+                            },
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </DialogActions>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </DialogContent>
+        </Dialog>
       </div>
     </Box>
   );

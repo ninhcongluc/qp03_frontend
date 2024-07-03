@@ -1,0 +1,59 @@
+.custom-row:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.custom-row:hover {
+  background-color: #f1f1f1;
+}
+
+#view-student {
+  margin-left: 10px;
+  background-color: cadetblue;
+}
+.icon-button {
+  width: fit-content;
+}
+
+.content {
+  height: 100vh;
+  width: 100%;
+}
+
+.class-select {
+  height: 110px;
+}
+
+.quiz-management {
+  height: calc(100vh - 110px);
+}
+
+.button-group {
+  display: flex;
+  width: 500px;
+  justify-content: "space-between";
+  align-items: center;
+}
+
+.quiz-table {
+  overflow: scroll;
+}
+
+#action-button {
+  display: flex;
+}
+
+.back-button {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(135deg);
+  cursor: pointer;
+}
+
+.back-button:hover {
+  border-color: #666;
+}

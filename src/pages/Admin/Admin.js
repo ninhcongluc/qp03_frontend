@@ -1,10 +1,10 @@
 import React from "react";
-import LeftMenu from "../../components/LeftMenu/AdminMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const AdminPage = () => {
   return (
     <div>
-      <LeftMenu />
+      <MenuComponent role="admin" />
     </div>
   );
 };

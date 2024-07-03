@@ -19,7 +19,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import ManagerMenu from "../../components/LeftMenu/ManagerMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const courses = [
   {
@@ -207,8 +207,8 @@ const CourseDetailPage = () => {
 
   return (
     <div>
-      <ManagerMenu />
-      <Container>
+      <MenuComponent role="manager" />
+      <Container maxWidth={false}>
         <Typography variant="h4" component="h1" gutterBottom>
           {course.code}: {course.description}
         </Typography>

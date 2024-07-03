@@ -1,172 +1,261 @@
-import React, { useState } from "react";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
 import {
   Box,
   Button,
+  FormControl,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
+  Typography,
 } from "@mui/material";
-import "./TeacherAddQuestion.css";
-
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
+import "./styles/TeacherAddQuestion.css";
 
 const TeacherQuestionListPage = () => {
   const [questions, setQuestions] = useState([
-    { id: 1, type: "selectOne", options: [""] },
+    { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
+  const [quiz, setQuiz] = useState(null);
+  const { quizId } = useParams();
 
+  let navigate = useNavigate();
 
-  const handleOnChange = (event, questionId) => {
-    const newQuestions = questions.map((question) => {
-      if (question.id === questionId) {
-        return { ...question, type: event.target.value };
-      }
-      return question;
-    });
-    setQuestions(newQuestions);
-  };
+  useEffect(() => {
+    console.log("quizId", quizId);
+    ApiInstance.get(`/quiz/${quizId}/question-answers`)
+      .then((response) => {
+        setQuiz(response.data.data);
+        setQuestions(response.data.data.questions);
+      })
+      .catch((error) => {
+        console.error("Error fetching course data:", error);
+      });
+  }, [quizId]);
 
-
-  const handleAddQuestion = () => {
-    const newQuestion = {
-      id: questions.length + 1,
-      type: "selectOne",
-      options: [""],
-    };
-    setQuestions([...questions, newQuestion]);
-  };
-
-
-  const handleDeleteQuestion = (questionId) => {
-    console.log(questionId);
-    const newQuestions = questions
-      .map((question) => {
+  // Handle question text change
+  const handleTextChange = (event, questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
         if (question.id === questionId) {
-          return null;
+          return { ...question, text: event.target.value };
         }
         return question;
       })
-      .filter((question) => question !== null);
-    newQuestions.forEach((question, index) => {
-      question.id = index + 1;
-    });
-
-
-    setQuestions(newQuestions);
+    );
   };
 
+  // Handle option text change
+  const handleOptionTextChange = (event, questionId, optionIndex) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          const updatedOptions = [...question.answerOptions];
+          updatedOptions[optionIndex] = {
+            ...updatedOptions[optionIndex],
+            optionText: event.target.value,
+          };
+          return { ...question, answerOptions: updatedOptions };
+        }
+        return question;
+      })
+    );
+  };
+
+  // Handle correct answer change
+  const handleCorrectAnswerChange = (event, questionId, optionIndex) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          const updatedOptions = question.answerOptions.map(
+            (option, index) => ({
+              ...option,
+              isCorrect: index === optionIndex,
+            })
+          );
+          return { ...question, answerOptions: updatedOptions };
+        }
+        return question;
+      })
+    );
+  };
+
+  // Handle question type change
+  const handleTypeChange = (event, questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          return { ...question, type: event.target.value };
+        }
+        return question;
+      })
+    );
+  };
+
+  const handleAddQuestion = () => {
+    const newQuestion = {
+      id: questions?.length ? questions.length + 1 : 1,
+      type: "selectOne",
+      answerOptions: [""],
+    };
+
+    if (questions) {
+      setQuestions([...questions, newQuestion]);
+    } else {
+      setQuestions([newQuestion]);
+    }
+  };
+
+  const handleDeleteQuestion = (questionId) => {
+    const newQuestions = questions.filter(
+      (question) => question.id !== questionId
+    );
+    setQuestions(newQuestions);
+  };
 
   const handleAddOption = (questionId) => {
     const newQuestions = questions.map((question) => {
       if (question.id === questionId) {
-        return { ...question, options: [...question.options, ""] };
+        return { ...question, answerOptions: [...question.answerOptions, ""] };
       }
       return question;
     });
     setQuestions(newQuestions);
   };
-
 
   const handleDeleteOption = (questionId, optionIndex) => {
     const newQuestions = questions.map((question) => {
       if (question.id === questionId) {
-        const newOptions = question.options.filter(
+        const newOptions = question.answerOptions.filter(
           (option, index) => index !== optionIndex
         );
-        return { ...question, options: newOptions };
+        return { ...question, answerOptions: newOptions };
       }
       return question;
     });
     setQuestions(newQuestions);
   };
 
+  const handleSaveAsDraft = () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      answerOptions: question.answerOptions,
+    }));
 
+    console.log("listQuestionAnswers", listQuestionAnswers);
+  };
   return (
     <div>
-      <TeacherMenu />
-      <Box className="container1">
-        <Box className="header">
-          <b>Quiz name:</b>
-          <br />
-          <span>Class Name:</span>
-          <br />
-          <span>Due Date:</span>
-          <br />
-          <span>Time Limit:</span>
+      <Box className="container">
+        <button className="back-button" onClick={() => navigate(-1)}></button>
+
+        <Typography className="text-header" variant="h4" gutterBottom>
+          Set Up Q&A
+        </Typography>
+        <Box
+          className="header"
+          sx={{ backgroundColor: "#4cdbe6", color: "black", p: 2 }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Quiz Name: {quiz?.name}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Number of Questions: {quiz?.questions?.length}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Time: {quiz?.timeLimitMinutes} minutes
+          </Typography>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mb={2} className="">
+        <Box>
           <TableContainer component={Paper} className="tableContainer">
             <Table stickyHeader>
               <TableBody>
-                {questions.map((question) => (
+                {questions.map((question, index) => (
                   <React.Fragment key={question.id}>
                     <TableRow>
                       <TableCell className="tableCell">
                         <Box className="questionLabel">
-                          Question {question.id}:
+                          Question {index + 1}:
                         </Box>
                         <TextField
                           id="standard-basic"
-                          label={`Question ${question.id}`}
+                          value={question.text}
                           variant="standard"
                           fullWidth
                           className="textField"
+                          onChange={(event) =>
+                            handleTextChange(event, question.id)
+                          }
                         />
                       </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top' }}>
+                      <TableCell sx={{ verticalAlign: "top" }}>
                         <FormControl fullWidth>
                           <Select
                             value={question.type}
                             onChange={(event) =>
-                              handleOnChange(event, question.id)
+                              handleTypeChange(event, question.id)
                             }
                           >
-                            <MenuItem value="selectOne">Select One</MenuItem>
-                            <MenuItem value="multiple">
+                            <MenuItem value="select_one">Select One</MenuItem>
+                            <MenuItem value="multiple_choice">
                               Multiple Choice
                             </MenuItem>
                           </Select>
                         </FormControl>
                       </TableCell>
                     </TableRow>
-                    {question.options.map((option, index) => (
-                      <TableRow key={index}>
+                    {question.answerOptions.map((option, optionIndex) => (
+                      <TableRow key={optionIndex}>
                         <TableCell className="optionCell">
                           <input
                             type={
-                              question.type === "selectOne"
+                              question.type === "select_one"
                                 ? "radio"
                                 : "checkbox"
                             }
                             name={`question${question.id}`}
-                            value={index}
+                            value={optionIndex}
+                            onChange={(event) =>
+                              handleCorrectAnswerChange(
+                                event,
+                                question.id,
+                                optionIndex
+                              )
+                            }
+                            defaultChecked={option.isCorrect}
                             style={{ marginRight: "8px" }}
                           />
                           <TextField
                             id="standard-basic"
-                            label={`Option ${index + 1}`}
+                            value={option?.optionText}
                             variant="standard"
                             type="text"
+                            onChange={(event) =>
+                              handleOptionTextChange(
+                                event,
+                                question.id,
+                                optionIndex
+                              )
+                            }
                             sx={{ width: "90%" }}
                           />
                         </TableCell>
                         <TableCell>
-
-
                           <Button
                             variant="contained"
                             color="secondary"
                             size="small"
                             sx={{ width: "70px" }}
                             onClick={() =>
-                              handleDeleteOption(question.id, index)
+                              handleDeleteOption(question.id, optionIndex)
                             }
                           >
                             Delete
@@ -181,10 +270,13 @@ const TeacherQuestionListPage = () => {
                             variant="contained"
                             color="primary"
                             size="small"
-                            sx={{ width: "150px", marginRight: "8px" }}
+                            sx={{
+                              width: "100px",
+                              marginRight: "8px",
+                            }}
                             onClick={() => handleAddOption(question.id)}
                           >
-                            Add option
+                            Add
                           </Button>
                           <Button
                             variant="contained"
@@ -208,25 +300,48 @@ const TeacherQuestionListPage = () => {
               variant="contained"
               color="primary"
               size="small"
-              className="button"
               onClick={handleAddQuestion}
+              style={{
+                width: "150px",
+                height: "40px",
+                backgroundColor: "#56e349",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
             >
               Add Question
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              className="button"
-            >
-              Submit
-            </Button>
           </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            marginTop: "20px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            id="submit-button"
+            onClick={handleSaveAsDraft}
+          >
+            Save As Draft
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            id="submit-button"
+          >
+            Submit
+          </Button>
         </Box>
       </Box>
     </div>
   );
 };
-
 
 export default TeacherQuestionListPage;

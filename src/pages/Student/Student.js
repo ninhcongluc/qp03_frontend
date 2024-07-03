@@ -1,10 +1,10 @@
 import React from "react";
-import StudentMenu from "../../components/LeftMenu/StudentMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const StudentPage = () => {
   return (
     <div>
-      <StudentMenu />
+      <MenuComponent />
     </div>
   );
 };

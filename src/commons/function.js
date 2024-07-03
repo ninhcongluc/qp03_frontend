@@ -5,5 +5,5 @@ export const formatDate = (dateString) => {
 };
 
 export const formatDateDay = (dateString) => {
-  return moment(dateString).format("YYYY-MM-DD");
+  return moment(dateString).format("DD-MM-YYYY");
 };

@@ -1,0 +1,68 @@
+.container {
+  height: 100vh;
+  width: 100%;
+}
+
+.text-header {
+  margin: auto;
+  width: 50%;
+}
+
+.header {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.questionLabel {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.textField {
+  margin-top: 8px;
+}
+
+.optionCell {
+  padding-left: 32px;
+  width: 900px;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.optionButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.select {
+  width: 200px;
+  height: 40px;
+}
+
+.back-button {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(135deg);
+  cursor: pointer;
+}
+
+.back-button:hover {
+  border-color: #666;
+}
+
+#submit-button {
+  width: 200px;
+  margin-right: 2%;
+  margin-bottom: 50px;
+}

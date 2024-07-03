@@ -19,7 +19,7 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 
 const QuizQuestionsPage = () => {
   const { quizId } = useParams();
@@ -92,7 +92,7 @@ const QuizQuestionsPage = () => {
 
   return (
     <div>
-      <TeacherMenu />
+      <MenuComponent role="teacher" />
       <div style={{ display: "inline" }}>
         <Typography variant="h4">Quiz: {quiz?.name}</Typography>
         <IconButton color="primary" onClick={handleCreateQuestion}>

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TeacherMenu from "../../components/LeftMenu/TeacherMenu";
+import MenuComponent from "../../components/LeftMenu/Menu";
 const quiz = [
   {
     id: "1e2f3a4b-5c6d-7e8f-9012-a3b4c5d6e7f8",
@@ -86,7 +86,7 @@ const QuizManagementPage = () => {
       <Container>
         <Grid container spacing={4} sx={{ marginTop: 2 }}>
           <Grid item xs={3}>
-            <TeacherMenu />
+            <MenuComponent role="teacher" />
           </Grid>
           <Grid item flex={1} maxWidth={150}>
             <FormControl fullWidth>
