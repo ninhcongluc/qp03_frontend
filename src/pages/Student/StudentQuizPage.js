@@ -17,20 +17,23 @@ const StudentQuizPage = () => {
   const [quizzes, setQuizzes] = useState([]);
   const quizzesPerPage = 6;
 
-  const fetchQuizData = useCallback(async (page, limit, searchTerm = "") => {
-    try {
-      const response = await ApiInstance.get(
-        `/student/course-management/class/${classId}/quiz?page=${page}&limit=${limit}&name=${searchTerm}`
-      );
-      const { data } = response.data;
-      if (data && data.quizzes) {
-        setQuizzes(data.quizzes);
-        setTotalItem(data.total);
+  const fetchQuizData = useCallback(
+    async (page, limit, searchTerm = "") => {
+      try {
+        const response = await ApiInstance.get(
+          `/student/course-management/class/${classId}?type=quizzes&page=${page}&limit=${limit}&name=${searchTerm}`
+        );
+        const { data } = response.data;
+        if (data && data.quizzes) {
+          setQuizzes(data.quizzes);
+          setTotalItem(data.total);
+        }
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching quiz data:", error);
-    }
-  }, [classId]);
+    },
+    [classId]
+  );
 
   useEffect(() => {
     fetchQuizData(1, quizzesPerPage, searchTerm);
@@ -58,7 +61,7 @@ const StudentQuizPage = () => {
   };
 
   const handleQuizDetailClick = (quizId) => {
-    navigate(`/student/course-management/class/${classId}/quiz/${quizId}`);
+    navigate(`/student/course-management/class/${classId}/${quizId}`);
   };
 
   return (
@@ -72,6 +75,7 @@ const StudentQuizPage = () => {
               variant="outlined"
               value={searchTerm}
               onChange={handleSearchTermChange}
+              className="search-field"
             />
           </Grid>
         </Grid>
@@ -83,10 +87,14 @@ const StudentQuizPage = () => {
                 style={{ padding: 16 }}
                 onClick={() => handleQuizDetailClick(quiz.id)}
               >
-                <h3>{quiz.name}</h3>
-                <p>{quiz.description}</p>
-                <p>Start Date: {new Date(quiz.startDate).toLocaleDateString()}</p>
-                <p>End Date: {new Date(quiz.endDate).toLocaleDateString()}</p>
+                <h3 className="quiz-title">{quiz.name}</h3>
+                <p className="quiz-description">{quiz.description}</p>
+                <p className="quiz-date">
+                  Start Date: {new Date(quiz.startDate).toLocaleDateString()}
+                </p>
+                <p className="quiz-date">
+                  End Date: {new Date(quiz.endDate).toLocaleDateString()}
+                </p>
               </div>
             </Grid>
           ))}
@@ -97,6 +105,7 @@ const StudentQuizPage = () => {
             page={page}
             onChange={handlePageChange}
             color="primary"
+            className="pagination"
           />
         </Stack>
       </Container>
