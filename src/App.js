@@ -80,17 +80,17 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/class/:courseId"
+          path="/student/course-management/class/:classId"
           element={<StudentQuizPage />}
         />
 
         <Route
-          path="/student/course-management/class/:courseId/:quizId"
+          path="/student/course-management/class/:classId/:quizId"
           element={<StudentQuizDetail />}
         />
 
         <Route
-          path="/student/course-management/class/:courseId/:quizId/start"
+          path="/student/course-management/class/:classId/:quizId/start"
           element={<StudentDoQuiz />}
         />
 
