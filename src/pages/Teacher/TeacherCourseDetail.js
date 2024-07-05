@@ -28,11 +28,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import BackButton from "../../components/BackButton/BackButton";
+
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
-// import MenuComponent from "../../components/LeftMenu/Menu";
 import { useNavigate } from "react-router-dom";
 import "./styles/TeacherCourseDetail.css";
 
@@ -229,13 +230,7 @@ const TeacherCourseDetailPage = () => {
 
   const handleDeleteQuiz = async (quizId) => {
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      await ApiInstance.delete(`/quiz/${quizId}`, config);
+      await ApiInstance.delete(`/quiz/${quizId}`);
       fetchData();
       toast.success("Quiz deleted successfully");
     } catch (error) {
@@ -285,9 +280,9 @@ const TeacherCourseDetailPage = () => {
 
   return (
     <Box className="teacher-course-detail-page">
-      {/* <MenuComponent role="teacher" /> */}
       <div className="content">
-        <button className="back-button" onClick={() => navigate(-1)}></button>
+        <BackButton />
+
         <div className="class-select">
           <Typography variant="h4" gutterBottom>
             {course ? course.name : "Loading..."}
