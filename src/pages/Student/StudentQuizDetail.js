@@ -4,13 +4,12 @@ import Grid from "@mui/material/Grid";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
 
 const StudentQuizDetail = () => {
   const { classId, quizId } = useParams();
-  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const [quizDetails, setQuizDetails] = useState([]);
@@ -20,7 +19,7 @@ const StudentQuizDetail = () => {
     async (page, limit) => {
       try {
         const response = await ApiInstance.get(
-          `/student/course-management/class/${classId}/quiz/${quizId}/review?page=${page}&limit=${limit}`
+          `/student/course-management/class/${classId}/quiz/${quizId}/history?page=${page}&limit=${limit}`
         );
         const { data } = response.data;
         if (data && data.results) {
