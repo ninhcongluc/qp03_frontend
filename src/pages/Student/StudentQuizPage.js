@@ -18,7 +18,7 @@ const StudentQuizPage = () => {
   const [totalItem, setTotalItem] = useState(0);
   const [quizzes, setQuizzes] = useState([]);
   const quizzesPerPage = 6;
-  const [courses, setCourses] = useState({ code: "" });
+  const [course, setCourse] = useState();
 
   const fetchQuizData = useCallback(
     async (page, limit, searchTerm = "") => {
@@ -27,10 +27,10 @@ const StudentQuizPage = () => {
           `/student/course-management/class/${classId}?type=quizzes&page=${page}&limit=${limit}&name=${searchTerm}`
         );
         const { data } = response.data;
-        if (data && data.quizzes) {
-          setQuizzes(response.data.data.quizzes);
-          setTotalItem(data.total);
-        }
+
+        setQuizzes(response.data.data.quizzes);
+        setCourse(response.data.data?.courseInfo.course);
+        setTotalItem(data.total);
       } catch (error) {
         console.error("Error fetching quiz data:", error);
       }
@@ -41,22 +41,6 @@ const StudentQuizPage = () => {
   useEffect(() => {
     fetchQuizData(1, quizzesPerPage);
   }, [fetchQuizData, quizzesPerPage]);
-
-  useEffect(() => {
-    const fetchCourseData = async () => {
-      try {
-        const response = await ApiInstance.get(
-          `/course/student-courses/class/${classId}`
-        );
-        if (response.data.data) {
-          setCourses(response.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching course data:", error);
-      }
-    };
-    fetchCourseData(); 
-  }, [classId]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,7 +58,7 @@ const StudentQuizPage = () => {
   };
 
   const handleQuizDetailClick = (quizId) => {
-    navigate(`/student/course-management/class/${classId}/${quizId}`);
+    navigate(`/student/quiz-detail/${quizId}`);
   };
 
   return (
@@ -82,9 +66,9 @@ const StudentQuizPage = () => {
       <MenuComponent role="student" />
       <div className="tilte-class" style={{ marginLeft: "21%" }}>
         <h2>
-          {courses.code}-{courses.name}
+          {course?.code}-{course?.name}
         </h2>
-        <p>{courses.description}</p>
+        <p>{course?.description}</p>
       </div>
       <Container sx={{ marginLeft: "240px" }}>
         <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
@@ -100,7 +84,8 @@ const StudentQuizPage = () => {
                       {quiz.description}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Start Date: {new Date(quiz.startDate).toLocaleDateString()}
+                      Start Date:{" "}
+                      {new Date(quiz.startDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       End Date: {new Date(quiz.endDate).toLocaleDateString()}

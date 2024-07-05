@@ -16,13 +16,13 @@
 }
 
 .menu .MuiTypography-root {
-  font-size: 20px; 
-  font-weight: 500; 
+  font-size: 20px;
+  font-weight: 500;
   margin-top: 0px;
 }
 .avatarText {
   color: white;
-} 
+}
 
 .itemList {
   display: flex;
@@ -38,11 +38,11 @@
   color: #f0f0f0;
 }
 
-.itemIcon{
+.itemIcon {
   font-size: 40px;
 }
 
-.Logout{
+.Logout {
   display: flex;
   align-items: center;
   background-color: #f44336;
@@ -68,8 +68,8 @@
   color: white;
   font-size: 15px;
   text-transform: none;
-} 
+}
 
 .MuiDrawer-paper {
-  background-color: rgb(4, 100, 4)!important;
+  background-color: rgb(32, 30, 49) !important;
 }

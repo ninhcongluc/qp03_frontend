@@ -1,19 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import FormControl from "@mui/material/FormControl";
-import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Modal from "@mui/material/Modal";
-import Pagination from "@mui/material/Pagination";
-import Select from "@mui/material/Select";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import {
   Dialog,
   DialogActions,
@@ -21,15 +8,26 @@ import {
   DialogContentText,
   DialogTitle,
   Switch,
+  TextField,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Pagination from "@mui/material/Pagination";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
 import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ApiInstance from "../../axios";
-import "./CourseManagement.css";
-import MenuComponent from "../../components/LeftMenu/Menu";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
+import ApiInstance from "../../axios";
+import MenuComponent from "../../components/LeftMenu/Menu";
+import "./CourseManagement.css";
 
 const validationSchema = Yup.object().shape({
   code: Yup.string().required("Code is required"),
@@ -59,11 +57,10 @@ const CourseManagementPage = () => {
     semesterId: "",
     managerId: "",
     isActive: false,
-  }
-  );
+  });
   const [semesters, setSemesters] = useState([]);
   const coursesPerPage = 6;
-  const userInfo = JSON.parse(localStorage.getItem('user'));
+  const userInfo = JSON.parse(localStorage.getItem("user"));
 
   const fetchCourseData = async (page, limit, semesterId = "") => {
     try {
@@ -153,7 +150,9 @@ const CourseManagementPage = () => {
   const handleSearchTermChange = (event) => {
     if (event.target.value !== "") {
       const newData = courses.filter((course) => {
-        return course.code.toUpperCase().includes(event.target.value.toUpperCase());
+        return course.code
+          .toUpperCase()
+          .includes(event.target.value.toUpperCase());
       });
       setCourses(newData);
       setTotalItem(newData.length);
@@ -174,7 +173,10 @@ const CourseManagementPage = () => {
   };
   // handle update course
   const handleFormChange = (event) => {
-    setSelectedCourse({ ...selectedCourse, [event.target.name]: event.target.value });
+    setSelectedCourse({
+      ...selectedCourse,
+      [event.target.name]: event.target.value,
+    });
   };
 
   // handle submit update course
@@ -217,7 +219,6 @@ const CourseManagementPage = () => {
         isActive: selectedCourse.isActive,
       };
 
-
       await ApiInstance.put(`/course/${selectedCourse.id}`, payload);
       fetchCourseData(1, coursesPerPage, selectedSemester);
       toast.success("Update course successfully");
@@ -243,22 +244,18 @@ const CourseManagementPage = () => {
         <MenuComponent role="manager" />
       </Box>
       <Box>
-        <h1 style={{
-          marginBottom: "1rem",
-          marginTop: "-1.5rem",
-          textAlign: "center",
-        }}>
+        <h1
+          style={{
+            marginBottom: "1rem",
+            marginTop: "-1.5rem",
+            textAlign: "center",
+          }}
+        >
           Course Management
         </h1>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        mb={2}
-      >
-        <div
-          style={{ display: "flex", width: "100%" }}
-        >
+      <Box display="flex" justifyContent="space-between" mb={2}>
+        <div style={{ display: "flex", width: "100%" }}>
           <div>
             <TextField
               label="Search by Course Code"
@@ -267,10 +264,9 @@ const CourseManagementPage = () => {
               onChange={handleSearchTermChange}
             />
           </div>
-          <div
-            style={{ marginLeft: "20px" }}
-          >
-            <FormControl size="small"
+          <div style={{ marginLeft: "20px" }}>
+            <FormControl
+              size="small"
               sx={{
                 width: "150px",
               }}
@@ -293,16 +289,14 @@ const CourseManagementPage = () => {
             </FormControl>
           </div>
         </div>
-        <div
-          style={{ marginRight: "-270px" }}
-        >
+        <div style={{ marginRight: "-270px" }}>
           <Button
             sx={{
               width: "150px",
               height: "50px",
               backgroundColor: "#229342",
-              '&:hover': {
-                backgroundColor: '#1e7b36',
+              "&:hover": {
+                backgroundColor: "#1e7b36",
               },
             }}
             variant="contained"
@@ -320,7 +314,7 @@ const CourseManagementPage = () => {
         sx={{
           height: 500,
           width: "1200px",
-          marginRight: "-270px"
+          marginRight: "-270px",
         }}
       >
         {courses.map((course, index) => (
@@ -344,7 +338,6 @@ const CourseManagementPage = () => {
                   style={{
                     marginBottom: 0,
                   }}
-
                 >
                   {course.code}
                 </h3>
@@ -357,7 +350,7 @@ const CourseManagementPage = () => {
                       marginRight: "8px",
                       width: "30px",
                       height: "30px",
-                      backgroundColor: "#fbd64f"
+                      backgroundColor: "#fbd64f",
                     }}
                     onClick={(event) => {
                       event.stopPropagation();
@@ -392,7 +385,9 @@ const CourseManagementPage = () => {
             </div>
           </Grid>
         ))}
-        <Grid item xs={12}
+        <Grid
+          item
+          xs={12}
           style={{
             position: "absolute",
             bottom: 5,
@@ -421,28 +416,30 @@ const CourseManagementPage = () => {
         <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete the course "
-            {selectedCourse?.name}"?
+            Are you sure you want to delete the course "{selectedCourse?.name}"?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteAccount} autoFocus
+          <Button
+            onClick={handleDeleteAccount}
+            autoFocus
             sx={{
               color: "white",
               backgroundColor: "#E00201",
-              '&:hover': {
-                backgroundColor: '#c70404',
+              "&:hover": {
+                backgroundColor: "#c70404",
               },
             }}
           >
             Confirm
           </Button>
-          <Button onClick={() => setIsOpenDelete(false)}
+          <Button
+            onClick={() => setIsOpenDelete(false)}
             sx={{
               color: "white",
               backgroundColor: "#6C757D",
-              '&:hover': {
-                backgroundColor: '#5a6268',
+              "&:hover": {
+                backgroundColor: "#5a6268",
               },
             }}
           >
@@ -451,17 +448,15 @@ const CourseManagementPage = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={isCreateModalOpen}
-        onClose={handleClose}
-      >
+      <Dialog open={isCreateModalOpen} onClose={handleClose}>
         <DialogTitle
           sx={{
             backgroundColor: "#229342",
             color: "white",
             textAlign: "center",
             fontSize: "30px",
-          }}>
+          }}
+        >
           Create New Course
         </DialogTitle>
         <DialogContent
@@ -528,7 +523,7 @@ const CourseManagementPage = () => {
                       />
                     </Grid>
                     <Grid item xs={5}>
-                      <FormControl fullWidth >
+                      <FormControl fullWidth>
                         <InputLabel id="addSemester">Semester</InputLabel>
                         <Select
                           labelId="addSemester"
@@ -551,25 +546,29 @@ const CourseManagementPage = () => {
                       </FormControl>
                     </Grid>
                   </Grid>
-                  <DialogActions >
+                  <DialogActions>
                     <div>
-                      <Button type="submit" sx={{
-                        backgroundColor: "#229342",
-                        color: "white",
-                        '&:hover': {
-                          backgroundColor: '#1e7b36',
-                        },
-                      }}>
+                      <Button
+                        type="submit"
+                        sx={{
+                          backgroundColor: "#229342",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#1e7b36",
+                          },
+                        }}
+                      >
                         Save
                       </Button>
                     </div>
                     <div>
-                      <Button onClick={handleClose}
+                      <Button
+                        onClick={handleClose}
                         sx={{
                           backgroundColor: "#f44336",
                           color: "white",
-                          '&:hover': {
-                            backgroundColor: '#d32f2f',
+                          "&:hover": {
+                            backgroundColor: "#d32f2f",
                           },
                         }}
                       >
@@ -585,9 +584,7 @@ const CourseManagementPage = () => {
       </Dialog>
 
       <Dialog open={isEditModalOpen} onClose={handleClose}>
-        <DialogTitle
-          style={{ textAlign: "center" }}
-        >
+        <DialogTitle style={{ textAlign: "center" }}>
           Edit Course Information
         </DialogTitle>
         <DialogContent>
@@ -625,7 +622,7 @@ const CourseManagementPage = () => {
             error={errorDescription && errorDescription.length ? true : false}
             helperText={errorDescription}
           />
-          <FormControl fullWidth >
+          <FormControl fullWidth>
             <InputLabel id="addSemester">Semester</InputLabel>
             <Select
               labelId="addSemester"
@@ -633,7 +630,10 @@ const CourseManagementPage = () => {
               name="semesterId"
               value={selectedCourse.semesterId}
               onChange={(e) =>
-                setSelectedCourse({ ...selectedCourse, semesterId: e.target.value })
+                setSelectedCourse({
+                  ...selectedCourse,
+                  semesterId: e.target.value,
+                })
               }
               error={errorSemester && errorSemester.length ? true : false}
               helperText={errorSemester}
@@ -651,7 +651,10 @@ const CourseManagementPage = () => {
               name="isActive"
               checked={selectedCourse.isActive}
               onChange={(e) =>
-                setSelectedCourse({ ...selectedCourse, isActive: e.target.checked })
+                setSelectedCourse({
+                  ...selectedCourse,
+                  isActive: e.target.checked,
+                })
               }
               color="primary"
             />
@@ -659,12 +662,14 @@ const CourseManagementPage = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmitUpdate} color="primary"
+          <Button
+            onClick={handleSubmitUpdate}
+            color="primary"
             sx={{
               color: "white",
               backgroundColor: "#229342",
-              '&:hover': {
-                backgroundColor: '#1e7b36',
+              "&:hover": {
+                backgroundColor: "#1e7b36",
               },
               width: "100px",
             }}
@@ -672,12 +677,13 @@ const CourseManagementPage = () => {
             Update
           </Button>
 
-          <Button onClick={handleClose}
+          <Button
+            onClick={handleClose}
             sx={{
               color: "white",
               backgroundColor: "#E00201",
-              '&:hover': {
-                backgroundColor: '#c70404',
+              "&:hover": {
+                backgroundColor: "#c70404",
               },
               width: "100px",
             }}
@@ -686,7 +692,6 @@ const CourseManagementPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </Container>
   );
 };
