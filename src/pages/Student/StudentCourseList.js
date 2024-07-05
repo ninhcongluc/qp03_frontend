@@ -77,6 +77,7 @@ const StudentCourseList = () => {
 
   return (
     <div>
+      
       <MenuComponent role="student" />
       <Container sx={{ marginLeft: "240px" }}>
         <Grid container spacing={4} sx={{ marginTop: 2 }}>
