@@ -1,100 +1,112 @@
-import React from "react";
-import {
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Typography, Card, CardContent } from "@mui/material";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
-import { Box } from "@mui/system";
-import "./StudentQuizPage.css";
-
-const quizData = [
-  {
-    id: "4713fc09-2967-4e59-a832-04db1379baad",
-    courseName: "ACC 101",
-    quizzes: [
-      { quizId: "PT1", title: "Quiz PT1", timeLimit: "30 minutes" },
-      { quizId: "PT2", title: "Quiz PT2", timeLimit: "45 minutes" },
-      { quizId: "PT3", title: "Quiz PT3", timeLimit: "60 minutes" },
-      { quizId: "Mid Terms", title: "Mid Terms", timeLimit: "90 minutes" },
-      { quizId: "Final Exam", title: "Final Exam", timeLimit: "120 minutes" },
-    ],
-  },
-  {
-    id: "f5a016b9-97c2-4832-ba68-490d8825225e",
-    courseName: "SWR 302",
-    quizzes: [
-      { quizId: "PT1", title: "Quiz PT1", timeLimit: "30 minutes" },
-      { quizId: "PT2", title: "Quiz PT2", timeLimit: "45 minutes" },
-      { quizId: "PT3", title: "Quiz PT3", timeLimit: "60 minutes" },
-      { quizId: "Mid Terms", title: "Mid Terms", timeLimit: "90 minutes" },
-      { quizId: "Final Exam", title: "Final Exam", timeLimit: "120 minutes" },
-    ],
-  },
-  // Thêm các khóa học và bài kiểm tra khác ở đây
-];
 
 const StudentQuizPage = () => {
-  const { courseId } = useParams();
+  const { classId } = useParams();
   const navigate = useNavigate();
-  const courseQuiz = quizData.find((data) => data.id === courseId);
+  const [page, setPage] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
+  const [quizzes, setQuizzes] = useState([]);
+  const quizzesPerPage = 6;
 
-  if (!courseQuiz) {
-    return <Typography>No quizzes available for this course.</Typography>;
-  }
+  const fetchQuizData = useCallback(
+    async (page, limit) => {
+      try {
+        const response = await ApiInstance.get(
+          `/student/course-management/class/${classId}?type=quizzes&page=${page}&limit=${limit}`
+        );
+        const { data } = response.data;
+        if (data && data.quizzes) {
+          setQuizzes(data.quizzes.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)));
+          setTotalItem(data.total);
+        }
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    },
+    [classId]
+  );
 
-  const handleQuizClick = (quizId) => {
-    navigate(`/student/course-management/class/${courseId}/${quizId}`);
+  useEffect(() => {
+    fetchQuizData(page, quizzesPerPage);
+  }, [fetchQuizData, page, quizzesPerPage]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchQuizData(page, quizzesPerPage);
+    }, 30000); // Refresh data every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchQuizData, page, quizzesPerPage]);
+
+  const pageCount = Math.ceil(totalItem / quizzesPerPage);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    fetchQuizData(value, quizzesPerPage);
+  };
+
+  const handleQuizDetailClick = (quizId) => {
+    navigate(`/student/course-management/class/${classId}/${quizId}`);
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <div>
       <MenuComponent role="student" />
-      <Container className="container">
-        <Typography variant="h3" className="title" gutterBottom>
-          Quizzes for {courseQuiz.courseName}
-        </Typography>
-        <Grid container className="grid-container" spacing={2}>
-          {courseQuiz.quizzes.map((quiz) => (
-            <Grid
-              item
-              className="grid-item"
-              key={quiz.quizId}
-              xs={12}
-              sm={6}
-              md={4}
-            >
-              <Card className="card">
-                <CardContent>
-                  <Typography variant="h6" className="card-title">
-                    {quiz.title}
-                  </Typography>
-                  <Typography variant="body2" className="card-time">
-                    Time: {quiz.timeLimit}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "blue",
-                      color: "white",
-                      "&:hover": { backgroundColor: "darkpink" },
-                    }}
-                    className="card-button"
-                    onClick={() => handleQuizClick(quiz.quizId)}
-                  >
-                    Start {quiz.title}
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+      <Container sx={{ marginLeft: "240px" }}>
+        <Grid container spacing={4} sx={{ marginTop: 2 }}>
+          <Grid item flex={1}>
+            <Typography variant="h4" component="h2">
+              NameCourse - CodeCourse   
+                description
+            </Typography>
+          </Grid>
         </Grid>
+        <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
+          {quizzes
+            .slice(0, quizzesPerPage)
+            .map((quiz, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <Card
+                  className="quiz-card"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleQuizDetailClick(quiz.id)}
+                >
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {quiz.name}
+                    </Typography>
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                      {quiz.description}
+                    </Typography>
+                    <Typography variant="body2">
+                      Start Date: {new Date(quiz.startDate).toLocaleDateString()}
+                      <br />
+                      End Date: {new Date(quiz.endDate).toLocaleDateString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+        </Grid>
+        <Stack spacing={2} sx={{ marginTop: 4, alignItems: "center" }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            className="pagination"
+          />
+        </Stack>
       </Container>
-    </Box>
+    </div>
   );
 };
 
