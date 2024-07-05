@@ -1,3 +1,5 @@
+import { Add as AddIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -14,9 +16,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
+import BackButton from "../../components/BackButton/BackButton";
+
 import "./styles/TeacherAddQuestion.css";
+import { toast } from "react-toastify";
 
 const TeacherQuestionListPage = () => {
   const [questions, setQuestions] = useState([
@@ -25,10 +30,7 @@ const TeacherQuestionListPage = () => {
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
 
-  let navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("quizId", quizId);
+  const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuiz(response.data.data);
@@ -37,6 +39,9 @@ const TeacherQuestionListPage = () => {
       .catch((error) => {
         console.error("Error fetching course data:", error);
       });
+  };
+  useEffect(() => {
+    fetchData();
   }, [quizId]);
 
   // Handle question text change
@@ -103,6 +108,7 @@ const TeacherQuestionListPage = () => {
       id: questions?.length ? questions.length + 1 : 1,
       type: "selectOne",
       answerOptions: [""],
+      createdAt: new Date(),
     };
 
     if (questions) {
@@ -142,7 +148,7 @@ const TeacherQuestionListPage = () => {
     setQuestions(newQuestions);
   };
 
-  const handleSaveAsDraft = () => {
+  const handleSaveAsDraft = async () => {
     const listQuestionAnswers = questions.map((question) => ({
       id: question.id,
       text: question.text,
@@ -150,19 +156,36 @@ const TeacherQuestionListPage = () => {
       answerOptions: question.answerOptions,
     }));
 
-    console.log("listQuestionAnswers", listQuestionAnswers);
+    try {
+      await ApiInstance.put(`/quiz/${quizId}/save-draft`, listQuestionAnswers);
+      fetchData();
+      toast.success("Quiz save successfully");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
   };
   return (
-    <div>
-      <Box className="container">
-        <button className="back-button" onClick={() => navigate(-1)}></button>
+    <div className="container">
+      <Box>
+        <div className="header-page">
+          <BackButton />
 
-        <Typography className="text-header" variant="h4" gutterBottom>
-          Set Up Q&A
-        </Typography>
+          <Typography style={{ margin: 0 }} variant="h4" gutterBottom>
+            Set Up Q&A
+          </Typography>
+        </div>
+
         <Box
-          className="header"
-          sx={{ backgroundColor: "#4cdbe6", color: "black", p: 2 }}
+          className="summary-info"
+          sx={{
+            backgroundColor: "#fff",
+            alignItems: "center",
+            p: 2,
+            borderRadius: 1,
+            boxShadow: 1,
+            mb: 5,
+          }}
         >
           <Typography variant="h6" gutterBottom>
             Quiz Name: {quiz?.name}
@@ -203,6 +226,10 @@ const TeacherQuestionListPage = () => {
                             onChange={(event) =>
                               handleTypeChange(event, question.id)
                             }
+                            sx={{
+                              width: 155,
+                              fontSize: 15,
+                            }}
                           >
                             <MenuItem value="select_one">Select One</MenuItem>
                             <MenuItem value="multiple_choice">
@@ -249,43 +276,49 @@ const TeacherQuestionListPage = () => {
                           />
                         </TableCell>
                         <TableCell>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            size="small"
-                            sx={{ width: "70px" }}
+                          <CloseIcon
+                            sx={{
+                              color: "red",
+                              "&:hover": {
+                                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                              },
+                            }}
                             onClick={() =>
                               handleDeleteOption(question.id, optionIndex)
                             }
-                          >
-                            Delete
-                          </Button>
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
                       <TableCell colSpan={2}>
                         <Box className="optionButtons">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
+                          <AddIcon
                             sx={{
-                              width: "100px",
-                              marginRight: "8px",
+                              width: "30px",
+                              height: "30px",
+                              marginLeft: "20px",
+                              marginRight: 8,
+                              color: "primary.main",
+                              "&:hover": {
+                                backgroundColor: "#749bd4",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                                color: "white",
+                              },
                             }}
                             onClick={() => handleAddOption(question.id)}
-                          >
-                            Add
-                          </Button>
+                          />{" "}
                           <Button
                             variant="contained"
-                            color="secondary"
+                            color="error"
                             size="small"
-                            sx={{ width: "200px", marginTop: "16px" }}
+                            sx={{ width: "150px", marginTop: "16px" }}
                             onClick={() => handleDeleteQuestion(question.id)}
                           >
-                            Delete Question
+                            Delete
                           </Button>
                         </Box>
                       </TableCell>
@@ -304,13 +337,12 @@ const TeacherQuestionListPage = () => {
               style={{
                 width: "150px",
                 height: "40px",
-                backgroundColor: "#56e349",
                 "&:hover": {
                   backgroundColor: "#3cb730",
                 },
               }}
             >
-              Add Question
+              New Question
             </Button>
           </Box>
         </Box>
