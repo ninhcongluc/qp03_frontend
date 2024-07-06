@@ -46,11 +46,8 @@ const StudentCourseList = () => {
   useEffect(() => {
     fetchSemesterData();
     fetchCourseData(1, coursesPerPage);
-    const interval = setInterval(() => {
-      fetchCourseData(page, coursesPerPage, selectedSemester, searchTerm);
-    }, 30000); // Refresh data every 30 seconds
-    return () => clearInterval(interval);
-  }, [page, selectedSemester, searchTerm]);
+
+  },);
 
   const pageCount = Math.ceil(totalItem / coursesPerPage);
 
@@ -58,7 +55,7 @@ const StudentCourseList = () => {
     setPage(value);
     fetchCourseData(value, coursesPerPage, selectedSemester, searchTerm);
   };
-
+  
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
     setPage(1);
