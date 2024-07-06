@@ -68,7 +68,7 @@ function App() {
         <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
 
         <Route
-          path="/teacher/add-question"
+          path="/teacher/quiz/:quizId/question-list"
           element={<TeacherQuestionListPage />}
         />
         <Route path="/changePass" element={<ChangePassword />} />
@@ -80,22 +80,22 @@ function App() {
         />
 
         <Route
-          path="/student/course-management/class/:courseId"
+          path="/student/course-management/class/:classId"
           element={<StudentQuizPage />}
         />
 
         <Route
-          path="/student/course-management/class/:courseId/:quizId"
+          path="/student/quiz-detail/:quizId"
           element={<StudentQuizDetail />}
         />
 
         <Route
-          path="/student/course-management/class/:courseId/:quizId/start"
+          path="/student/quiz-detail/:quizId/do-quiz"
           element={<StudentDoQuiz />}
         />
 
         <Route
-          path="/student/course-management/class/:courseId/:quizId/review"
+          path="/student/quiz-review/:quizId"
           element={<StudentQuizReview />}
         />
       </Routes>
