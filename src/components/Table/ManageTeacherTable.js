@@ -138,6 +138,7 @@ const ManageTeacherTable = () => {
       phoneNumber: account.phoneNumber,
       gender: account.gender,
     });
+    console.log("data", account);
     setOpen(true);
     setViewMode(true);
   };

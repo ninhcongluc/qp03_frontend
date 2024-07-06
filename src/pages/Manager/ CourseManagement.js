@@ -9,11 +9,9 @@ import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Modal from "@mui/material/Modal";
 import Pagination from "@mui/material/Pagination";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import {
   Dialog,
   DialogActions,
