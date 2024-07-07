@@ -98,7 +98,7 @@ function App() {
         />
 
         <Route
-          path="/student/quiz-review/:quizId"
+          path="/student/quiz-review/:quizResultId"
           element={<StudentQuizReview />}
         />
       </Routes>

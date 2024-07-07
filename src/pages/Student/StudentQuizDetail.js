@@ -28,6 +28,7 @@ const StudentQuizDetail = () => {
     try {
       if (quizStatus === "doing") {
         const { studentQuizResults } = quizData;
+        console.log("🚀 ~ handleStartQuiz ~ quizData:", quizData);
         const quizResultId =
           studentQuizResults[studentQuizResults.length - 1].id;
         navigate(
@@ -45,7 +46,7 @@ const StudentQuizDetail = () => {
   };
 
   const handleReviewAttempt = (attemptId) => {
-    navigate(`/student/quiz-review/${quizId}`);
+    navigate(`/student/quiz-review/${attemptId}`);
   };
 
   return (
@@ -89,13 +90,15 @@ const StudentQuizDetail = () => {
                     <strong>Marks:</strong> {data?.numberCorrectAnswers}/
                     {data?.numberQuestions} - <strong>Grade:</strong>{" "}
                     {data.score}{" "}
-                    <a
-                      href
-                      onClick={() => handleReviewAttempt(data.id)}
-                      className="quiz-detail-review-link"
-                    >
-                      Review
-                    </a>
+                    {quizData.showAnswer && (
+                      <a
+                        href
+                        onClick={() => handleReviewAttempt(data.id)}
+                        className="quiz-detail-review-link"
+                      >
+                        Review
+                      </a>
+                    )}
                   </Typography>
                 </li>
               ))}
