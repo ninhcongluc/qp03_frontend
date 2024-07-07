@@ -102,7 +102,7 @@ const TeacherCourseDetailPage = () => {
     showAnswer: false,
   });
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
-
+console.log("courseId", courseId);
   useEffect(() => {
     ApiInstance.get(`/course/${courseId}`)
       .then((response) => {
