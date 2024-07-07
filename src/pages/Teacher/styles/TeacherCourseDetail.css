@@ -35,5 +35,6 @@
 .create-button {
 }
 
-.view-student {
+#action-button {
+  display: flex;
 }

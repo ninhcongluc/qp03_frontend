@@ -7,3 +7,7 @@ export const formatDate = (dateString) => {
 export const formatDateDay = (dateString) => {
   return moment(dateString).format("YYYY-MM-DD");
 };
+
+export const formatDateDay1 = (dateString) => {
+  return moment(dateString).format("YYYY-MM-DD");
+};

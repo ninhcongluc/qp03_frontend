@@ -7,6 +7,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActionArea from "@mui/material/CardActionArea";
+import Typography from "@mui/material/Typography";
 
 const StudentQuizPage = () => {
   const {classId } = useParams();
@@ -16,6 +20,7 @@ const StudentQuizPage = () => {
   const [quizzes, setQuizzes] = useState([]);
   const quizzesPerPage = 6;
   const [courses, setCourses] = useState({code: ""});
+  const [course, setCourse] = useState();
 
   const fetchQuizData = useCallback(
     async (page, limit, searchTerm = "") => {
@@ -28,6 +33,10 @@ const StudentQuizPage = () => {
           setQuizzes(response.data.data.quizzes);
           setTotalItem(data.total);
         }
+
+        setQuizzes(response.data.data.quizzes);
+        setCourse(response.data.data?.courseInfo.course);
+        setTotalItem(data.total);
       } catch (error) {
         console.error("Error fetching quiz data:", error);
       }
@@ -69,8 +78,9 @@ const StudentQuizPage = () => {
     setPage(value);
     fetchQuizData(value, quizzesPerPage);
   };
+
   const handleQuizDetailClick = (quizId) => {
-    navigate(`/student/course-management/class/${classId}/${quizId}`);
+    navigate(`/student/quiz-detail/${quizId}`);
   };
 
   return (
@@ -84,16 +94,25 @@ const StudentQuizPage = () => {
         <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
           {quizzes.map((quiz, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
-              <div
-                className="quiz-card"
-                style={{ padding: 16 }}
-                onClick={() => handleQuizDetailClick(quiz.id)}
-              >
-                <h3 >{quiz.name}</h3>
-                <p>{quiz.description}</p>
-                <p>Start Date: {new Date(quiz.startDate).toLocaleDateString()}</p>
-                <p>End Date: {new Date(quiz.endDate).toLocaleDateString()}</p>
-              </div>
+              <Card onClick={() => handleQuizDetailClick(quiz.id)}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {quiz.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {quiz.description}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Start Date:{" "}
+                      {new Date(quiz.startDate).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      End Date: {new Date(quiz.endDate).toLocaleDateString()}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Grid>
           ))}
         </Grid>

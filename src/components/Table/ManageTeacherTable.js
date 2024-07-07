@@ -102,6 +102,7 @@ const ManageTeacherTable = () => {
       dob: account.dob,
       phoneNumber: account.phoneNumber,
     });
+    console.log("data", account);
     setOpen(true);
     setViewMode(true);
   };

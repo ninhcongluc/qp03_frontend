@@ -1,66 +1,134 @@
-import React, { useState } from "react";
+import { Add as AddIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
+  FormControl,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
+  Typography,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
+import BackButton from "../../components/BackButton/BackButton";
+
 import "./styles/TeacherAddQuestion.css";
-import MenuComponent from "../../components/LeftMenu/Menu";
+import { toast } from "react-toastify";
 
 const TeacherQuestionListPage = () => {
   const [questions, setQuestions] = useState([
-    { id: 1, type: "selectOne", options: [""] },
+    { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
+  const [quiz, setQuiz] = useState(null);
+  const { quizId } = useParams();
 
-  const handleOnChange = (event, questionId) => {
-    const newQuestions = questions.map((question) => {
-      if (question.id === questionId) {
-        return { ...question, type: event.target.value };
-      }
-      return question;
-    });
-    setQuestions(newQuestions);
+  const fetchData = async () => {
+    ApiInstance.get(`/quiz/${quizId}/question-answers`)
+      .then((response) => {
+        setQuiz(response.data.data);
+        setQuestions(response.data.data.questions);
+      })
+      .catch((error) => {
+        console.error("Error fetching course data:", error);
+      });
+  };
+  useEffect(() => {
+    fetchData();
+  }, [quizId]);
+
+  // Handle question text change
+  const handleTextChange = (event, questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          return { ...question, text: event.target.value };
+        }
+        return question;
+      })
+    );
+  };
+
+  // Handle option text change
+  const handleOptionTextChange = (event, questionId, optionIndex) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          const updatedOptions = [...question.answerOptions];
+          updatedOptions[optionIndex] = {
+            ...updatedOptions[optionIndex],
+            optionText: event.target.value,
+          };
+          return { ...question, answerOptions: updatedOptions };
+        }
+        return question;
+      })
+    );
+  };
+
+  // Handle correct answer change
+  const handleCorrectAnswerChange = (event, questionId, optionIndex) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          const updatedOptions = question.answerOptions.map(
+            (option, index) => ({
+              ...option,
+              isCorrect: index === optionIndex,
+            })
+          );
+          return { ...question, answerOptions: updatedOptions };
+        }
+        return question;
+      })
+    );
+  };
+
+  // Handle question type change
+  const handleTypeChange = (event, questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        if (question.id === questionId) {
+          return { ...question, type: event.target.value };
+        }
+        return question;
+      })
+    );
   };
 
   const handleAddQuestion = () => {
     const newQuestion = {
-      id: questions.length + 1,
+id: questions?.length ? questions.length + 1 : 1,
       type: "selectOne",
-      options: [""],
+      answerOptions: [""],
+      createdAt: new Date(),
     };
-    setQuestions([...questions, newQuestion]);
+
+    if (questions) {
+      setQuestions([...questions, newQuestion]);
+    } else {
+      setQuestions([newQuestion]);
+    }
   };
 
   const handleDeleteQuestion = (questionId) => {
-    console.log(questionId);
-    const newQuestions = questions
-      .map((question) => {
-        if (question.id === questionId) {
-          return null;
-        }
-        return question;
-      })
-      .filter((question) => question !== null);
-    newQuestions.forEach((question, index) => {
-      question.id = index + 1;
-    });
-
+    const newQuestions = questions.filter(
+      (question) => question.id !== questionId
+    );
     setQuestions(newQuestions);
   };
 
   const handleAddOption = (questionId) => {
     const newQuestions = questions.map((question) => {
       if (question.id === questionId) {
-        return { ...question, options: [...question.options, ""] };
+        return { ...question, answerOptions: [...question.answerOptions, ""] };
       }
       return question;
     });
@@ -70,52 +138,85 @@ const TeacherQuestionListPage = () => {
   const handleDeleteOption = (questionId, optionIndex) => {
     const newQuestions = questions.map((question) => {
       if (question.id === questionId) {
-        const newOptions = question.options.filter(
+        const newOptions = question.answerOptions.filter(
           (option, index) => index !== optionIndex
         );
-        return { ...question, options: newOptions };
+        return { ...question, answerOptions: newOptions };
       }
       return question;
     });
     setQuestions(newQuestions);
   };
 
+  const handleSaveAsDraft = async () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      answerOptions: question.answerOptions,
+    }));
+
+    try {
+      await ApiInstance.put(`/quiz/${quizId}/save-draft`, listQuestionAnswers);
+      fetchData();
+      toast.success("Quiz save successfully");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
   return (
-    <div>
-      <MenuComponent role="teacher" />
-      <Box className="container1">
-        <Box className="header">
-          <b>Quiz name:</b>
-          <br />
-          <span>Class Name:</span>
-          <br />
-          <span>Due Date:</span>
-          <br />
-          <span>Time Limit:</span>
-        </Box>
+    <div className="container">
+      <Box>
+        <div className="header-page">
+          <BackButton />
+
+          <Typography style={{ margin: 0 }} variant="h4" gutterBottom>
+            Set Up Q&A
+          </Typography>
+        </div>
+
         <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          mb={2}
-          className=""
+          className="summary-info"
+          sx={{
+            backgroundColor: "#fff",
+            alignItems: "center",
+            p: 2,
+            borderRadius: 1,
+            boxShadow: 1,
+            mb: 5,
+          }}
         >
+          <Typography variant="h6" gutterBottom>
+            Quiz Name: {quiz?.name}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Number of Questions: {quiz?.questions?.length}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Time: {quiz?.timeLimitMinutes} minutes
+          </Typography>
+        </Box>
+        <Box>
           <TableContainer component={Paper} className="tableContainer">
             <Table stickyHeader>
               <TableBody>
-                {questions.map((question) => (
+                {questions.map((question, index) => (
                   <React.Fragment key={question.id}>
                     <TableRow>
                       <TableCell className="tableCell">
                         <Box className="questionLabel">
-                          Question {question.id}:
+Question {index + 1}:
                         </Box>
                         <TextField
                           id="standard-basic"
-                          label={`Question ${question.id}`}
+                          value={question.text}
                           variant="standard"
                           fullWidth
                           className="textField"
+                          onChange={(event) =>
+                            handleTextChange(event, question.id)
+                          }
                         />
                       </TableCell>
                       <TableCell sx={{ verticalAlign: "top" }}>
@@ -123,73 +224,101 @@ const TeacherQuestionListPage = () => {
                           <Select
                             value={question.type}
                             onChange={(event) =>
-                              handleOnChange(event, question.id)
+                              handleTypeChange(event, question.id)
                             }
+                            sx={{
+                              width: 155,
+                              fontSize: 15,
+                            }}
                           >
-                            <MenuItem value="selectOne">Select One</MenuItem>
-                            <MenuItem value="multiple">
+                            <MenuItem value="select_one">Select One</MenuItem>
+                            <MenuItem value="multiple_choice">
                               Multiple Choice
                             </MenuItem>
                           </Select>
                         </FormControl>
                       </TableCell>
                     </TableRow>
-                    {question.options.map((option, index) => (
-                      <TableRow key={index}>
+                    {question.answerOptions.map((option, optionIndex) => (
+                      <TableRow key={optionIndex}>
                         <TableCell className="optionCell">
                           <input
                             type={
-                              question.type === "selectOne"
+                              question.type === "select_one"
                                 ? "radio"
                                 : "checkbox"
                             }
                             name={`question${question.id}`}
-                            value={index}
+                            value={optionIndex}
+                            onChange={(event) =>
+                              handleCorrectAnswerChange(
+                                event,
+                                question.id,
+                                optionIndex
+                              )
+                            }
+                            defaultChecked={option.isCorrect}
                             style={{ marginRight: "8px" }}
                           />
                           <TextField
                             id="standard-basic"
-                            label={`Option ${index + 1}`}
+                            value={option?.optionText}
                             variant="standard"
                             type="text"
+                            onChange={(event) =>
+                              handleOptionTextChange(
+                                event,
+                                question.id,
+                                optionIndex
+                              )
+                            }
                             sx={{ width: "90%" }}
                           />
-                        </TableCell>
+</TableCell>
                         <TableCell>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            size="small"
-                            sx={{ width: "70px" }}
+                          <CloseIcon
+                            sx={{
+                              color: "red",
+                              "&:hover": {
+                                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                              },
+                            }}
                             onClick={() =>
-                              handleDeleteOption(question.id, index)
+                              handleDeleteOption(question.id, optionIndex)
                             }
-                          >
-                            Delete
-                          </Button>
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
                       <TableCell colSpan={2}>
                         <Box className="optionButtons">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            sx={{ width: "150px", marginRight: "8px" }}
+                          <AddIcon
+                            sx={{
+                              width: "30px",
+                              height: "30px",
+                              marginLeft: "20px",
+                              marginRight: 8,
+                              color: "primary.main",
+                              "&:hover": {
+                                backgroundColor: "#749bd4",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                                color: "white",
+                              },
+                            }}
                             onClick={() => handleAddOption(question.id)}
-                          >
-                            Add option
-                          </Button>
+                          />{" "}
                           <Button
                             variant="contained"
-                            color="secondary"
+                            color="error"
                             size="small"
-                            sx={{ width: "200px", marginTop: "16px" }}
+                            sx={{ width: "150px", marginTop: "16px" }}
                             onClick={() => handleDeleteQuestion(question.id)}
                           >
-                            Delete Question
+                            Delete
                           </Button>
                         </Box>
                       </TableCell>
@@ -204,20 +333,43 @@ const TeacherQuestionListPage = () => {
               variant="contained"
               color="primary"
               size="small"
-              className="button"
               onClick={handleAddQuestion}
+              style={{
+                width: "150px",
+                height: "40px",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
             >
-              Add Question
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              className="button"
-            >
-              Submit
+              New Question
             </Button>
           </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            marginTop: "20px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            id="submit-button"
+onClick={handleSaveAsDraft}
+          >
+            Save As Draft
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            id="submit-button"
+          >
+            Submit
+          </Button>
         </Box>
       </Box>
     </div>

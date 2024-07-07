@@ -22,12 +22,20 @@ const StudentCourseList = () => {
   const [semesters, setSemesters] = useState([]);
   const coursesPerPage = 6;
 
-  const fetchCourseData = async (page, limit, semesterId = "", searchTerm = "") => {
+  const fetchCourseData = async (
+    page,
+    limit,
+    semesterId = "",
+    searchTerm = ""
+  ) => {
     try {
       const response = await ApiInstance.get(
         `/course/student-courses?page=${page}&limit=${limit}&semesterId=${semesterId}&code=${searchTerm}`
       );
+
+      console.log("data", response.data.data);
       setCourses(response.data.data.courses);
+
       setTotalItem(response.data.data.total);
     } catch (error) {
       console.error("Error fetching course data:", error);
