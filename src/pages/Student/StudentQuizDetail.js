@@ -29,7 +29,7 @@ const StudentQuizDetail = () => {
   };
 
   const handleReviewAttempt = (attemptId) => {
-    navigate(`/student/course-management/class/${quizId}/review`);
+    navigate(`/student/quiz-review/${quizId}`);
   };
 
   return (

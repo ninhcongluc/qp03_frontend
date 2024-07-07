@@ -106,7 +106,11 @@ const TeacherCourseDetailPage = () => {
   useEffect(() => {
     ApiInstance.get(`/course/${courseId}`)
       .then((response) => {
-        setCourse(response.data.data);
+        const courseData = response.data.data;
+        setCourse(courseData);
+        if (courseData?.classes.length > 0) {
+          setSelectedClassId(courseData?.classes[0].id);
+        }
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
@@ -368,7 +372,13 @@ const TeacherCourseDetailPage = () => {
                     >
                       {quiz.showAnswer ? "True" : "False"}
                     </TableCell>{" "}
-                    <TableCell>{quiz?.status}</TableCell>
+                    <TableCell
+                      style={{
+                        color: quiz?.status === "submitted" ? "green" : "red",
+                      }}
+                    >
+                      {quiz?.status}
+                    </TableCell>
                     <TableCell id="action-button">
                       <IconButton
                         className="icon-button"

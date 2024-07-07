@@ -115,7 +115,12 @@ const StudentCourseList = () => {
             </FormControl>
           </Grid>
         </Grid>
-        <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
+        <Grid
+          container={courses.length}
+          spacing={4}
+          sx={{ marginTop: 2, minHeight: 100, width: "900px" }}
+        >
+          {" "}
           {courses.map((course, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div
