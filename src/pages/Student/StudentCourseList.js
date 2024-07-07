@@ -13,7 +13,7 @@ import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
 
 const StudentCourseList = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");

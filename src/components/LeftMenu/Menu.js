@@ -77,13 +77,18 @@ const MenuComponent = ({ role }) => {
     ],
     student: [
       {
-        text: "My Class",
+        text: "Course",
         icon: <PortraitIcon />,
         onClick: () => navigate("/student/course-management"),
       },
+      {
+        text: "Grades",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/student/grade"),
+      },
     ],
   };
-
+  
   return (
     <Drawer
       variant="permanent"

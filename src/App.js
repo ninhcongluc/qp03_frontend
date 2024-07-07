@@ -28,6 +28,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
 import ChangePassword from "./components/ChangePassword/ChangePassword";
+import StudentGrade from "./pages/Student/StudentGrade";
 
 function App() {
   return (
@@ -77,6 +78,11 @@ function App() {
         <Route
           path="/student/course-management"
           element={<StudentCourseListPage />}
+        />
+
+        <Route
+          path="/student/grade"
+          element={<StudentGrade />}
         />
 
         <Route
