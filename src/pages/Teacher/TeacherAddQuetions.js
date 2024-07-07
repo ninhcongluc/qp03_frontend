@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
@@ -24,6 +25,7 @@ import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
 
 const TeacherQuestionListPage = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
@@ -106,7 +108,7 @@ const TeacherQuestionListPage = () => {
   const handleAddQuestion = () => {
     const newQuestion = {
       id: questions?.length ? questions.length + 1 : 1,
-      type: "selectOne",
+      type: "select_one",
       answerOptions: [""],
       createdAt: new Date(),
     };
@@ -157,9 +159,31 @@ const TeacherQuestionListPage = () => {
     }));
 
     try {
-      await ApiInstance.put(`/quiz/${quizId}/save-draft`, listQuestionAnswers);
+      await ApiInstance.put(`/quiz/${quizId}/save-qa`, listQuestionAnswers);
       fetchData();
       toast.success("Quiz save successfully");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      answerOptions: question.answerOptions,
+    }));
+
+    try {
+      await ApiInstance.put(
+        `/quiz/${quizId}/save-qa?isSubmit=true`,
+        listQuestionAnswers
+      );
+      fetchData();
+      toast.success("You have submitted successfully");
+      navigate(-1);
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
@@ -367,6 +391,7 @@ const TeacherQuestionListPage = () => {
             color="success"
             size="small"
             id="submit-button"
+            onClick={handleSubmit}
           >
             Submit
           </Button>
