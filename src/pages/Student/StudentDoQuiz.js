@@ -67,20 +67,50 @@ const StudentDoQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(0);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [quizData, setQuizData] = useState({ questions: [] });
+  const [autoSaveInterval, setAutoSaveInterval] = useState(null);
+  const status = new URLSearchParams(window.location.search).get("status");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuizData(response.data.data);
+        setTimeLeft(response?.data?.data?.timeLimitMinutes * 60);
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
       });
   }, [quizId]);
+
+  useEffect(() => {
+    ApiInstance.get(`/student-quiz-result/${quizResultId}`)
+      .then((response) => {
+        if (status === "continue") {
+          const formattedAnswers = response.data.data.answers.reduce(
+            (acc, curr) => {
+              acc[curr.questionId] = curr.answerOptionIds;
+              return acc;
+            },
+            {}
+          );
+          setAnswers(formattedAnswers);
+          if (response.data.data.timeLeft > 0) {
+            setTimeLeft(response.data.data.timeLeft);
+          } else {
+            setTimeLeft(quizData.timeLimitMinutes * 60);
+          }
+        } else {
+          setTimeLeft(quizData.timeLimitMinutes * 60);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching course data:", error);
+      });
+  }, [quizResultId]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -98,7 +128,29 @@ const StudentDoQuiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [submitted]);
+  }, [submitted, timeLeft]);
+
+  useEffect(() => {
+    const handleAutoSave = async () => {
+      try {
+        const body = {
+          quizResultId,
+          answers,
+          timeLeft,
+        };
+        await ApiInstance.post(`/quiz/${quizId}/auto-save-answers`, body);
+      } catch (error) {
+        console.error("Error saving answers:", error);
+      }
+    };
+
+    const interval = setInterval(handleAutoSave, 10000); // 10 seconds
+    setAutoSaveInterval(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [quizResultId, answers]);
 
   const handleChange = (questionId, value, isMultiple = false) => {
     setAnswers((prevAnswers) => {

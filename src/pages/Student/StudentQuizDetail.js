@@ -30,7 +30,9 @@ const StudentQuizDetail = () => {
         const { studentQuizResults } = quizData;
         const quizResultId =
           studentQuizResults[studentQuizResults.length - 1].id;
-        navigate(`/student/quiz-detail/${quizId}/do-quiz/${quizResultId}`);
+        navigate(
+          `/student/quiz-detail/${quizId}/do-quiz/${quizResultId}?status=continue`
+        );
         return;
       }
 
