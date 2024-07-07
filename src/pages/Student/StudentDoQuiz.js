@@ -129,7 +129,7 @@ const StudentDoQuiz = () => {
   };
 
   const handleFinish = () => {
-    if (currentQuestion === quizData.questions.length - 1) {
+    if (Object.keys(answers).length === quizData.questions.length) {
       setSubmitted(true);
     } else {
       setConfirmSubmit(true);
@@ -137,6 +137,7 @@ const StudentDoQuiz = () => {
   };
 
   const handleConfirmSubmit = () => {
+    console.log("answers", answers);
     setSubmitted(true);
     setConfirmSubmit(false);
   };
@@ -314,19 +315,16 @@ const StudentDoQuiz = () => {
         <DialogTitle>Confirm Submit</DialogTitle>
         <DialogContent>
           <Typography>
-            {/* You have not completed all questions. Are you sure you want to
-            submit? */}
-            Mày đã làm hết đâu mà đòi nộp bài, Ken xồ ra mà làm tiếp đi còn gì
+            You have not completed all questions. Are you sure you want to
+            submit?
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelSubmit} color="primary">
-            {/* Cancel */}
-            Ken xồ
+            Cancel
           </Button>
           <Button onClick={handleConfirmSubmit} color="primary">
-            {/* Submit Anyway */}
-            Vẫn Nộp = Ngu
+            Submit Anyway
           </Button>
         </DialogActions>
       </Dialog>

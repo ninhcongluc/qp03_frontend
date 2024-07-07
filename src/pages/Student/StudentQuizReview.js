@@ -102,7 +102,6 @@ const StudentQuizReview = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-quiz-review">
-        <MenuComponent role="student" />
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>
