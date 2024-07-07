@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
+import { toast } from "react-toastify";
 
 import {
   Container,
@@ -61,7 +62,7 @@ const theme = createTheme({
 });
 
 const StudentDoQuiz = () => {
-  const { quizId } = useParams();
+  const { quizId, quizResultId } = useParams();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -69,6 +70,7 @@ const StudentDoQuiz = () => {
   const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [quizData, setQuizData] = useState({ questions: [] });
+  const navigate = useNavigate();
 
   useEffect(() => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
@@ -102,6 +104,7 @@ const StudentDoQuiz = () => {
     setAnswers((prevAnswers) => {
       if (isMultiple) {
         const currentAnswers = prevAnswers[questionId] || [];
+        console.log("currentAnswers", currentAnswers);
         const newAnswers = currentAnswers.includes(value)
           ? currentAnswers.filter((answer) => answer !== value)
           : [...currentAnswers, value];
@@ -129,17 +132,28 @@ const StudentDoQuiz = () => {
   };
 
   const handleFinish = () => {
-    if (Object.keys(answers).length === quizData.questions.length) {
-      setSubmitted(true);
-    } else {
-      setConfirmSubmit(true);
-    }
+    // if (Object.keys(answers).length === quizData.questions.length) {
+    //   setSubmitted(true);
+    // } else {
+    //   setConfirmSubmit(true);
+    // }
+
+    setConfirmSubmit(true);
   };
 
-  const handleConfirmSubmit = () => {
-    console.log("answers", answers);
-    setSubmitted(true);
-    setConfirmSubmit(false);
+  const handleConfirmSubmit = async () => {
+    const body = {
+      quizResultId,
+      answers,
+    };
+    try {
+      await ApiInstance.post(`/quiz/${quizId}/submit`, body);
+      setSubmitted(true);
+      setConfirmSubmit(false);
+      navigate(`/student/quiz-detail/${quizId}`);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
   };
 
   const handleCancelSubmit = () => {
@@ -195,20 +209,20 @@ const StudentDoQuiz = () => {
                     {quizData?.questions[currentQuestion]?.type ===
                     "multiple_choice" ? (
                       quizData.questions[currentQuestion]?.answerOptions?.map(
-                        (option, index) => (
+                        (option) => (
                           <FormControlLabel
-                            key={index}
+                            key={option.id}
                             control={
                               <Checkbox
                                 checked={
                                   answers[
                                     quizData.questions[currentQuestion]?.id
-                                  ]?.includes(option.optionText) || false
+                                  ]?.includes(option.id) || false
                                 }
                                 onChange={(e) =>
                                   handleChange(
                                     quizData.questions[currentQuestion]?.id,
-                                    option.optionText,
+                                    option.id,
                                     true
                                   )
                                 }
@@ -234,9 +248,9 @@ const StudentDoQuiz = () => {
                       >
                         {quizData.questions[
                           currentQuestion
-                        ]?.answerOptions?.map((option, index) => (
+                        ]?.answerOptions?.map((option) => (
                           <FormControlLabel
-                            key={index}
+                            key={option.id}
                             value={option.id}
                             control={<Radio />}
                             label={option.optionText}
@@ -314,10 +328,7 @@ const StudentDoQuiz = () => {
       <Dialog open={confirmSubmit} onClose={handleCancelSubmit}>
         <DialogTitle>Confirm Submit</DialogTitle>
         <DialogContent>
-          <Typography>
-            You have not completed all questions. Are you sure you want to
-            submit?
-          </Typography>
+          <Typography>Are you sure you want to submit the quiz?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelSubmit} color="primary">

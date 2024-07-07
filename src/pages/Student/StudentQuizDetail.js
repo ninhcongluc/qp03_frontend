@@ -8,7 +8,7 @@ import ApiInstance from "../../axios";
 const StudentQuizDetail = () => {
   const { quizId } = useParams();
   const [quizData, setQuizData] = useState(null);
-  const [quizStatus, setQuizStatus] = useState("doing");
+  const [quizStatus, setQuizStatus] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +24,22 @@ const StudentQuizDetail = () => {
       });
   }, [quizId]);
 
-  const handleStartQuiz = () => {
-    navigate(`/student/quiz-detail/${quizId}/do-quiz`);
+  const handleStartQuiz = async () => {
+    try {
+      if (quizStatus === "doing") {
+        const { studentQuizResults } = quizData;
+        const quizResultId =
+          studentQuizResults[studentQuizResults.length - 1].id;
+        navigate(`/student/quiz-detail/${quizId}/do-quiz/${quizResultId}`);
+        return;
+      }
+
+      const response = await ApiInstance.post(`/quiz/${quizId}/start-quiz`);
+      const { id: quizResultId } = response.data.data;
+      navigate(`/student/quiz-detail/${quizId}/do-quiz/${quizResultId}`);
+    } catch (error) {
+      console.error("Error starting quiz:", error);
+    }
   };
 
   const handleReviewAttempt = (attemptId) => {
@@ -50,7 +64,7 @@ const StudentQuizDetail = () => {
           <Grid container spacing={3} className="quiz-detail-grid">
             <Grid item xs={6}>
               <Typography variant="body1" sx={{ color: "black" }}>
-                <strong>Duration:</strong> {quizData?.timeLimitMinutes}
+                <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
               </Typography>
             </Grid>
             <Grid item xs={6}></Grid>

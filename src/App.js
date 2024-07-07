@@ -80,10 +80,7 @@ function App() {
           element={<StudentCourseListPage />}
         />
 
-        <Route
-          path="/student/grade"
-          element={<StudentGrade />}
-        />
+        <Route path="/student/grade" element={<StudentGrade />} />
 
         <Route
           path="/student/course-management/class/:classId"
@@ -96,7 +93,7 @@ function App() {
         />
 
         <Route
-          path="/student/quiz-detail/:quizId/do-quiz"
+          path="/student/quiz-detail/:quizId/do-quiz/:quizResultId"
           element={<StudentDoQuiz />}
         />
 
