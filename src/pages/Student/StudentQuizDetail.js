@@ -85,7 +85,6 @@ const StudentQuizDetail = () => {
               ))}
             </ul>
           </Box>
-
           <Button
             variant="contained"
             color={quizStatus === "doing" ? "error" : "primary"}
