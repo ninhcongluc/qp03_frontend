@@ -86,8 +86,8 @@ const StudentCourseList = () => {
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "240px" }}>
-        <Grid container spacing={4} sx={{ marginTop: 2 }}>
+      <Container sx={{ marginLeft: "180px" }}>
+        <Grid container spacing={2} sx={{ marginTop: 2 }}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"
