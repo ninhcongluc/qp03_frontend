@@ -23,6 +23,7 @@ import BackButton from "../../components/BackButton/BackButton";
 
 import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
+import QuestionBankDialog from "../../components/Dialog/QuesionBank";
 
 const TeacherQuestionListPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const TeacherQuestionListPage = () => {
   ]);
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
+  const [showQuestionBankDialog, setShowQuestionBankDialog] = useState(false);
 
   const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
@@ -188,6 +190,16 @@ const TeacherQuestionListPage = () => {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
     }
+  };
+
+  const handleSelectFromBank = () => {
+    setShowQuestionBankDialog(true);
+  };
+
+  const handleAddQuestions = (selectedQuestions) => {
+    console.log("selectedQuestions", selectedQuestions);
+    console.log("questions", questions);
+    setQuestions([...questions, ...selectedQuestions]);
   };
   return (
     <div className="container">
@@ -368,6 +380,27 @@ const TeacherQuestionListPage = () => {
             >
               New Question
             </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSelectFromBank}
+              style={{
+                width: "150px",
+                height: "40px",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
+            >
+              Select From Bank
+            </Button>
+            <QuestionBankDialog
+              open={showQuestionBankDialog}
+              onClose={() => setShowQuestionBankDialog(false)}
+              onAddQuestions={handleAddQuestions}
+            />
           </Box>
         </Box>
 
