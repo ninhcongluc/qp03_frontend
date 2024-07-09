@@ -47,69 +47,58 @@ const StudentQuizDetail = () => {
     navigate(`/student/quiz-review/${attemptId}`);
   };
 
-  if (!quizData) {
-    return <div>Loading...</div>;
-  }
-
-
   return (
     <Box sx={{ display: "flow" }} style={{width:'140%', maxHeight: '100vh'}}>
       <MenuComponent role="student" />
       <Container className="quiz-detail-container">
-        <Paper elevation={3} sx={{ padding: 3}}>
-          <Typography variant="h3" align="center" gutterBottom className="quiz-detail-title">
-            {quizData?.name}
-          </Typography>
+        {quizData && ( // Conditionally render only if quizData is not null
+          <Paper elevation={3} sx={{ padding: 3 }}>
+            <Typography variant="h3" align="center" gutterBottom className="quiz-detail-title">
+              {quizData.name}
+            </Typography>
 
-          <Typography variant="body1" sx={{ color: "black" }}>
-            <strong>Time limit:</strong> {quizData?.timeLimitMinutes} mins
-          </Typography>
+            <Typography variant="body1" sx={{ color: "black" }}>
+              <strong>Time limit:</strong> {quizData.timeLimitMinutes} mins
+            </Typography>
 
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>Attempt</strong></TableCell>
-                  <TableCell><strong>State</strong></TableCell>
-                  <TableCell><strong>Marks / 16.00</strong></TableCell>
-                  <TableCell><strong>Grade / 10.00</strong></TableCell>
-                  <TableCell><strong>Review</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {quizData.studentQuizResults?.map((data, index) => (
-                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      {data.status} <br />
-                      Submitted {new Date(data.submittedAt).toLocaleString()}
-                    </TableCell>
-                    <TableCell>{data.numberCorrectAnswers}</TableCell>
-                    <TableCell>{data.score}</TableCell>
-                    <TableCell>
-                      {quizData.showAnswer && (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell><strong>Attempt</strong></TableCell>
+                    <TableCell><strong>State</strong></TableCell>
+                    <TableCell><strong>Marks / 16.00</strong></TableCell>
+                    <TableCell><strong>Review</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {quizData.studentQuizResults.map((data, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{data.status}</TableCell>
+                      <TableCell>{data.score}</TableCell>
+                      <TableCell>
                         <Button onClick={() => handleReviewAttempt(data.id)} color="primary">
                           Review
                         </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          <Button
-            variant="contained"
-            color={quizStatus === "doing" ? "error" : "primary"}
-            onClick={handleStartQuiz}
-            className="quiz-detail-start-button"
-            sx={{ marginTop: 2, width:'30%', marginLeft:'70%' }}
-            
-          >
-            {quizStatus === "doing" ? "Continue" : "Start"}
-          </Button>
-        </Paper>
+            <Button
+              variant="contained"
+              color={quizStatus === "doing" ? "error" : "primary"}
+              onClick={handleStartQuiz}
+              className="quiz-detail-start-button"
+              sx={{ marginTop: 2, width:'30%', marginLeft:'70%' }}
+            >
+              {quizStatus === "doing" ? "Continue" : "Start"}
+            </Button>
+          </Paper>
+        )}
       </Container>
     </Box>
   );
