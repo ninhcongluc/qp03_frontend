@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
+import { toast } from "react-toastify";
 
 import {
   Container,
@@ -61,24 +62,55 @@ const theme = createTheme({
 });
 
 const StudentDoQuiz = () => {
-  const { quizId } = useParams();
+  const { quizId, quizResultId } = useParams();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(0);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [quizData, setQuizData] = useState({ questions: [] });
+  const [autoSaveInterval, setAutoSaveInterval] = useState(null);
+  const status = new URLSearchParams(window.location.search).get("status");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuizData(response.data.data);
+        setTimeLeft(response?.data?.data?.timeLimitMinutes * 60);
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
       });
   }, [quizId]);
+
+  useEffect(() => {
+    ApiInstance.get(`/student-quiz-result/${quizResultId}`)
+      .then((response) => {
+        if (status === "continue") {
+          const formattedAnswers = response.data.data.answers.reduce(
+            (acc, curr) => {
+              acc[curr.questionId] = curr.answerOptionIds;
+              return acc;
+            },
+            {}
+          );
+          setAnswers(formattedAnswers);
+          if (response.data.data.timeLeft > 0) {
+            setTimeLeft(response.data.data.timeLeft);
+          } else {
+            setTimeLeft(quizData.timeLimitMinutes * 60);
+          }
+        } else {
+          setTimeLeft(quizData.timeLimitMinutes * 60);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [quizResultId]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -96,12 +128,35 @@ const StudentDoQuiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [submitted]);
+  }, [submitted, timeLeft]);
+
+  useEffect(() => {
+    const handleAutoSave = async () => {
+      try {
+        const body = {
+          quizResultId,
+          answers,
+          timeLeft,
+        };
+        await ApiInstance.post(`/quiz/${quizId}/auto-save-answers`, body);
+      } catch (error) {
+        console.error("Error saving answers:", error);
+      }
+    };
+
+    const interval = setInterval(handleAutoSave, 10000); // 10 seconds
+    setAutoSaveInterval(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [quizResultId, answers]);
 
   const handleChange = (questionId, value, isMultiple = false) => {
     setAnswers((prevAnswers) => {
       if (isMultiple) {
         const currentAnswers = prevAnswers[questionId] || [];
+        console.log("currentAnswers", currentAnswers);
         const newAnswers = currentAnswers.includes(value)
           ? currentAnswers.filter((answer) => answer !== value)
           : [...currentAnswers, value];
@@ -129,16 +184,28 @@ const StudentDoQuiz = () => {
   };
 
   const handleFinish = () => {
-    if (currentQuestion === quizData.questions.length - 1) {
-      setSubmitted(true);
-    } else {
-      setConfirmSubmit(true);
-    }
+    // if (Object.keys(answers).length === quizData.questions.length) {
+    //   setSubmitted(true);
+    // } else {
+    //   setConfirmSubmit(true);
+    // }
+
+    setConfirmSubmit(true);
   };
 
-  const handleConfirmSubmit = () => {
-    setSubmitted(true);
-    setConfirmSubmit(false);
+  const handleConfirmSubmit = async () => {
+    const body = {
+      quizResultId,
+      answers,
+    };
+    try {
+      await ApiInstance.post(`/quiz/${quizId}/submit`, body);
+      setSubmitted(true);
+      setConfirmSubmit(false);
+      navigate(`/student/quiz-detail/${quizId}`);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
   };
 
   const handleCancelSubmit = () => {
@@ -194,20 +261,20 @@ const StudentDoQuiz = () => {
                     {quizData?.questions[currentQuestion]?.type ===
                     "multiple_choice" ? (
                       quizData.questions[currentQuestion]?.answerOptions?.map(
-                        (option, index) => (
+                        (option) => (
                           <FormControlLabel
-                            key={index}
+                            key={option.id}
                             control={
                               <Checkbox
                                 checked={
                                   answers[
                                     quizData.questions[currentQuestion]?.id
-                                  ]?.includes(option.optionText) || false
+                                  ]?.includes(option.id) || false
                                 }
                                 onChange={(e) =>
                                   handleChange(
                                     quizData.questions[currentQuestion]?.id,
-                                    option.optionText,
+                                    option.id,
                                     true
                                   )
                                 }
@@ -233,9 +300,9 @@ const StudentDoQuiz = () => {
                       >
                         {quizData.questions[
                           currentQuestion
-                        ]?.answerOptions?.map((option, index) => (
+                        ]?.answerOptions?.map((option) => (
                           <FormControlLabel
-                            key={index}
+                            key={option.id}
                             value={option.id}
                             control={<Radio />}
                             label={option.optionText}
@@ -313,20 +380,14 @@ const StudentDoQuiz = () => {
       <Dialog open={confirmSubmit} onClose={handleCancelSubmit}>
         <DialogTitle>Confirm Submit</DialogTitle>
         <DialogContent>
-          <Typography>
-            {/* You have not completed all questions. Are you sure you want to
-            submit? */}
-            Mày đã làm hết đâu mà đòi nộp bài, Ken xồ ra mà làm tiếp đi còn gì
-          </Typography>
+          <Typography>Are you sure you want to submit the quiz?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelSubmit} color="primary">
-            {/* Cancel */}
-            Ken xồ
+            Cancel
           </Button>
           <Button onClick={handleConfirmSubmit} color="primary">
-            {/* Submit Anyway */}
-            Vẫn Nộp = Ngu
+            Submit Anyway
           </Button>
         </DialogActions>
       </Dialog>

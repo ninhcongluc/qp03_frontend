@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
@@ -24,6 +25,7 @@ import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
 
 const TeacherQuestionListPage = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
@@ -102,11 +104,10 @@ const TeacherQuestionListPage = () => {
       })
     );
   };
-
-  const handleAddQuestion = () => {
+const handleAddQuestion = () => {
     const newQuestion = {
-id: questions?.length ? questions.length + 1 : 1,
-      type: "selectOne",
+      id: questions?.length ? questions.length + 1 : 1,
+      type: "select_one",
       answerOptions: [""],
       createdAt: new Date(),
     };
@@ -157,9 +158,31 @@ id: questions?.length ? questions.length + 1 : 1,
     }));
 
     try {
-      await ApiInstance.put(`/quiz/${quizId}/save-draft`, listQuestionAnswers);
+      await ApiInstance.put(`/quiz/${quizId}/save-qa`, listQuestionAnswers);
       fetchData();
       toast.success("Quiz save successfully");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      answerOptions: question.answerOptions,
+    }));
+
+    try {
+      await ApiInstance.put(
+        `/quiz/${quizId}/save-qa?isSubmit=true`,
+        listQuestionAnswers
+      );
+      fetchData();
+      toast.success("You have submitted successfully");
+      navigate(-1);
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
@@ -191,7 +214,7 @@ id: questions?.length ? questions.length + 1 : 1,
             Quiz Name: {quiz?.name}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Number of Questions: {quiz?.questions?.length}
+Number of Questions: {quiz?.questions?.length}
           </Typography>
           <Typography variant="body1" gutterBottom>
             Time: {quiz?.timeLimitMinutes} minutes
@@ -206,7 +229,7 @@ id: questions?.length ? questions.length + 1 : 1,
                     <TableRow>
                       <TableCell className="tableCell">
                         <Box className="questionLabel">
-Question {index + 1}:
+                          Question {index + 1}:
                         </Box>
                         <TextField
                           id="standard-basic"
@@ -259,7 +282,7 @@ Question {index + 1}:
                             }
                             defaultChecked={option.isCorrect}
                             style={{ marginRight: "8px" }}
-                          />
+/>
                           <TextField
                             id="standard-basic"
                             value={option?.optionText}
@@ -274,7 +297,7 @@ Question {index + 1}:
                             }
                             sx={{ width: "90%" }}
                           />
-</TableCell>
+                        </TableCell>
                         <TableCell>
                           <CloseIcon
                             sx={{
@@ -332,7 +355,7 @@ Question {index + 1}:
             <Button
               variant="contained"
               color="primary"
-              size="small"
+size="small"
               onClick={handleAddQuestion}
               style={{
                 width: "150px",
@@ -358,7 +381,7 @@ Question {index + 1}:
             color="secondary"
             size="small"
             id="submit-button"
-onClick={handleSaveAsDraft}
+            onClick={handleSaveAsDraft}
           >
             Save As Draft
           </Button>
@@ -367,6 +390,7 @@ onClick={handleSaveAsDraft}
             color="success"
             size="small"
             id="submit-button"
+            onClick={handleSubmit}
           >
             Submit
           </Button>

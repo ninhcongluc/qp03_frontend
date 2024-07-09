@@ -13,7 +13,7 @@ import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
 
 const StudentCourseList = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -84,8 +84,8 @@ const StudentCourseList = () => {
     <div>
       
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "240px" }}>
-        <Grid container spacing={4} sx={{ marginTop: 2 }}>
+      <Container sx={{ marginLeft: "180px" }}>
+        <Grid container spacing={2} sx={{ marginTop: 2 }}>
           <Grid item flex={1}>
             <TextField
               label="Search by Course Code"
@@ -113,7 +113,12 @@ const StudentCourseList = () => {
             </FormControl>
           </Grid>
         </Grid>
-        <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
+        <Grid
+          container={courses.length}
+          spacing={4}
+          sx={{ marginTop: 2, minHeight: 100, width: "900px" }}
+        >
+          {" "}
           {courses.map((course, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <div

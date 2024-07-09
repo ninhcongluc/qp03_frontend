@@ -1,9 +1,11 @@
 import {
   Add as AddIcon,
+  CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
-  CloudUpload as CloudUploadIcon,
+  RemoveRedEye as ViewIcon,
 } from "@mui/icons-material";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Avatar,
   Box,
@@ -27,15 +29,52 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import BackButton from "../../components/BackButton/BackButton";
-
 import { useParams } from "react-router-dom";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
-import MenuComponent from "../../components/LeftMenu/Menu";
 import { useNavigate } from "react-router-dom";
 import "./styles/TeacherCourseDetail.css";
+
+const columns = [
+  { id: "name", label: "Name", minWidth: 170 },
+  { id: "startDate", label: "StartDate", minWidth: 100 },
+  {
+    id: "endDate",
+    label: "EndDate",
+    minWidth: 170,
+  },
+  {
+    id: "timeLimitMinutes",
+    label: "TimeLimit\u00a0minutes",
+    minWidth: 120,
+  },
+  {
+    id: "maxLimitAttempts",
+    label: "LimitAttempts",
+    minWidth: 120,
+  },
+  {
+    id: "score",
+    label: "Score",
+    minWidth: 120,
+  },
+  {
+    id: "showAnswer",
+    label: "ShowAnswer",
+    minWidth: 150,
+  },
+  {
+    id: "status",
+    label: "Status",
+    minWidth: 150,
+  },
+  {
+    id: "action",
+    label: "Action",
+    minWidth: 170,
+  },
+];
 
 const TeacherCourseDetailPage = () => {
   const [page, setPage] = useState(0);
@@ -47,22 +86,30 @@ const TeacherCourseDetailPage = () => {
   const [showStudentDialog, setShowStudentDialog] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const { courseId } = useParams();
+  let navigate = useNavigate();
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
     description: "",
     startDate: null,
     endDate: null,
+    classId: selectedClassId,
     timeLimitMinutes: 0,
+    isLimitedAttempts: false,
+    maxAttempts: 0,
     score: 10,
-    isHidden: false,
+    showAnswer: false,
   });
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
-console.log("courseId", courseId);
+  console.log("courseId", courseId);
   useEffect(() => {
     ApiInstance.get(`/course/${courseId}`)
       .then((response) => {
-        setCourse(response.data.data);
+        const courseData = response.data.data;
+        setCourse(courseData);
+        if (courseData?.classes.length > 0) {
+          setSelectedClassId(courseData?.classes[0].id);
+        }
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
@@ -132,8 +179,6 @@ console.log("courseId", courseId);
     setSelectedClassId(event.target.value);
   };
 
-  const handleToggleHidden = () => {};
-
   const handleCreateQuiz = () => {
     setSelectedQuiz(null);
     setShowCreateQuizDialog(true);
@@ -142,9 +187,11 @@ console.log("courseId", courseId);
       description: "",
       startDate: null,
       endDate: null,
+      isLimitedAttempts: false,
+      maxAttempts: 0,
       timeLimitMinutes: 0,
       score: 10,
-      isHidden: false,
+      showAnswer: false,
     });
   };
 
@@ -154,11 +201,17 @@ console.log("courseId", courseId);
       name: "",
       description: "",
       startDate: null,
+      isLimitedAttempts: false,
+      classId: selectedClassId,
       endDate: null,
       timeLimitMinutes: 0,
       score: 10,
-      isHidden: false,
+      showAnswer: false,
     });
+  };
+
+  const handleViewQuiz = (quiz) => {
+    navigate(`/teacher/quiz/${quiz.id}/question-list`);
   };
 
   const handleEditQuiz = (quiz) => {
@@ -168,9 +221,12 @@ console.log("courseId", courseId);
       description: quiz.description,
       startDate: new Date(quiz.startDate),
       endDate: new Date(quiz.endDate),
+      classId: selectedClassId,
+      isLimitedAttempts: quiz.isLimitedAttempts,
+      maxAttempts: quiz.maxAttempts,
       timeLimitMinutes: quiz.timeLimitMinutes,
       score: quiz.score,
-      isHidden: quiz.isHidden,
+      showAnswer: quiz.showAnswer,
     });
     setShowCreateQuizDialog(true);
   };
@@ -210,7 +266,7 @@ console.log("courseId", courseId);
       } else {
         // Create new quiz
         await ApiInstance.post(
-          `/quiz`,
+          `/quiz/create`,
           { ...newQuiz, classId: selectedClassId },
           config
         );
@@ -226,9 +282,7 @@ console.log("courseId", courseId);
   };
 
   return (
-   
     <Box className="teacher-course-detail-page">
-       <MenuComponent role="teacher"/>
       <div className="content">
         <BackButton />
 
@@ -271,7 +325,7 @@ console.log("courseId", courseId);
 
             <Button
               variant="contained"
-              className="view-student"
+              id="view-student"
               startIcon={<PeopleAltIcon />}
               color="primary"
               onClick={() => handleViewStudents()}
@@ -279,19 +333,26 @@ console.log("courseId", courseId);
               View Students
             </Button>
           </div>
-          <Box sx={{ mt: 5 }}>
-            <Table sx={{ minWidth: 800 }}>
+          <Box>
+            <Table
+              stickyHeader
+              aria-label="sticky table"
+              className="quiz-table"
+            >
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Start Date</TableCell>
-                  <TableCell>End Date</TableCell>
-                  <TableCell>TimeLimit</TableCell>
-                  <TableCell>Score</TableCell>
-                  <TableCell>Hidden</TableCell>
-                  <TableCell>Actions</TableCell>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {paginatedQuizzes.map((quiz) => (
                   <TableRow key={quiz.id} className="custom-row">
@@ -299,18 +360,41 @@ console.log("courseId", courseId);
                     <TableCell>{formatDateDay(quiz.startDate)}</TableCell>
                     <TableCell>{formatDateDay(quiz.endDate)}</TableCell>
                     <TableCell>{quiz.timeLimitMinutes}</TableCell>
-                    <TableCell>{quiz.score}</TableCell>
                     <TableCell>
-                      <Switch
-                        checked={quiz.isHidden}
-                        onChange={() => handleToggleHidden(quiz.id)}
-                      />
+                      {quiz.isLimitedAttempts ? quiz.maxAttempts : "No"}
                     </TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditQuiz(quiz)}>
+                    <TableCell>{quiz.score}</TableCell>
+                    <TableCell
+                      style={{
+                        color: quiz.showAnswer ? "blue" : "red",
+                      }}
+                    >
+                      {quiz.showAnswer ? "True" : "False"}
+                    </TableCell>{" "}
+                    <TableCell
+                      style={{
+                        color: quiz?.status === "submitted" ? "green" : "red",
+                      }}
+                    >
+                      {quiz?.status}
+                    </TableCell>
+                    <TableCell id="action-button">
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleViewQuiz(quiz)}
+                      >
+                        <ViewIcon />
+                      </IconButton>
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleEditQuiz(quiz)}
+                      >
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteQuiz(quiz.id)}>
+                      <IconButton
+                        className="icon-button"
+                        onClick={() => handleDeleteQuiz(quiz.id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -320,6 +404,7 @@ console.log("courseId", courseId);
             </Table>
           </Box>
           <TablePagination
+            rowsPerPageOptions={[10, 20, 50]}
             component="div"
             count={quizzes.length}
             page={page}
@@ -356,7 +441,6 @@ console.log("courseId", courseId);
                 }
                 fullWidth
                 margin="normal"
-                required
               />
               <TextField
                 label="Start Date"
@@ -412,16 +496,51 @@ console.log("courseId", courseId);
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, score: parseInt(e.target.value) })
                 }
+                select
                 fullWidth
                 margin="normal"
                 required
-              />
-              <div className="hidden-switch">
-                <Typography variant="subtitle1">Hidden</Typography>
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </TextField>
+              <div>
+                <Typography variant="subtitle1">Limit Attempts:</Typography>
                 <Switch
-                  checked={newQuiz.isHidden}
+                  checked={newQuiz.isLimitedAttempts}
                   onChange={(e) =>
-                    setNewQuiz({ ...newQuiz, isHidden: e.target.checked })
+                    setNewQuiz({
+                      ...newQuiz,
+                      isLimitedAttempts: e.target.checked,
+                    })
+                  }
+                />
+              </div>
+
+              {newQuiz.isLimitedAttempts && (
+                <TextField
+                  label="Max Attempts"
+                  type="number"
+                  value={newQuiz.maxAttempts}
+                  onChange={(e) =>
+                    setNewQuiz({
+                      ...newQuiz,
+                      maxAttempts: parseInt(e.target.value),
+                    })
+                  }
+                  fullWidth
+                  margin="normal"
+                  required
+                />
+              )}
+              <div className="hidden-switch">
+                <Typography variant="subtitle1">
+                  Show Student Answers:
+                </Typography>
+                <Switch
+                  checked={newQuiz.showAnswer}
+                  onChange={(e) =>
+                    setNewQuiz({ ...newQuiz, showAnswer: e.target.checked })
                   }
                 />
               </div>

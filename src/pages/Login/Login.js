@@ -91,13 +91,13 @@ function Login() {
         />
         <div>
           <div>
-            <Checkbox
+            {/* <Checkbox
               checked={rememberMe}
               onChange={handleRememberMeChange}
               label="Remember me"
               style={{ color: "orange" }}
             />
-            <label class="remember-me-label">Remember me</label>
+            <label class="remember-me-label">Remember me</label> */}
           </div>
           <div>
             <a href="/forgot-password" style={{ color: "orange" }}>

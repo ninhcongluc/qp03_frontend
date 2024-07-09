@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
+
 import {
   Container,
   Typography,
@@ -17,7 +20,6 @@ import {
   Checkbox,
 } from "@mui/material";
 import "./StudentQuizReview.css";
-import MenuComponent from "../../components/LeftMenu/Menu";
 
 const theme = createTheme({
   palette: {
@@ -53,30 +55,86 @@ const theme = createTheme({
   },
 });
 
-const quizReviewData = {
-  quizName: "Practice Test 1",
-  score: 8, // Assume a score out of 10
-  questions: [
-    {
-      questionId: 1,
-      question: "Which is the largest continent by area?",
-      options: ["Africa", "Asia", "Europe", "North America"],
-      correctAnswer: "Asia",
-      yourAnswer: "Asia",
-    },
-    {
-      questionId: 2,
-      question: "Which country is the largest producer of coffee?",
-      options: ["Colombia", "Vietnam", "Ethiopia", "Brazil"],
-      correctAnswer: ["Brazil"],
-      yourAnswer: ["Brazil", "Vietnam"],
-      multipleAnswers: true,
-    },
-  ],
-};
+// const quizReviewData = {
+//   name: "Practice Test 1",
+//   score: 8, // Assume a score out of 10
+//   questions: [
+//     {
+//       questionId: 1,
+//       question: "Which is the largest continent by area?",
+//       options: ["Africa", "Asia", "Europe", "North America"],
+//       correctAnswer: "Asia",
+//       yourAnswer: "Asia",
+//     },
+//     {
+//       questionId: 2,
+//       question: "Which country is the largest producer of coffee?",
+//       options: ["Colombia", "Vietnam", "Ethiopia", "Brazil"],
+//       correctAnswer: ["Brazil"],
+//       yourAnswer: ["Brazil", "Vietnam"],
+//       multipleAnswers: true,
+//     },
+//   ],
+// };
 
 const StudentQuizReview = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [quizReviewData, setQuizReviewData] = useState({
+    name: "",
+    score: 0,
+    questions: [
+      {
+        questionId: "",
+        question: "",
+        options: [],
+        correctAnswer: "",
+        yourAnswer: "",
+      },
+    ],
+  });
+  const { quizResultId } = useParams();
+
+  useEffect(() => {
+    ApiInstance.get(`/student-review-quiz/${quizResultId}`)
+      .then((response) => {
+        const { data } = response.data;
+        console.log("🚀 ~ .then ~ data:", data);
+        const transformedData = {
+          quizName: data.quizName,
+          quizScore: data.quizScore,
+          score: data.score,
+          questions: data.questions.map((question) => {
+            const yourAnswer = data.answers.find(
+              (answer) => answer.questionId === question.id
+            );
+            return {
+              questionId: question.id,
+              question: question.text,
+              options: question.answerOptions.map(
+                (option) => option.optionText
+              ),
+              correctAnswer: question.answerOptions
+                .filter((option) => option.isCorrect)
+                .map((option) => option.optionText),
+              yourAnswer: yourAnswer
+                ? question.answerOptions
+                    .filter((option) =>
+                      yourAnswer.answerOptionIds.includes(option.id)
+                    )
+                    .map((option) => option.optionText)
+                : [],
+              ...(question.type === "multiple_choice" && {
+                multipleAnswers: true,
+              }),
+            };
+          }),
+        };
+        setQuizReviewData(transformedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [quizResultId]);
 
   const handleNext = () => {
     setCurrentQuestion((prev) =>
@@ -89,20 +147,20 @@ const StudentQuizReview = () => {
   };
 
   const isCorrectAnswer = (question) => {
+    console.log("question", question);
     if (question.multipleAnswers) {
       return (
         question.yourAnswer.sort().toString() ===
         question.correctAnswer.sort().toString()
       );
     }
-    return question.yourAnswer === question.correctAnswer;
+    return question.yourAnswer[0] === question.correctAnswer[0];
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-quiz-review">
-        <MenuComponent role="student" />
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>
@@ -113,7 +171,7 @@ const StudentQuizReview = () => {
                     align="center"
                     className="quiz-title"
                   >
-                    Review {quizReviewData.quizName}
+                    Review {quizReviewData?.quizName}
                   </Typography>
                 </CardContent>
               </Card>
@@ -148,7 +206,7 @@ const StudentQuizReview = () => {
                             key={index}
                             control={
                               <Checkbox
-                                checked={quizReviewData.questions[
+                                checked={quizReviewData?.questions[
                                   currentQuestion
                                 ]?.yourAnswer.includes(option)}
                                 disabled
@@ -185,7 +243,7 @@ const StudentQuizReview = () => {
                     className="quiz-review-your-answer"
                   >
                     Your Answer:{" "}
-                    {quizReviewData.questions[
+                    {quizReviewData?.questions[
                       currentQuestion
                     ]?.yourAnswer.toString()}
                   </Typography>
@@ -201,12 +259,14 @@ const StudentQuizReview = () => {
                   <Typography
                     variant="body1"
                     className={
-                      isCorrectAnswer(quizReviewData.questions[currentQuestion])
+                      isCorrectAnswer(
+                        quizReviewData?.questions[currentQuestion]
+                      )
                         ? "quiz-review-answer-status quiz-review-correct-answer"
                         : "quiz-review-answer-status quiz-review-wrong-answer"
                     }
                   >
-                    {isCorrectAnswer(quizReviewData.questions[currentQuestion])
+                    {isCorrectAnswer(quizReviewData?.questions[currentQuestion])
                       ? "Correct"
                       : "Incorrect"}
                   </Typography>
@@ -220,7 +280,7 @@ const StudentQuizReview = () => {
                     <Button
                       onClick={handleNext}
                       disabled={
-                        currentQuestion === quizReviewData.questions.length - 1
+                        currentQuestion === quizReviewData?.questions.length - 1
                       }
                       className="quiz-review-next-button"
                     ></Button>
@@ -239,7 +299,7 @@ const StudentQuizReview = () => {
                     Quiz Navigation
                   </Typography>
                   <Box className="quiz-review-navigation">
-                    {quizReviewData.questions.map((question, index) => (
+                    {quizReviewData?.questions.map((question, index) => (
                       <Button
                         key={question.questionId}
                         variant={
@@ -250,7 +310,7 @@ const StudentQuizReview = () => {
                           isCorrectAnswer(question) ? "correct" : "incorrect"
                         }`}
                       >
-                        {question.questionId}
+                        {index + 1}
                       </Button>
                     ))}
                   </Box>
@@ -259,7 +319,8 @@ const StudentQuizReview = () => {
                     align="center"
                     className="quiz-review-final-score"
                   >
-                    Final Score: {quizReviewData.score}/10
+                    Final Score: {quizReviewData.score}/
+                    {quizReviewData.quizScore}
                   </Typography>
                 </CardContent>
               </Card>
