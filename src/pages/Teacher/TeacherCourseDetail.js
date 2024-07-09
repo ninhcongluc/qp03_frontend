@@ -205,6 +205,7 @@ console.log("courseId", courseId);
       score: 10,
       showAnswer: false,
     });
+    console.log("newQuiz", selectedClassId);
   };
 
   const handleViewQuiz = (quiz) => {

@@ -30,6 +30,10 @@ import {
   DialogContentText,
   DialogTitle,
   Switch,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 
 const CourseDetailPage = () => {
@@ -219,6 +223,13 @@ const CourseDetailPage = () => {
         error = true;
       } else {
         setErrorEndDate("")
+      }
+
+      if(formData.maxParticipants === null || formData.maxParticipants > 0){
+        setErrorMaxParticipant("Max Participant is required");
+        error = true;
+      }else{
+        setErrorMaxParticipant("")
       }
 
       if (error) {
@@ -510,21 +521,50 @@ const CourseDetailPage = () => {
                   helperText={errorName}
                 />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={8}
+                sx={{ marginTop: "16px" }}
+              >
+                <FormControl fullWidth>
+                  <InputLabel id="addTeacher">Teacher</InputLabel>
+                  <Select
+                    labelId="addTeacher"
+                    label="Teacher"
+                    name="teacherId"
+                    value={formData.teacherId}
+                    disabled={viewMode}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        teacherId: e.target.value,
+                      })
+                    }
+                    error={errorTeacher && errorTeacher.length ? true : false}
+                    helperText={errorTeacher}
+                  >
+                    <MenuItem value="">All teachers</MenuItem>
+                    {teachers.map((teacher) => (
+                      <MenuItem key={teacher.id} value={teacher.id}>
+                        {teacher.firstName} {teacher.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
                 <TextField
-                  name="teacherName"
-                  label="Teacher Name"
+                  name="maxParticipants"
+                  label="Max Participant"
                   required
-                  value={formData.teacherId}
+                  value={formData.maxParticipants}
                   margin="normal"
                   fullWidth
                   onChange={handleFormChange}
                   disabled={viewMode}
-                  error={errorTeacher && errorTeacher.length ? true : false}
-                  helperText={errorTeacher}
+                  error={errorMaxParticipant && errorMaxParticipant.length ? true : false}
+                  helperText={errorMaxParticipant}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12}>
                 <TextField
                   name="description"
                   label="Description"
@@ -532,6 +572,7 @@ const CourseDetailPage = () => {
                   value={formData.description}
                   margin="normal"
                   fullWidth
+                  multiline
                   onChange={handleFormChange}
                   disabled={viewMode}
                   error={errorDescription && errorDescription.length ? true : false}
@@ -574,20 +615,6 @@ const CourseDetailPage = () => {
                   disabled={viewMode}
                   error={errorEndDate && errorEndDate.length ? true : false}
                   helperText={errorEndDate}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="maxParticipants"
-                  label="Max Participant"
-                  required
-                  value={formData.maxParticipants}
-                  margin="normal"
-                  fullWidth
-                  onChange={handleFormChange}
-                  disabled={viewMode}
-                  error={errorMaxParticipant && errorMaxParticipant.length ? true : false}
-                  helperText={errorMaxParticipant}
                 />
               </Grid>
             </Grid>
@@ -683,20 +710,47 @@ const CourseDetailPage = () => {
                           helperText={touched.name && errors.name}
                         />
                       </Grid>
-                      <Grid item xs={8}>
-                        <Field
-                          name="teacherId"
-                          as={TextField}
-                          label="Teacher Name"
-                          required
-                          value={values.teacherId}
-                          margin="normal"
-                          fullWidth
-                          error={touched.teacherId && !!errors.teacherId}
-                          helperText={touched.teacherId && errors.teacherId}
-                        />
+                      <Grid item xs={8}
+                        sx={{
+                          marginTop: "16px",
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id="addTeacher">Teacher</InputLabel>
+                          <Select
+                            labelId="addTeacher"
+                            label="Teacher"
+                            name="teacherId"
+                            value={values.teacherId}
+                            onChange={(e) => {
+                              setFieldValue("teacherId", e.target.value);
+                            }}
+                            error={touched.teacherId && !!errors.teacherId}
+                            helperText={touched.teacherId && errors.teacherId}
+                          >
+                            <MenuItem value="">All teachers</MenuItem>
+                            {teachers.map((teacher) => (
+                              <MenuItem key={teacher.id} value={teacher.id}>
+                                {teacher.firstName} {teacher.lastName}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
                       <Grid item xs={4}>
+                        <Field
+                          name="maxParticipants"
+                          as={TextField}
+                          label="Max Participant"
+                          required
+                          value={values.maxParticipants}
+                          margin="normal"
+                          fullWidth
+                          error={touched.maxParticipants && !!errors.maxParticipants}
+                          helperText={touched.maxParticipants && errors.maxParticipants}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
                         <Field
                           name="description"
                           as={TextField}
@@ -705,6 +759,8 @@ const CourseDetailPage = () => {
                           value={values.description}
                           margin="normal"
                           fullWidth
+                          multiline
+                          row={4}
                           error={touched.description && !!errors.description}
                           helperText={touched.description && errors.description}
                         />
@@ -749,19 +805,6 @@ const CourseDetailPage = () => {
                           }}
                           error={!!errors.endDate}
                           helperText={errors.endDate}
-                        />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Field
-                          name="maxParticipants"
-                          as={TextField}
-                          label="Max Participant"
-                          required
-                          value={values.maxParticipants}
-                          margin="normal"
-                          fullWidth
-                          error={touched.maxParticipants && !!errors.maxParticipants}
-                          helperText={touched.maxParticipants && errors.maxParticipants}
                         />
                       </Grid>
                     </Grid>
