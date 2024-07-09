@@ -53,11 +53,7 @@ const StudentCourseList = () => {
 
   useEffect(() => {
     fetchSemesterData();
-    fetchCourseData(1, coursesPerPage);
-    const interval = setInterval(() => {
-      fetchCourseData(page, coursesPerPage, selectedSemester, searchTerm);
-    }, 30000); // Refresh data every 30 seconds
-    return () => clearInterval(interval);
+    fetchCourseData(1, coursesPerPage, selectedSemester, searchTerm);
   }, [page, selectedSemester, searchTerm]);
 
   const pageCount = Math.ceil(totalItem / coursesPerPage);
@@ -86,11 +82,11 @@ const StudentCourseList = () => {
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "180px" }}>
+      <Container sx={{ marginLeft: "10%" }}>
         <Grid container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid item flex={1}>
+          <Grid item flex={1} maxWidth={200}>
             <TextField
-              label="Search by Course Code"
+              label="Search"
               variant="outlined"
               value={searchTerm}
               onChange={handleSearchTermChange}

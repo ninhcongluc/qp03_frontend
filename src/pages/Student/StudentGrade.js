@@ -30,105 +30,105 @@ const StudentGrade = () => {
       courseName: "Math 101",
       lecture: "Dr. Smith",
       average: 85,
-      quizId: 101,
+      classId: "08541cd5-5d62-4eed-9b96-ce706e7e9b81",
     },
     {
       id: 2,
-      courseName: "History 201",
+      courseName: "PHYS 101",
       lecture: "Prof. Johnson", 
       average: 78,
-      quizId: 102,
+      classId: "513d7a7c-8407-45c6-8c2c-5a98453e158f",
     },
     {
       id: 3,
-      courseName: "Biology 301",
+      courseName: "CHEM 101",
       lecture: "Dr. Lee",
       average: 92,
-      quizId: 103,
+      classId: "7d221d68-0b1a-442e-b01c-4884da50a325",
     },
     {
       id: 4,
-      courseName: "English 150",
+      courseName: "BIOL 101",
       lecture: "Ms. Williams",
       average: 83,
-      quizId: 104,
+      classId: "ef0038cc-9419-4814-a849-7def86523daf",
     },
     {
       id: 5,
       courseName: "Computer Science 202",
       lecture: "Prof. Chen",
       average: 87,
-      quizId: 105,
+      classId: "105",
     },
     {
       id: 6,
       courseName: "Physics 410",
       lecture: "Dr. Nguyen",
       average: 90,
-      quizId: 106,
+      classId: "106",
     },
     {
       id: 7,
       courseName: "Economics 250",
       lecture: "Prof. Sharma",
       average: 81,
-      quizId: 107,
+      classId: "107",
     },
     {
       id: 8,
       courseName: "Art History 320",
       lecture: "Ms. Gonzalez",
       average: 88,
-      quizId: 108,
+      classId: "108",
     },
     {
       id: 9,
       courseName: "Psychology 201",
       lecture: "Dr. Kim",
       average: 84,
-      quizId: 109,
+      classId: "109",
     },
     {
       id: 10,
       courseName: "Sociology 305",
       lecture: "Prof. Patel",
       average: 79,
-      quizId: 110,
+      classId: "110",
     },
     {
       id: 11,
       courseName: "Accounting 240",
       lecture: "Ms. Tanaka",
       average: 86,
-      quizId: 111,
+      classId: "111",
     },
     {
       id: 12,
       courseName: "Music Theory 180",
       lecture: "Dr. Kowalski",
       average: 92,
-      quizId: 112,
+      classId: "112",
     },
     {
       id: 13,
       courseName: "Business 301",
       lecture: "Prof. Fernandez",
       average: 85,
-      quizId: 113,
+      classId: "113",
     },
     {
       id: 14,
       courseName: "Chemistry 401",
       lecture: "Dr. Zhao",
       average: 88,
-      quizId: 114,
+      classId: "114",
     },
     {
       id: 15,
       courseName: "Classics 250",
       lecture: "Ms. Morales",
       average: 82,
-      quizId: 115,
+      classId: "115",
     }
   ];
 
@@ -138,8 +138,8 @@ const StudentGrade = () => {
     setPage(value);
   };
 
-  const handleReviewClick = (quizId) => {
-    navigate(`/student/quiz-detail/${quizId}`);
+  const handleReviewClick = (classId) => {
+    navigate(`/student/course-management/class/${classId}`);
   };
 
   return (
@@ -195,7 +195,7 @@ const StudentGrade = () => {
                           color="primary"
                           size="small"
                           className="student-grade-review-button"
-                          onClick={() => handleReviewClick(grade.quizId)}
+                          onClick={() => handleReviewClick(grade.classId)}
                         >
                           Detail
                         </Button>
