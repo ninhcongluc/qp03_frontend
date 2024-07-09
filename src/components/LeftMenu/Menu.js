@@ -20,18 +20,20 @@ import "./Menu.css";
 
 const MenuComponent = ({ role }) => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ firstName: "", lastName: "" });
+  const [userData, setUserData] = useState({ firstName: "", lastName: "", userId: "" });
 
+  // call api to get user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await ApiInstance.get("/user/profile");
+        const response = await ApiInstance.get(`/user/profile`);
         setUserData({
           firstName: response.data.data.firstName,
           lastName: response.data.data.lastName,
+          userId: response.data.data.id,
         });
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log(error);
       }
     };
     fetchUserData();
@@ -41,6 +43,10 @@ const MenuComponent = ({ role }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.replace("/");
+  };
+
+  const handleProfileClick = () => {
+    navigate(`/profile/${userData.userId}`);
   };
 
   const menuItems = {
@@ -105,21 +111,23 @@ const MenuComponent = ({ role }) => {
       >
         <div class="menu">
           <Stack alignItems={"center"} spacing={2}>
-            <Avatar alt={role} src="" sx={{ width: 80, height: 80 }} />
+            <Avatar
+              alt={role}
+              src=""
+              sx={{ width: 80, height: 80 }}
+              onClick={() => handleProfileClick()}
+              style={{ cursor: "pointer" }}
+            />
             <Typography variant="h6">
               {userData.firstName} {userData.lastName}
             </Typography>
           </Stack>
         </div>
 
-        {menuItems[role].map((item) => (
+        {(menuItems[role])?.map((item) => (
           <div className="itemList">
             <ListItem button onClick={item.onClick}>
-              <ListItemIcon
-                className="itemIcon"
-              >
-                {item.icon}
-              </ListItemIcon>
+              <ListItemIcon className="itemIcon">{item.icon}</ListItemIcon>
               <ListItemText>
                 <Typography className="textItem" variant="subtitle1">
                   {item.text}
