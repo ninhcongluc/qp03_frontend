@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./StudentQuizDetail.css";
@@ -17,7 +17,9 @@ const StudentQuizDetail = () => {
         console.log("data", response.data.data);
         setQuizData(response.data.data);
         const quizResults = response.data.data?.studentQuizResults;
-        setQuizStatus(quizResults[quizResults.length - 1].status);
+        if (quizResults && quizResults.length > 0) {
+          setQuizStatus(quizResults[quizResults.length - 1].status);
+        }
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
@@ -28,12 +30,8 @@ const StudentQuizDetail = () => {
     try {
       if (quizStatus === "doing") {
         const { studentQuizResults } = quizData;
-        console.log("🚀 ~ handleStartQuiz ~ quizData:", quizData);
-        const quizResultId =
-          studentQuizResults[studentQuizResults.length - 1].id;
-        navigate(
-          `/student/quiz-detail/${quizId}/do-quiz/${quizResultId}?status=continue`
-        );
+        const quizResultId = studentQuizResults[studentQuizResults.length - 1].id;
+        navigate(`/student/quiz-detail/${quizId}/do-quiz/${quizResultId}?status=continue`);
         return;
       }
 
@@ -49,71 +47,69 @@ const StudentQuizDetail = () => {
     navigate(`/student/quiz-review/${attemptId}`);
   };
 
-  return (
-    <Box sx={{ display: "flex" }}>
-      <MenuComponent role="student" />
+  if (!quizData) {
+    return <div>Loading...</div>;
+  }
 
+
+  return (
+    <Box sx={{ display: "flow" }} style={{width:'140%', maxHeight: '100vh'}}>
+      <MenuComponent role="student" />
       <Container className="quiz-detail-container">
-        <>
-          <Typography
-            variant="h3"
-            align="center"
-            gutterBottom
-            className="quiz-detail-title"
-          >
+        <Paper elevation={3} sx={{ padding: 3}}>
+          <Typography variant="h3" align="center" gutterBottom className="quiz-detail-title">
             {quizData?.name}
           </Typography>
 
-          <Grid container spacing={3} className="quiz-detail-grid">
-            <Grid item xs={6}>
-              <Typography variant="body1" sx={{ color: "black" }}>
-                <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
-              </Typography>
-            </Grid>
-            <Grid item xs={6}></Grid>
-          </Grid>
-
-          <Typography
-            variant="h6"
-            gutterBottom
-            className="quiz-detail-history-title"
-          >
-            History
+          <Typography variant="body1" sx={{ color: "black" }}>
+            <strong>Time limit:</strong> {quizData?.timeLimitMinutes} mins
           </Typography>
-          <Box className="quiz-detail-history">
-            <ul style={{ padding: 0 }}>
-              {quizData?.studentQuizResults?.map((data, index) => (
-                <li key={index} style={{ marginBottom: "8px" }}>
-                  <Typography>
-                    <strong>Attempt:</strong> {index + 1} -{" "}
-                    <strong>State:</strong> {data?.status} -{" "}
-                    <strong>Marks:</strong> {data?.numberCorrectAnswers}/
-                    {data?.numberQuestions} - <strong>Grade:</strong>{" "}
-                    {data.score}{" "}
-                    {quizData.showAnswer && (
-                      <a
-                        href
-                        onClick={() => handleReviewAttempt(data.id)}
-                        className="quiz-detail-review-link"
-                      >
-                        Review
-                      </a>
-                    )}
-                  </Typography>
-                </li>
-              ))}
-            </ul>
-          </Box>
+
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Attempt</strong></TableCell>
+                  <TableCell><strong>State</strong></TableCell>
+                  <TableCell><strong>Marks / 16.00</strong></TableCell>
+                  <TableCell><strong>Grade / 10.00</strong></TableCell>
+                  <TableCell><strong>Review</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {quizData.studentQuizResults?.map((data, index) => (
+                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      {data.status} <br />
+                      Submitted {new Date(data.submittedAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{data.numberCorrectAnswers}</TableCell>
+                    <TableCell>{data.score}</TableCell>
+                    <TableCell>
+                      {quizData.showAnswer && (
+                        <Button onClick={() => handleReviewAttempt(data.id)} color="primary">
+                          Review
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <Button
             variant="contained"
             color={quizStatus === "doing" ? "error" : "primary"}
             onClick={handleStartQuiz}
             className="quiz-detail-start-button"
+            sx={{ marginTop: 2, width:'30%', marginLeft:'70%' }}
+            
           >
             {quizStatus === "doing" ? "Continue" : "Start"}
           </Button>
-        </>
+        </Paper>
       </Container>
     </Box>
   );
