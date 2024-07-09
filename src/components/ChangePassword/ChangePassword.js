@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, IconButton, InputAdornment } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "@mui/joy/styles";
@@ -13,15 +12,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./ChangePassword.css";
 
 function ChangePassword() {
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleCurrentPasswordChange = (event) => {
-    setCurrentPassword(event.target.value);
+  const handleOldPasswordChange = (event) => {
+    setOldPassword(event.target.value);
   };
 
   const handleNewPasswordChange = (event) => {
@@ -31,27 +30,31 @@ function ChangePassword() {
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
   };
+  const id = new URLSearchParams(window.location.search).get("userId");
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       toast.error("New passwords do not match");
       return;
     }
 
-    axios
-      .post("http://localhost:8000/auth/change-password", {
-        currentPassword,
-        newPassword,
-      })
-      .then((response) => {
-        console.log(response.data);
-        toast.success("Password changed successfully");
-        setIsModalOpen(false);
-      })
-      .catch((error) => {
-        console.error(error.response.data.error);
-        toast.error(error.response.data.error);
+    try {
+      const response = await fetch('http://localhost:8000/user/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: id, oldPassword, newPassword, confirmPassword }),
       });
+
+      if (response.ok) {
+        toast.success('Password has been change successfully.');
+      } else {
+        toast.error('Failed to change password.');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+    }
   };
 
   const toggleShowNewPassword = () => {
@@ -95,10 +98,10 @@ function ChangePassword() {
             Change Password
           </Typography>
           <TextField
-            label="Current Password"
+            label="Old Password"
             type="password"
-            value={currentPassword}
-            onChange={handleCurrentPasswordChange}
+            value={oldPassword}
+            onChange={handleOldPasswordChange}
             variant="outlined"
             margin="normal"
             fullWidth
