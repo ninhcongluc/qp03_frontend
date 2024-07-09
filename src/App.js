@@ -29,6 +29,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import StudentGrade from "./pages/Student/StudentGrade";
+import TeacherGrade from "./pages/Teacher/TeacherGrade";
 
 function App() {
   return (
@@ -58,6 +59,10 @@ function App() {
         <Route
           path="/teacher/course-management"
           element={<TeacherCourseListPage />}
+        />
+        <Route
+          path="/teacher/teacher-grade"
+          element={<TeacherGrade />}
         />
 
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
