@@ -23,7 +23,7 @@ import BackButton from "../../components/BackButton/BackButton";
 
 import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
-import QuestionBankDialog from "../../components/Dialog/QuesionBank";
+import QuestionBankDialog from "../../components/Dialog/QuestionBank";
 
 const TeacherQuestionListPage = () => {
   const navigate = useNavigate();
