@@ -152,11 +152,15 @@ const TeacherCourseDetailPage = () => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        await ApiInstance.post(`/import-student/${selectedClassId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await ApiInstance.post(
+          `/teacher/import-student/${selectedClassId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         ApiInstance.get(`/student/${selectedClassId}`)
           .then((response) => {
             setStudents(response.data.data);
