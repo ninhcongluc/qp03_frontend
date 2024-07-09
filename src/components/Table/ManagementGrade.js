@@ -160,7 +160,7 @@ const ManagementGrade = () => {
             border: "1px dashed #ccc",
           }}
         >
-          <p>Tao Đẹp Trai</p>
+          <p>No Data</p>
         </Box>
       )}
     </Box>
