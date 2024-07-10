@@ -102,11 +102,15 @@ const TeacherCourseDetailPage = () => {
     showAnswer: false,
   });
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
-console.log("courseId", courseId);
+  console.log("courseId", courseId);
   useEffect(() => {
     ApiInstance.get(`/course/${courseId}`)
       .then((response) => {
-        setCourse(response.data.data);
+        const courseData = response.data.data;
+        setCourse(courseData);
+        if (courseData?.classes.length > 0) {
+          setSelectedClassId(courseData?.classes[0].id);
+        }
       })
       .catch((error) => {
         console.error("Error fetching course data:", error);
@@ -221,7 +225,7 @@ console.log("courseId", courseId);
       endDate: new Date(quiz.endDate),
       classId: selectedClassId,
       isLimitedAttempts: quiz.isLimitedAttempts,
-      maxAttempts: quiz.maxAttempts,
+      maxAttempts: quiz?.maxAttempts || 0,
       timeLimitMinutes: quiz.timeLimitMinutes,
       score: quiz.score,
       showAnswer: quiz.showAnswer,
@@ -250,24 +254,16 @@ console.log("courseId", courseId);
   const handleQuizFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
       if (selectedQuiz) {
         // Update existing quiz
-        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz, config);
+        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz);
         toast.success("Quiz updated successfully");
       } else {
         // Create new quiz
-        await ApiInstance.post(
-          `/quiz/create`,
-          { ...newQuiz, classId: selectedClassId },
-          config
-        );
+        await ApiInstance.post(`/quiz/create`, {
+          ...newQuiz,
+          classId: selectedClassId,
+        });
         toast.success("Quiz created successfully");
       }
 
@@ -369,7 +365,13 @@ console.log("courseId", courseId);
                     >
                       {quiz.showAnswer ? "True" : "False"}
                     </TableCell>{" "}
-                    <TableCell>{quiz?.status}</TableCell>
+                    <TableCell
+                      style={{
+                        color: quiz?.status === "submitted" ? "green" : "red",
+                      }}
+                    >
+                      {quiz?.status}
+                    </TableCell>
                     <TableCell id="action-button">
                       <IconButton
                         className="icon-button"
@@ -513,11 +515,11 @@ console.log("courseId", courseId);
                 <TextField
                   label="Max Attempts"
                   type="number"
-                  value={newQuiz.maxAttempts}
+                  value={newQuiz?.maxAttempts || 0}
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      maxAttempts: parseInt(e.target.value),
+                      maxAttempts: parseInt(e.target?.value),
                     })
                   }
                   fullWidth

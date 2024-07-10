@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
@@ -22,13 +23,16 @@ import BackButton from "../../components/BackButton/BackButton";
 
 import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
+import QuestionBankDialog from "../../components/Dialog/QuestionBank";
 
 const TeacherQuestionListPage = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
+  const [showQuestionBankDialog, setShowQuestionBankDialog] = useState(false);
 
   const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
@@ -106,7 +110,7 @@ const TeacherQuestionListPage = () => {
   const handleAddQuestion = () => {
     const newQuestion = {
       id: questions?.length ? questions.length + 1 : 1,
-      type: "selectOne",
+      type: "select_one",
       answerOptions: [""],
       createdAt: new Date(),
     };
@@ -157,13 +161,45 @@ const TeacherQuestionListPage = () => {
     }));
 
     try {
-      await ApiInstance.put(`/quiz/${quizId}/save-draft`, listQuestionAnswers);
+      await ApiInstance.put(`/quiz/${quizId}/save-qa`, listQuestionAnswers);
       fetchData();
       toast.success("Quiz save successfully");
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
     }
+  };
+
+  const handleSubmit = async () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      answerOptions: question.answerOptions,
+    }));
+
+    try {
+      await ApiInstance.put(
+        `/quiz/${quizId}/save-qa?isSubmit=true`,
+        listQuestionAnswers
+      );
+      fetchData();
+      toast.success("You have submitted successfully");
+      navigate(-1);
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
+
+  const handleSelectFromBank = () => {
+    setShowQuestionBankDialog(true);
+  };
+
+  const handleAddQuestions = (selectedQuestions) => {
+    console.log("selectedQuestions", selectedQuestions);
+    console.log("questions", questions);
+    setQuestions([...questions, ...selectedQuestions]);
   };
   return (
     <div className="container">
@@ -344,6 +380,27 @@ const TeacherQuestionListPage = () => {
             >
               New Question
             </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSelectFromBank}
+              style={{
+                width: "150px",
+                height: "40px",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
+            >
+              Select From Bank
+            </Button>
+            <QuestionBankDialog
+              open={showQuestionBankDialog}
+              onClose={() => setShowQuestionBankDialog(false)}
+              onAddQuestions={handleAddQuestions}
+            />
           </Box>
         </Box>
 
@@ -367,6 +424,7 @@ const TeacherQuestionListPage = () => {
             color="success"
             size="small"
             id="submit-button"
+            onClick={handleSubmit}
           >
             Submit
           </Button>

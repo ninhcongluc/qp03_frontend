@@ -28,6 +28,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
 import ChangePassword from "./components/ChangePassword/ChangePassword";
+import StudentGrade from "./pages/Student/StudentGrade";
+import TeacherGrade from "./pages/Teacher/TeacherGrade";
 
 function App() {
   return (
@@ -58,6 +60,10 @@ function App() {
           path="/teacher/course-management"
           element={<TeacherCourseListPage />}
         />
+        <Route
+          path="/teacher/teacher-grade"
+          element={<TeacherGrade />}
+        />
 
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route
@@ -79,6 +85,8 @@ function App() {
           element={<StudentCourseListPage />}
         />
 
+        <Route path="/student/grade" element={<StudentGrade />} />
+
         <Route
           path="/student/course-management/class/:classId"
           element={<StudentQuizPage />}
@@ -90,12 +98,12 @@ function App() {
         />
 
         <Route
-          path="/student/quiz-detail/:quizId/do-quiz"
+          path="/student/quiz-detail/:quizId/do-quiz/:quizResultId"
           element={<StudentDoQuiz />}
         />
 
         <Route
-          path="/student/quiz-review/:quizId"
+          path="/student/quiz-review/:quizResultId"
           element={<StudentQuizReview />}
         />
       </Routes>
