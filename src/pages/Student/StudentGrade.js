@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -16,123 +16,28 @@ import {
   Stack,
 } from "@mui/material";
 import MenuComponent from "../../components/LeftMenu/Menu";
-
+import ApiInstance from "../../axios";
 
 const StudentGrade = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [grades, setGrades] = useState([]);
+  const [totalGrades, setTotalGrades] = useState(0);
   const gradesPerPage = 7;
 
-  // Dữ liệu cứng để hiển thị
-  const hardcodedGrades = [
-    {
-      id: 1,
-      courseName: "Math 101",
-      lecture: "Dr. Smith",
-      average: 85,
-      quizId: 101,
-    },
-    {
-      id: 2,
-      courseName: "History 201",
-      lecture: "Prof. Johnson", 
-      average: 78,
-      quizId: 102,
-    },
-    {
-      id: 3,
-      courseName: "Biology 301",
-      lecture: "Dr. Lee",
-      average: 92,
-      quizId: 103,
-    },
-    {
-      id: 4,
-      courseName: "English 150",
-      lecture: "Ms. Williams",
-      average: 83,
-      quizId: 104,
-    },
-    {
-      id: 5,
-      courseName: "Computer Science 202",
-      lecture: "Prof. Chen",
-      average: 87,
-      quizId: 105,
-    },
-    {
-      id: 6,
-      courseName: "Physics 410",
-      lecture: "Dr. Nguyen",
-      average: 90,
-      quizId: 106,
-    },
-    {
-      id: 7,
-      courseName: "Economics 250",
-      lecture: "Prof. Sharma",
-      average: 81,
-      quizId: 107,
-    },
-    {
-      id: 8,
-      courseName: "Art History 320",
-      lecture: "Ms. Gonzalez",
-      average: 88,
-      quizId: 108,
-    },
-    {
-      id: 9,
-      courseName: "Psychology 201",
-      lecture: "Dr. Kim",
-      average: 84,
-      quizId: 109,
-    },
-    {
-      id: 10,
-      courseName: "Sociology 305",
-      lecture: "Prof. Patel",
-      average: 79,
-      quizId: 110,
-    },
-    {
-      id: 11,
-      courseName: "Accounting 240",
-      lecture: "Ms. Tanaka",
-      average: 86,
-      quizId: 111,
-    },
-    {
-      id: 12,
-      courseName: "Music Theory 180",
-      lecture: "Dr. Kowalski",
-      average: 92,
-      quizId: 112,
-    },
-    {
-      id: 13,
-      courseName: "Business 301",
-      lecture: "Prof. Fernandez",
-      average: 85,
-      quizId: 113,
-    },
-    {
-      id: 14,
-      courseName: "Chemistry 401",
-      lecture: "Dr. Zhao",
-      average: 88,
-      quizId: 114,
-    },
-    {
-      id: 15,
-      courseName: "Classics 250",
-      lecture: "Ms. Morales",
-      average: 82,
-      quizId: 115,
+  const fetchGrades = async (page, limit) => {
+    try {
+      const response = await ApiInstance.get(`/grades/student-grades?page=${page}&limit=${limit}`);
+      setGrades(response.data.data.grades);
+      setTotalGrades(response.data.data.total);
+    } catch (error) {
+      console.error("Error fetching grades:", error);
     }
-  ];
+  };
 
-  const [grades] = useState(hardcodedGrades);
+  useEffect(() => {
+    fetchGrades(page, gradesPerPage);
+  }, [page]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -142,10 +47,12 @@ const StudentGrade = () => {
     navigate(`/student/quiz-detail/${quizId}`);
   };
 
+  const pageCount = Math.ceil(totalGrades / gradesPerPage);
+
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "240px" }} >
+      <Container sx={{ marginLeft: "240px" }}>
         <Typography variant="h4" gutterBottom className="student-grade-title">
           Student Grades
         </Typography>
@@ -170,38 +77,33 @@ const StudentGrade = () => {
                 </TableRow>
               </TableHead>
               <TableBody className="student-grade-table-body">
-                {grades
-                  .slice((page - 1) * gradesPerPage, page * gradesPerPage)
-                  .map((grade, index) => (
-                    <TableRow
-                      key={grade.id}
-                      className={`student-grade-table-row-${index}`}
-                    >
-                      <TableCell className="student-grade-table-cell">
-                        {(page - 1) * gradesPerPage + index + 1}
-                      </TableCell>
-                      <TableCell className="student-grade-table-cell">
-                        {grade.courseName}
-                      </TableCell>
-                      <TableCell className="student-grade-table-cell">
-                        {grade.lecture}
-                      </TableCell>
-                      <TableCell className="student-grade-table-cell">
-                        {grade.average.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="student-grade-table-cell">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          className="student-grade-review-button"
-                          onClick={() => handleReviewClick(grade.quizId)}
-                        >
-                          Detail
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                {grades.slice((page - 1) * gradesPerPage, page * gradesPerPage).map((grade, index) => (
+                  <TableRow key={grade.id} className={`student-grade-table-row-${index}`}>
+                    <TableCell className="student-grade-table-cell">
+                      {(page - 1) * gradesPerPage + index + 1}
+                    </TableCell>
+                    <TableCell className="student-grade-table-cell">
+                      {grade.courseName}
+                    </TableCell>
+                    <TableCell className="student-grade-table-cell">
+                      {grade.lecture}
+                    </TableCell>
+                    <TableCell className="student-grade-table-cell">
+                      {grade.average.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="student-grade-table-cell">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        className="student-grade-review-button"
+                        onClick={() => handleReviewClick(grade.quizId)}
+                      >
+                        Detail
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -211,7 +113,7 @@ const StudentGrade = () => {
             className="student-grade-pagination"
           >
             <Pagination
-              count={Math.ceil(grades.length / gradesPerPage)}
+              count={pageCount}
               page={page}
               onChange={handlePageChange}
               color="primary"
