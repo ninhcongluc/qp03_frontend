@@ -56,7 +56,7 @@ const StudentCourseList = () => {
     fetchCourseData(1, coursesPerPage);
     const interval = setInterval(() => {
       fetchCourseData(page, coursesPerPage, selectedSemester, searchTerm);
-    }, 30000); // Refresh data every 30 seconds
+    }, 30); // Refresh data every 30 seconds
     return () => clearInterval(interval);
   }, [page, selectedSemester, searchTerm]);
 
@@ -69,14 +69,12 @@ const StudentCourseList = () => {
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
-    setPage(1);
-    fetchCourseData(1, coursesPerPage, selectedSemester, event.target.value);
+    
   };
 
   const handleSemesterChange = (event) => {
     setSelectedSemester(event.target.value);
-    setPage(1);
-    fetchCourseData(1, coursesPerPage, event.target.value, searchTerm);
+    
   };
 
   const handleCourseDetailClick = (classId) => {

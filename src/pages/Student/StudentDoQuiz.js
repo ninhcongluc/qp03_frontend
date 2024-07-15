@@ -259,6 +259,22 @@ const StudentDoQuiz = () => {
                       <FormLabel component="legend">Choose one:</FormLabel>
                     )}
                     {quizData?.questions[currentQuestion]?.type ===
+                      "multiple_choice" && (
+                      <FormLabel
+                        component="legend"
+                        className="multiple-choice-instructions"
+                      >
+                        Choose{" "}
+                        {
+                          quizData?.questions[
+                            currentQuestion
+                          ]?.answerOptions.filter((a) => a.isCorrect === true)
+                            ?.length
+                        }{" "}
+                        options
+                      </FormLabel>
+                    )}
+                    {quizData?.questions[currentQuestion]?.type ===
                     "multiple_choice" ? (
                       quizData.questions[currentQuestion]?.answerOptions?.map(
                         (option) => (
@@ -312,7 +328,6 @@ const StudentDoQuiz = () => {
                       </RadioGroup>
                     )}
                   </FormControl>
-
                   <Box mt={2} className="do-quiz-navigation-buttons">
                     <Button
                       onClick={handlePrevious}

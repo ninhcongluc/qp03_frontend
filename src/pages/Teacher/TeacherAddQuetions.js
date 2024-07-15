@@ -62,6 +62,7 @@ const TeacherQuestionListPage = () => {
 
   // Handle option text change
   const handleOptionTextChange = (event, questionId, optionIndex) => {
+    console.log("handleOptionTextChange");
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
@@ -82,12 +83,27 @@ const TeacherQuestionListPage = () => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
-          const updatedOptions = question.answerOptions.map(
-            (option, index) => ({
-              ...option,
-              isCorrect: index === optionIndex,
-            })
-          );
+          const updatedOptions = question.answerOptions.map((option, index) => {
+            if (
+              index === optionIndex &&
+              question.id === questionId &&
+              question.type === "multiple_choice"
+            ) {
+              return {
+                ...option,
+                isCorrect: event.target.checked,
+              };
+            }
+            if (question.type === "select_one") {
+              return {
+                ...option,
+                isCorrect: index === optionIndex,
+              };
+            }
+            return option;
+          });
+          console.log(updatedOptions);
+
           return { ...question, answerOptions: updatedOptions };
         }
         return question;
@@ -286,7 +302,7 @@ const TeacherQuestionListPage = () => {
                             }
                             name={`question${question.id}`}
                             value={optionIndex}
-                            onChange={(event) =>
+                            onClick={(event) =>
                               handleCorrectAnswerChange(
                                 event,
                                 question.id,

@@ -71,7 +71,11 @@ const StudentQuizPage = () => {
         <p>{course?.description}</p>
       </div>
       <Container sx={{ marginLeft: "240px" }}>
-        <Grid container spacing={4} sx={{ marginTop: 2, minHeight: 100 }}>
+        <Grid
+          container
+          spacing={4}
+          sx={{ marginTop: 2, minHeight: 100, width: "900px" }}
+        >
           {quizzes.map((quiz, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <Card onClick={() => handleQuizDetailClick(quiz.id)}>
