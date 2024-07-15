@@ -152,11 +152,15 @@ const TeacherCourseDetailPage = () => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        await ApiInstance.post(`/import-student/${selectedClassId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await ApiInstance.post(
+          `/teacher/import-student/${selectedClassId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         ApiInstance.get(`/student/${selectedClassId}`)
           .then((response) => {
             setStudents(response.data.data);
@@ -209,6 +213,7 @@ const TeacherCourseDetailPage = () => {
       score: 10,
       showAnswer: false,
     });
+    console.log("newQuiz", selectedClassId);
   };
 
   const handleViewQuiz = (quiz) => {
@@ -224,7 +229,7 @@ const TeacherCourseDetailPage = () => {
       endDate: new Date(quiz.endDate),
       classId: selectedClassId,
       isLimitedAttempts: quiz.isLimitedAttempts,
-      maxAttempts: quiz.maxAttempts,
+      maxAttempts: quiz?.maxAttempts || 0,
       timeLimitMinutes: quiz.timeLimitMinutes,
       score: quiz.score,
       showAnswer: quiz.showAnswer,
@@ -253,24 +258,16 @@ const TeacherCourseDetailPage = () => {
   const handleQuizFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
       if (selectedQuiz) {
         // Update existing quiz
-        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz, config);
+        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz);
         toast.success("Quiz updated successfully");
       } else {
         // Create new quiz
-        await ApiInstance.post(
-          `/quiz/create`,
-          { ...newQuiz, classId: selectedClassId },
-          config
-        );
+        await ApiInstance.post(`/quiz/create`, {
+          ...newQuiz,
+          classId: selectedClassId,
+        });
         toast.success("Quiz created successfully");
       }
 
@@ -522,11 +519,11 @@ const TeacherCourseDetailPage = () => {
                 <TextField
                   label="Max Attempts"
                   type="number"
-                  value={newQuiz.maxAttempts}
+                  value={newQuiz?.maxAttempts || 0}
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      maxAttempts: parseInt(e.target.value),
+                      maxAttempts: parseInt(e.target?.value),
                     })
                   }
                   fullWidth

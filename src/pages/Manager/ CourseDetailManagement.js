@@ -21,7 +21,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { toast } from "react-toastify";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-
+import BackButton from "../../components/BackButton/BackButton";
 import {
   Box,
   Dialog,
@@ -30,6 +30,10 @@ import {
   DialogContentText,
   DialogTitle,
   Switch,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 
 const CourseDetailPage = () => {
@@ -111,7 +115,7 @@ const CourseDetailPage = () => {
   const handleClose = () => {
     setOpen(false);
     setOpenAdd(false);
-  }
+  };
   // handle delete class
   const handleConfirmDelete = (cls) => {
     setCurrentClass(cls);
@@ -134,7 +138,7 @@ const CourseDetailPage = () => {
 
   // handle view class
   const handleViewAccount = (cls) => {
-    setSelectClass("view")
+    setSelectClass("view");
     setCurrentClass(cls);
     setFormData({
       code: cls.code,
@@ -152,7 +156,7 @@ const CourseDetailPage = () => {
 
   // handle edit class
   const handleEditAccount = (cls) => {
-    setSelectClass("edit")
+    setSelectClass("edit");
     setCurrentClass(cls);
     setFormData({
       code: cls.code,
@@ -183,42 +187,49 @@ const CourseDetailPage = () => {
         setErrorCode("Code is required");
         error = true;
       } else {
-        setErrorCode("")
+        setErrorCode("");
       }
 
       if (formData.name === null || formData.name.trim() === "") {
         setErrorName("Name is required");
         error = true;
       } else {
-        setErrorName("")
+        setErrorName("");
       }
 
       if (formData.teacherId === null || formData.teacherId.trim() === "") {
         setErrorTeacher("Teacher is required");
         error = true;
       } else {
-        setErrorTeacher("")
+        setErrorTeacher("");
       }
 
       if (formData.description === null || formData.description.trim() === "") {
         setErrorDescription("Description is required");
         error = true;
       } else {
-        setErrorDescription("")
+        setErrorDescription("");
       }
 
       if (formData.startDate === null || formData.startDate.trim() === "") {
         setErrorStartDate("Start Date is required");
         error = true;
       } else {
-        setErrorStartDate("")
+        setErrorStartDate("");
       }
 
       if (formData.endDate === null || formData.endDate.trim() === "") {
         setErrorEndDate("End Date is required");
         error = true;
       } else {
-        setErrorEndDate("")
+        setErrorEndDate("");
+      }
+
+      if (formData.maxParticipants === null || formData.maxParticipants > 0) {
+        setErrorMaxParticipant("Max Participant is required");
+        error = true;
+      } else {
+        setErrorMaxParticipant("");
       }
 
       if (error) {
@@ -254,11 +265,10 @@ const CourseDetailPage = () => {
     }
   };
 
-
   //handle create class
   const handleCreateAccount = () => {
     setOpenAdd(true);
-  }
+  };
 
   //handle form submit create class
   const handleCreateClass = async (values, formikBag) => {
@@ -273,8 +283,7 @@ const CourseDetailPage = () => {
       toast.error(error.response.data.error);
       console.error("Error creating class:", error);
     }
-  }
-
+  };
 
   // search class
   const searchClass = (e) => {
@@ -286,8 +295,7 @@ const CourseDetailPage = () => {
     } else {
       fetchClasses(id);
     }
-  }
-
+  };
 
   if (!course) {
     return (
@@ -304,10 +312,16 @@ const CourseDetailPage = () => {
 
   return (
     <div>
-      <MenuComponent role="manager" />
       <Container maxWidth={false}>
+        <div className="header-page">
+          <BackButton />
+
+          <Typography style={{ margin: 0 }} variant="h4" gutterBottom>
+            Class Management
+          </Typography>
+        </div>
         <Box>
-          <Typography variant="h5" component="h3" gutterBottom>
+          <Typography variant="h6" component="h3" gutterBottom>
             {course.code}: {course?.description}
           </Typography>
           <Typography variant="h6" component="h2">
@@ -344,8 +358,8 @@ const CourseDetailPage = () => {
                 width: "40px",
                 height: "40px",
                 backgroundColor: "#229342",
-                '&:hover': {
-                  backgroundColor: '#1e7b36',
+                "&:hover": {
+                  backgroundColor: "#1e7b36",
                 },
               }}
               variant="contained"
@@ -357,11 +371,14 @@ const CourseDetailPage = () => {
             </Button>
           </div>
         </Box>
-        <Grid container spacing={2}
+        <Grid
+          container
+          spacing={2}
           sx={{
             width: "1200px",
             marginRight: "-270px",
-          }}>
+          }}
+        >
           <Grid item xs={12}>
             <TableContainer
               sx={{
@@ -412,7 +429,7 @@ const CourseDetailPage = () => {
                           style={{
                             marginRight: "8px",
                             width: "50px",
-                            backgroundColor: "#fbd64f"
+                            backgroundColor: "#fbd64f",
                           }}
                         >
                           <EditIcon />
@@ -444,28 +461,30 @@ const CourseDetailPage = () => {
           <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete the class "
-              {currentClass?.name}"?
+              Are you sure you want to delete the class "{currentClass?.name}"?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDeleteAccount} autoFocus
+            <Button
+              onClick={handleDeleteAccount}
+              autoFocus
               sx={{
                 color: "white",
                 backgroundColor: "#E00201",
-                '&:hover': {
-                  backgroundColor: '#c70404',
+                "&:hover": {
+                  backgroundColor: "#c70404",
                 },
               }}
             >
               Confirm
             </Button>
-            <Button onClick={() => setOpen(false)}
+            <Button
+              onClick={() => setOpen(false)}
               sx={{
                 color: "white",
                 backgroundColor: "#6C757D",
-                '&:hover': {
-                  backgroundColor: '#5a6268',
+                "&:hover": {
+                  backgroundColor: "#5a6268",
                 },
               }}
             >
@@ -475,9 +494,7 @@ const CourseDetailPage = () => {
         </Dialog>
 
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle
-            sx={{ textAlign: "center" }}
-          >
+          <DialogTitle sx={{ textAlign: "center" }}>
             {selectClass === "view" ? "View Class details" : "Edit Class"}
           </DialogTitle>
           <DialogContent>
@@ -510,21 +527,52 @@ const CourseDetailPage = () => {
                   helperText={errorName}
                 />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={8} sx={{ marginTop: "16px" }}>
+                <FormControl fullWidth>
+                  <InputLabel id="addTeacher">Teacher</InputLabel>
+                  <Select
+                    labelId="addTeacher"
+                    label="Teacher"
+                    name="teacherId"
+                    value={formData.teacherId}
+                    disabled={viewMode}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        teacherId: e.target.value,
+                      })
+                    }
+                    error={errorTeacher && errorTeacher.length ? true : false}
+                    helperText={errorTeacher}
+                  >
+                    <MenuItem value="">All teachers</MenuItem>
+                    {teachers.map((teacher) => (
+                      <MenuItem key={teacher.id} value={teacher.id}>
+                        {teacher.firstName} {teacher.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
                 <TextField
-                  name="teacherName"
-                  label="Teacher Name"
+                  name="maxParticipants"
+                  label="Max Participant"
                   required
-                  value={formData.teacherId}
+                  value={formData.maxParticipants}
                   margin="normal"
                   fullWidth
                   onChange={handleFormChange}
                   disabled={viewMode}
-                  error={errorTeacher && errorTeacher.length ? true : false}
-                  helperText={errorTeacher}
+                  error={
+                    errorMaxParticipant && errorMaxParticipant.length
+                      ? true
+                      : false
+                  }
+                  helperText={errorMaxParticipant}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12}>
                 <TextField
                   name="description"
                   label="Description"
@@ -532,9 +580,12 @@ const CourseDetailPage = () => {
                   value={formData.description}
                   margin="normal"
                   fullWidth
+                  multiline
                   onChange={handleFormChange}
                   disabled={viewMode}
-                  error={errorDescription && errorDescription.length ? true : false}
+                  error={
+                    errorDescription && errorDescription.length ? true : false
+                  }
                   helperText={errorDescription}
                 />
               </Grid>
@@ -556,7 +607,9 @@ const CourseDetailPage = () => {
                   helperText={errorStartDate}
                 />
               </Grid>
-              <Grid item xs={6}
+              <Grid
+                item
+                xs={6}
                 sx={{
                   marginTop: "16px",
                 }}
@@ -576,30 +629,18 @@ const CourseDetailPage = () => {
                   helperText={errorEndDate}
                 />
               </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="maxParticipants"
-                  label="Max Participant"
-                  required
-                  value={formData.maxParticipants}
-                  margin="normal"
-                  fullWidth
-                  onChange={handleFormChange}
-                  disabled={viewMode}
-                  error={errorMaxParticipant && errorMaxParticipant.length ? true : false}
-                  helperText={errorMaxParticipant}
-                />
-              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             {!viewMode && (
-              <Button onClick={handleSubmit} color="primary"
+              <Button
+                onClick={handleSubmit}
+                color="primary"
                 sx={{
                   color: "white",
                   backgroundColor: "#229342",
-                  '&:hover': {
-                    backgroundColor: '#1e7b36',
+                  "&:hover": {
+                    backgroundColor: "#1e7b36",
                   },
                   width: "100px",
                 }}
@@ -607,12 +648,13 @@ const CourseDetailPage = () => {
                 Update
               </Button>
             )}
-            <Button onClick={handleClose}
+            <Button
+              onClick={handleClose}
               sx={{
                 color: "white",
                 backgroundColor: "#E00201",
-                '&:hover': {
-                  backgroundColor: '#c70404',
+                "&:hover": {
+                  backgroundColor: "#c70404",
                 },
                 width: "100px",
               }}
@@ -629,8 +671,9 @@ const CourseDetailPage = () => {
               color: "white",
               textAlign: "center",
               fontSize: "30px",
-            }}>
-            Create teacher account
+            }}
+          >
+            Add New Class
           </DialogTitle>
           <DialogContent
             sx={{
@@ -683,20 +726,55 @@ const CourseDetailPage = () => {
                           helperText={touched.name && errors.name}
                         />
                       </Grid>
-                      <Grid item xs={8}>
-                        <Field
-                          name="teacherId"
-                          as={TextField}
-                          label="Teacher Name"
-                          required
-                          value={values.teacherId}
-                          margin="normal"
-                          fullWidth
-                          error={touched.teacherId && !!errors.teacherId}
-                          helperText={touched.teacherId && errors.teacherId}
-                        />
+                      <Grid
+                        item
+                        xs={8}
+                        sx={{
+                          marginTop: "16px",
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id="addTeacher">
+                            Select Teacher
+                          </InputLabel>
+                          <Select
+                            labelId="addTeacher"
+                            label="Teacher"
+                            name="teacherId"
+                            value={values.teacherId}
+                            onChange={(e) => {
+                              setFieldValue("teacherId", e.target.value);
+                            }}
+                            error={touched.teacherId && !!errors.teacherId}
+                            helperText={touched.teacherId && errors.teacherId}
+                          >
+                            <MenuItem value="">All teachers</MenuItem>
+                            {teachers.map((teacher) => (
+                              <MenuItem key={teacher.id} value={teacher.id}>
+                                {teacher.firstName} {teacher.lastName}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
                       <Grid item xs={4}>
+                        <Field
+                          name="maxParticipants"
+                          as={TextField}
+                          label="Max Participant"
+                          required
+                          value={values.maxParticipants}
+                          margin="normal"
+                          fullWidth
+                          error={
+                            touched.maxParticipants && !!errors.maxParticipants
+                          }
+                          helperText={
+                            touched.maxParticipants && errors.maxParticipants
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
                         <Field
                           name="description"
                           as={TextField}
@@ -705,11 +783,15 @@ const CourseDetailPage = () => {
                           value={values.description}
                           margin="normal"
                           fullWidth
+                          multiline
+                          row={4}
                           error={touched.description && !!errors.description}
                           helperText={touched.description && errors.description}
                         />
                       </Grid>
-                      <Grid item xs={6}
+                      <Grid
+                        item
+                        xs={6}
                         sx={{
                           marginTop: "10px",
                         }}
@@ -730,7 +812,9 @@ const CourseDetailPage = () => {
                           helperText={errors.startDate}
                         />
                       </Grid>
-                      <Grid item xs={6}
+                      <Grid
+                        item
+                        xs={6}
                         sx={{
                           marginTop: "10px",
                         }}
@@ -751,39 +835,30 @@ const CourseDetailPage = () => {
                           helperText={errors.endDate}
                         />
                       </Grid>
-                      <Grid item xs={4}>
-                        <Field
-                          name="maxParticipants"
-                          as={TextField}
-                          label="Max Participant"
-                          required
-                          value={values.maxParticipants}
-                          margin="normal"
-                          fullWidth
-                          error={touched.maxParticipants && !!errors.maxParticipants}
-                          helperText={touched.maxParticipants && errors.maxParticipants}
-                        />
-                      </Grid>
                     </Grid>
-                    <DialogActions >
+                    <DialogActions>
                       <div>
-                        <Button type="submit" sx={{
-                          backgroundColor: "#229342",
-                          color: "white",
-                          '&:hover': {
-                            backgroundColor: '#1e7b36',
-                          },
-                        }}>
+                        <Button
+                          type="submit"
+                          sx={{
+                            backgroundColor: "#229342",
+                            color: "white",
+                            "&:hover": {
+                              backgroundColor: "#1e7b36",
+                            },
+                          }}
+                        >
                           Save
                         </Button>
                       </div>
                       <div>
-                        <Button onClick={handleClose}
+                        <Button
+                          onClick={handleClose}
                           sx={{
                             backgroundColor: "#f44336",
                             color: "white",
-                            '&:hover': {
-                              backgroundColor: '#d32f2f',
+                            "&:hover": {
+                              backgroundColor: "#d32f2f",
                             },
                           }}
                         >
@@ -797,7 +872,6 @@ const CourseDetailPage = () => {
             </Formik>
           </DialogContent>
         </Dialog>
-
       </Container>
     </div>
   );

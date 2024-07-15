@@ -23,6 +23,7 @@ import BackButton from "../../components/BackButton/BackButton";
 
 import "./styles/TeacherAddQuestion.css";
 import { toast } from "react-toastify";
+import QuestionBankDialog from "../../components/Dialog/QuestionBank";
 
 const TeacherQuestionListPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const TeacherQuestionListPage = () => {
   ]);
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
+  const [showQuestionBankDialog, setShowQuestionBankDialog] = useState(false);
 
   const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
@@ -60,6 +62,7 @@ const TeacherQuestionListPage = () => {
 
   // Handle option text change
   const handleOptionTextChange = (event, questionId, optionIndex) => {
+    console.log("handleOptionTextChange");
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
@@ -80,12 +83,27 @@ const TeacherQuestionListPage = () => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
-          const updatedOptions = question.answerOptions.map(
-            (option, index) => ({
-              ...option,
-              isCorrect: index === optionIndex,
-            })
-          );
+          const updatedOptions = question.answerOptions.map((option, index) => {
+            if (
+              index === optionIndex &&
+              question.id === questionId &&
+              question.type === "multiple_choice"
+            ) {
+              return {
+                ...option,
+                isCorrect: event.target.checked,
+              };
+            }
+            if (question.type === "select_one") {
+              return {
+                ...option,
+                isCorrect: index === optionIndex,
+              };
+            }
+            return option;
+          });
+          console.log(updatedOptions);
+
           return { ...question, answerOptions: updatedOptions };
         }
         return question;
@@ -189,6 +207,16 @@ const TeacherQuestionListPage = () => {
       console.error("Error save quiz:", error);
     }
   };
+
+  const handleSelectFromBank = () => {
+    setShowQuestionBankDialog(true);
+  };
+
+  const handleAddQuestions = (selectedQuestions) => {
+    console.log("selectedQuestions", selectedQuestions);
+    console.log("questions", questions);
+    setQuestions([...questions, ...selectedQuestions]);
+  };
   return (
     <div className="container">
       <Box>
@@ -274,7 +302,7 @@ const TeacherQuestionListPage = () => {
                             }
                             name={`question${question.id}`}
                             value={optionIndex}
-                            onChange={(event) =>
+                            onClick={(event) =>
                               handleCorrectAnswerChange(
                                 event,
                                 question.id,
@@ -368,6 +396,27 @@ const TeacherQuestionListPage = () => {
             >
               New Question
             </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSelectFromBank}
+              style={{
+                width: "150px",
+                height: "40px",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
+            >
+              Select From Bank
+            </Button>
+            <QuestionBankDialog
+              open={showQuestionBankDialog}
+              onClose={() => setShowQuestionBankDialog(false)}
+              onAddQuestions={handleAddQuestions}
+            />
           </Box>
         </Box>
 
