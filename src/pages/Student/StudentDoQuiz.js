@@ -378,9 +378,7 @@ const StudentDoQuiz = () => {
                   <Typography variant="h6" mt={2}>
                     Time Remaining:{" "}
                     <span
-                      className={`timer ${
-                        timeLeft <= quizData.timeLimitMinutes ? "timer-red" : ""
-                      }`}
+                      className={`timer ${timeLeft <= 300 ? "timer-red" : ""}`}
                     >
                       {formatTime(timeLeft)}
                     </span>
