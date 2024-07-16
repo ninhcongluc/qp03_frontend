@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -16,123 +16,24 @@ import {
   Stack,
 } from "@mui/material";
 import MenuComponent from "../../components/LeftMenu/Menu";
-
+import ApiInstance from "../../axios";
 
 const StudentGrade = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const gradesPerPage = 7;
+  const gradesPerPage = 10;
 
-  // Dữ liệu cứng để hiển thị
-  const hardcodedGrades = [
-    {
-      id: 1,
-      courseName: "Math 101",
-      lecture: "Dr. Smith",
-      average: 85,
-      quizId: 101,
-    },
-    {
-      id: 2,
-      courseName: "History 201",
-      lecture: "Prof. Johnson", 
-      average: 78,
-      quizId: 102,
-    },
-    {
-      id: 3,
-      courseName: "Biology 301",
-      lecture: "Dr. Lee",
-      average: 92,
-      quizId: 103,
-    },
-    {
-      id: 4,
-      courseName: "English 150",
-      lecture: "Ms. Williams",
-      average: 83,
-      quizId: 104,
-    },
-    {
-      id: 5,
-      courseName: "Computer Science 202",
-      lecture: "Prof. Chen",
-      average: 87,
-      quizId: 105,
-    },
-    {
-      id: 6,
-      courseName: "Physics 410",
-      lecture: "Dr. Nguyen",
-      average: 90,
-      quizId: 106,
-    },
-    {
-      id: 7,
-      courseName: "Economics 250",
-      lecture: "Prof. Sharma",
-      average: 81,
-      quizId: 107,
-    },
-    {
-      id: 8,
-      courseName: "Art History 320",
-      lecture: "Ms. Gonzalez",
-      average: 88,
-      quizId: 108,
-    },
-    {
-      id: 9,
-      courseName: "Psychology 201",
-      lecture: "Dr. Kim",
-      average: 84,
-      quizId: 109,
-    },
-    {
-      id: 10,
-      courseName: "Sociology 305",
-      lecture: "Prof. Patel",
-      average: 79,
-      quizId: 110,
-    },
-    {
-      id: 11,
-      courseName: "Accounting 240",
-      lecture: "Ms. Tanaka",
-      average: 86,
-      quizId: 111,
-    },
-    {
-      id: 12,
-      courseName: "Music Theory 180",
-      lecture: "Dr. Kowalski",
-      average: 92,
-      quizId: 112,
-    },
-    {
-      id: 13,
-      courseName: "Business 301",
-      lecture: "Prof. Fernandez",
-      average: 85,
-      quizId: 113,
-    },
-    {
-      id: 14,
-      courseName: "Chemistry 401",
-      lecture: "Dr. Zhao",
-      average: 88,
-      quizId: 114,
-    },
-    {
-      id: 15,
-      courseName: "Classics 250",
-      lecture: "Ms. Morales",
-      average: 82,
-      quizId: 115,
-    }
-  ];
+  const [grades, setGrades] = useState([]);
 
-  const [grades] = useState(hardcodedGrades);
+  useEffect(() => {
+    ApiInstance.get(`/student-grades`)
+      .then((response) => {
+        setGrades(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -145,7 +46,7 @@ const StudentGrade = () => {
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "240px" }} >
+      <Container sx={{ marginLeft: "240px" }}>
         <Typography variant="h4" gutterBottom className="student-grade-title">
           Student Grades
         </Typography>
@@ -163,10 +64,21 @@ const StudentGrade = () => {
               <TableHead className="student-grade-table-head">
                 <TableRow className="student-grade-table-row">
                   <TableCell className="student-grade-table-cell">No</TableCell>
-                  <TableCell className="student-grade-table-cell">Course Name</TableCell>
-                  <TableCell className="student-grade-table-cell">Lecture</TableCell>
-                  <TableCell className="student-grade-table-cell">Grade</TableCell>
-                  <TableCell className="student-grade-table-cell">Action</TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Course Name
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Quiz Name
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Lecture
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Grade
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="student-grade-table-body">
@@ -184,10 +96,13 @@ const StudentGrade = () => {
                         {grade.courseName}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
+                        {grade.quizName}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
                         {grade.lecture}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
-                        {grade.average.toFixed(2)}
+                        {grade.score.toFixed(2)}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
                         <Button

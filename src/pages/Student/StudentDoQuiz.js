@@ -82,7 +82,7 @@ const StudentDoQuiz = () => {
         setTimeLeft(response?.data?.data?.timeLimitMinutes * 60);
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [quizId]);
 
