@@ -20,7 +20,7 @@ const StudentQuizDetail = () => {
         setQuizStatus(quizResults[quizResults.length - 1].status);
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [quizId]);
 
@@ -69,6 +69,11 @@ const StudentQuizDetail = () => {
               <Typography variant="body1" sx={{ color: "black" }}>
                 <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
               </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Max Attempts:</strong>{" "}
+                {quizData?.maxAttempts || "No limit"}
+              </Typography>
             </Grid>
             <Grid item xs={6}></Grid>
           </Grid>
@@ -88,9 +93,9 @@ const StudentQuizDetail = () => {
                     <strong>Attempt:</strong> {index + 1} -{" "}
                     <strong>State:</strong> {data?.status} -{" "}
                     <strong>Marks:</strong> {data?.numberCorrectAnswers}/
-                    {data?.numberQuestions} - <strong>Grade:</strong>{" "}
+                    {quizData?.numberOfQuestions} - <strong>Grade:</strong>{" "}
                     {data.score}{" "}
-                    {quizData.showAnswer && (
+                    {quizData.showAnswer && data.status === "done" && (
                       <a
                         href
                         onClick={() => handleReviewAttempt(data.id)}
@@ -110,9 +115,20 @@ const StudentQuizDetail = () => {
             color={quizStatus === "doing" ? "error" : "primary"}
             onClick={handleStartQuiz}
             className="quiz-detail-start-button"
+            disabled={
+              quizData?.maxAttempts > 1 &&
+              quizData?.studentQuizResults?.length >= quizData?.maxAttempts
+            }
           >
             {quizStatus === "doing" ? "Continue" : "Start"}
           </Button>
+
+          {quizData?.maxAttempts > 1 &&
+            quizData?.studentQuizResults?.length >= quizData?.maxAttempts && (
+              <Typography variant="body1" sx={{ color: "red" }}>
+                You have reached your limit for the number of attempts{" "}
+              </Typography>
+            )}
         </>
       </Container>
     </Box>
