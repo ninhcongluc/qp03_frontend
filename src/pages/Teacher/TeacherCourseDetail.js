@@ -455,6 +455,9 @@ const TeacherCourseDetailPage = () => {
                   })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
@@ -470,6 +473,9 @@ const TeacherCourseDetailPage = () => {
                   setNewQuiz({ ...newQuiz, endDate: new Date(e.target.value) })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
