@@ -274,8 +274,18 @@ const TeacherCourseDetailPage = () => {
       fetchData();
       handleCloseCreateQuizDialog();
     } catch (error) {
-      toast.error(error.response.data.error);
-      console.error("Error submitting quiz form:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.status === "failed"
+      ) {
+        const { details } = error.response.data.error;
+        details.forEach((detail) => {
+          toast.error(detail.message);
+        });
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
