@@ -377,20 +377,23 @@ const TeacherCourseDetailPage = () => {
                       {quiz?.status}
                     </TableCell>
                     <TableCell id="action-button">
-                      <IconButton
+                      <Button
                         className="icon-button"
                         onClick={() => handleViewQuiz(quiz)}
+                        style={{ color: "blue", backgroundColor: "#d1ebe3" }}
                       >
-                        <ViewIcon />
-                      </IconButton>
+                        Q&A
+                      </Button>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleEditQuiz(quiz)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleDeleteQuiz(quiz.id)}
                       >
                         <DeleteIcon />

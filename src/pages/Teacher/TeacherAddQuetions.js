@@ -33,6 +33,7 @@ const TeacherQuestionListPage = () => {
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
   const [showQuestionBankDialog, setShowQuestionBankDialog] = useState(false);
+  const [isTaken, setIsTaken] = useState(false);
 
   const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
@@ -41,11 +42,23 @@ const TeacherQuestionListPage = () => {
         setQuestions(response.data.data.questions);
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const checkQuizStatus = async () => {
+    ApiInstance.get(`/quiz/${quizId}/check-quiz`)
+      .then((response) => {
+        console.log("response", response.data.data);
+        setIsTaken(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   };
   useEffect(() => {
     fetchData();
+    checkQuizStatus();
   }, [quizId]);
 
   // Handle question text change
@@ -499,6 +512,7 @@ const TeacherQuestionListPage = () => {
             color="secondary"
             size="small"
             id="submit-button"
+            disabled={isTaken}
             onClick={handleSaveAsDraft}
           >
             Save As Draft
@@ -508,10 +522,17 @@ const TeacherQuestionListPage = () => {
             color="success"
             size="small"
             id="submit-button"
+            disabled={isTaken}
             onClick={handleSubmit}
           >
             Submit
           </Button>
+          {isTaken && (
+            <Typography variant="body1" style={{ color: "red" }}>
+              This quiz has already been used by the student. You cannot make
+              any further changes.
+            </Typography>
+          )}
         </Box>
       </Box>
     </div>
