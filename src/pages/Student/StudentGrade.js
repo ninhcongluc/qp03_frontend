@@ -27,7 +27,7 @@ const StudentGrade = () => {
 
   const fetchGrades = async (page, limit) => {
     try {
-      const response = await ApiInstance.get(`/grades/student-grades?page=${page}&limit=${limit}`);
+      const response = await ApiInstance.get(`/student-grades?page=${page}&limit=${limit}`);
       setGrades(response.data.data.grades);
       setTotalGrades(response.data.data.total);
     } catch (error) {
