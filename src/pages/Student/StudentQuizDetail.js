@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./StudentQuizDetail.css";
 import MenuComponent from "../../components/LeftMenu/Menu";
 import ApiInstance from "../../axios";
+import { formatDate } from "../../commons/function";
 
 const StudentQuizDetail = () => {
   const { quizId } = useParams();
@@ -65,7 +66,7 @@ const StudentQuizDetail = () => {
           </Typography>
 
           <Grid container spacing={3} className="quiz-detail-grid">
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Typography variant="body1" sx={{ color: "black" }}>
                 <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
               </Typography>
@@ -73,6 +74,14 @@ const StudentQuizDetail = () => {
               <Typography variant="body1" sx={{ color: "black" }}>
                 <strong>Max Attempts:</strong>{" "}
                 {quizData?.maxAttempts || "No limit"}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Start Date:</strong> {formatDate(quizData?.startDate)}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>End Date:</strong> {formatDate(quizData?.endDate)}
               </Typography>
             </Grid>
             <Grid item xs={6}></Grid>
@@ -116,8 +125,11 @@ const StudentQuizDetail = () => {
             onClick={handleStartQuiz}
             className="quiz-detail-start-button"
             disabled={
-              quizData?.maxAttempts > 1 &&
-              quizData?.studentQuizResults?.length >= quizData?.maxAttempts
+              (quizData?.maxAttempts > 1 &&
+                quizData?.studentQuizResults?.length >=
+                  quizData?.maxAttempts) ||
+              (Date.now() >= quizData.startDate &&
+                Date.now() <= quizData.endDate)
             }
           >
             {quizStatus === "doing" ? "Continue" : "Start"}

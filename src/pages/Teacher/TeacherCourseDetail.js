@@ -113,7 +113,7 @@ const TeacherCourseDetailPage = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [courseId]);
 
@@ -486,7 +486,7 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
-                    timeLimitMinutes: parseInt(e.target.value),
+                    timeLimitMinutes: e.target.value,
                   })
                 }
                 fullWidth
