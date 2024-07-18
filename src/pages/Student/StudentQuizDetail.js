@@ -13,6 +13,11 @@ const StudentQuizDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(
+      "compare",
+      Date.now() < new Date("2024-07-18T18:25:00.000Z").getTime()
+    );
+
     ApiInstance.get(`/quiz/${quizId}/history`)
       .then((response) => {
         console.log("data", response.data.data);
@@ -128,8 +133,8 @@ const StudentQuizDetail = () => {
               (quizData?.maxAttempts > 1 &&
                 quizData?.studentQuizResults?.length >=
                   quizData?.maxAttempts) ||
-              (Date.now() >= quizData.startDate &&
-                Date.now() <= quizData.endDate)
+              Date.now() < new Date(quizData?.startDate).getTime() ||
+              Date.now() > new Date(quizData?.endDate).getTime()
             }
           >
             {quizStatus === "doing" ? "Continue" : "Start"}
@@ -141,6 +146,18 @@ const StudentQuizDetail = () => {
                 You have reached your limit for the number of attempts{" "}
               </Typography>
             )}
+
+          {Date.now() < new Date(quizData?.startDate).getTime() && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is not start{" "}
+            </Typography>
+          )}
+
+          {Date.now() > new Date(quizData?.endDate) && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is overdue date{" "}
+            </Typography>
+          )}
         </>
       </Container>
     </Box>

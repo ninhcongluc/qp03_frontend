@@ -3,6 +3,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
+import BackButton from "../../components/BackButton/BackButton";
 
 import {
   Container,
@@ -98,7 +99,6 @@ const StudentQuizReview = () => {
     ApiInstance.get(`/student-review-quiz/${quizResultId}`)
       .then((response) => {
         const { data } = response.data;
-        console.log("🚀 ~ .then ~ data:", data);
         const transformedData = {
           quizName: data.quizName,
           quizScore: data.quizScore,
@@ -160,7 +160,11 @@ const StudentQuizReview = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <Box className="student-quiz-review">
+        <div className="header-page">
+          <BackButton />
+        </div>
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={8}>

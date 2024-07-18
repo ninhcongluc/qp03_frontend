@@ -6,6 +6,7 @@ import {
   RemoveRedEye as ViewIcon,
 } from "@mui/icons-material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { formatDate } from "../../commons/function";
 import {
   Avatar,
   Box,
@@ -456,11 +457,7 @@ const TeacherCourseDetailPage = () => {
               <TextField
                 label="Start Date"
                 type="datetime-local"
-                value={
-                  newQuiz.startDate
-                    ? newQuiz.startDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.startDate ? formatDate(newQuiz.startDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
@@ -477,11 +474,7 @@ const TeacherCourseDetailPage = () => {
               <TextField
                 label="End Date"
                 type="datetime-local"
-                value={
-                  newQuiz.endDate
-                    ? newQuiz.endDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.endDate ? formatDate(newQuiz.endDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, endDate: new Date(e.target.value) })
                 }

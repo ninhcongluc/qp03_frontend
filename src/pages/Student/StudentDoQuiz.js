@@ -76,6 +76,23 @@ const StudentDoQuiz = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+      setConfirmSubmit(true);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, null, window.location.href);
+    };
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuizData(response.data.data);
@@ -222,7 +239,7 @@ const StudentDoQuiz = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        <MenuComponent role="student" />
+        {/* <MenuComponent role="student" /> */}
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={10}>

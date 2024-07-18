@@ -60,10 +60,7 @@ function App() {
           path="/teacher/course-management"
           element={<TeacherCourseListPage />}
         />
-        <Route
-          path="/teacher/teacher-grade"
-          element={<TeacherGrade />}
-        />
+        <Route path="/teacher/teacher-grade" element={<TeacherGrade />} />
 
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route
