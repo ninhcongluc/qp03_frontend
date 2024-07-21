@@ -244,7 +244,6 @@ const ManageSemesterTable = () => {
                         name="name"
                         as={TextField}
                         label="Semester Name"
-                        required
                         value={values.name}
                         margin="normal"
                         fullWidth
@@ -256,7 +255,6 @@ const ManageSemesterTable = () => {
                       <TextField
                         type="date"
                         label="Start Date"
-                        required
                         value={values.startDate}
                         onChange={(event) =>
                           setFieldValue("startDate", event.target.value)
@@ -264,15 +262,14 @@ const ManageSemesterTable = () => {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        error={!!errors.startDate}
-                        helperText={errors.startDate}
+                        error={touched.startDate && !!errors.startDate}
+                        helperText={touched.startDate && errors.startDate}
                       />
                     </div>
                     <div className="inputField">
                       <TextField
                         type="date"
                         label="End Date"
-                        required
                         value={values.endDate}
                         onChange={(event) => {
                           setFieldValue("endDate", event.target.value);

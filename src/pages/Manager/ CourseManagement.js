@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormHelperText,
   Switch,
   TextField,
 } from "@mui/material";
@@ -78,7 +79,10 @@ const CourseManagementPage = () => {
   const fetchSemesterData = async () => {
     try {
       const response = await ApiInstance.get("/semester");
-      setSemesters(response.data.data);
+      const newData = response.data.data.filter((semester) => {
+        return semester.isActive === true;
+      });
+      setSemesters(newData);
     } catch (error) {
       console.error("Error fetching semester information:", error);
     }
@@ -325,7 +329,11 @@ const CourseManagementPage = () => {
                 padding: 16,
                 height: "240px ",
               }}
-              onClick={() => handleCourseDetailClick(course.id)}
+              onClick={
+                course.isActive ?
+                  () => handleCourseDetailClick(course.id) :
+                  () => { }
+              }
             >
               <div
                 style={{
@@ -382,6 +390,14 @@ const CourseManagementPage = () => {
                 <p>Name: {course.name}</p>
                 <p>Description: {course.description}</p>
               </div>
+              <Box display="flex" alignItems="center">
+                <Switch
+                  name="isActive"
+                  checked={course.isActive}
+                  color="primary"
+                />
+                <Box ml={1}>Active</Box>
+              </Box>
             </div>
           </Grid>
         ))}
@@ -486,7 +502,6 @@ const CourseManagementPage = () => {
                         name="code"
                         as={TextField}
                         label="Code"
-                        required
                         value={values.code}
                         margin="normal"
                         fullWidth
@@ -499,7 +514,6 @@ const CourseManagementPage = () => {
                         name="name"
                         as={TextField}
                         label="Course Name"
-                        required
                         value={values.name}
                         margin="normal"
                         fullWidth
@@ -512,7 +526,6 @@ const CourseManagementPage = () => {
                         name="description"
                         as={TextField}
                         label="Description"
-                        required
                         value={values.description}
                         margin="normal"
                         fullWidth
@@ -523,7 +536,9 @@ const CourseManagementPage = () => {
                       />
                     </Grid>
                     <Grid item xs={5}>
-                      <FormControl fullWidth>
+                      <FormControl fullWidth
+                        error={touched.semesterId && !!errors.semesterId}
+                      >
                         <InputLabel id="addSemester">Semester</InputLabel>
                         <Select
                           labelId="addSemester"
@@ -533,8 +548,6 @@ const CourseManagementPage = () => {
                           onChange={(e) => {
                             setFieldValue("semesterId", e.target.value);
                           }}
-                          error={touched.semesterId && !!errors.semesterId}
-                          helperText={touched.semesterId && errors.semesterId}
                         >
                           <MenuItem value="">All Semesters</MenuItem>
                           {semesters.map((semester) => (
@@ -543,6 +556,7 @@ const CourseManagementPage = () => {
                             </MenuItem>
                           ))}
                         </Select>
+                        {touched.semesterId && errors.semesterId ? <FormHelperText>{errors.semesterId}</FormHelperText> : null}
                       </FormControl>
                     </Grid>
                   </Grid>
