@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormControl,
   Grid,
+  FormHelperText,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
@@ -35,13 +36,13 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  code: Yup.string().required("Required"),
-  dateOfBirth: Yup.date().required("Required"),
-  gender: Yup.number().required("Required"),
-  phoneNumber: Yup.string().required("Required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  code: Yup.string().required("Code is required"),
+  dateOfBirth: Yup.date().required("Birth Date is required"),
+  gender: Yup.number().required("Gender is required"),
+  phoneNumber: Yup.string().required("Phone number is required"),
 });
 
 const ManageTeacherTable = () => {
@@ -160,7 +161,6 @@ const ManageTeacherTable = () => {
         setLastNameError("");
       }
       if (formData.dateOfBirth === null || formData.dateOfBirth.trim() === "") {
-        console.log("date", formData.dateOfBirth);
         setDateError("Phone number is required");
         error = false;
       } else {
@@ -174,7 +174,6 @@ const ManageTeacherTable = () => {
       }
       if (!error) {
         toast.error("Update teacher account is failed");
-        console.log("error", phoneError);
         return;
       }
 
@@ -188,7 +187,7 @@ const ManageTeacherTable = () => {
         phoneNumber: formData.phoneNumber,
         gender: formData.gender,
       };
-      
+
       console.log("payload", payload);
       await ApiInstance.put(`/teacher/${teacherToDelete.id}`, payload);
       await fetchTeacherAccounts();
@@ -635,7 +634,6 @@ const ManageTeacherTable = () => {
                           name="firstName"
                           as={TextField}
                           label="Fist Name"
-                          required
                           value={values.firstName}
                           margin="normal"
                           fullWidth
@@ -648,7 +646,6 @@ const ManageTeacherTable = () => {
                           name="lastName"
                           as={TextField}
                           label="Last Name"
-                          required
                           value={values.lastName}
                           margin="normal"
                           fullWidth
@@ -661,7 +658,6 @@ const ManageTeacherTable = () => {
                           name="email"
                           as={TextField}
                           label="Email"
-                          required
                           value={values.email}
                           margin="normal"
                           fullWidth
@@ -674,7 +670,6 @@ const ManageTeacherTable = () => {
                           name="code"
                           as={TextField}
                           label="Code"
-                          required
                           value={values.code}
                           margin="normal"
                           fullWidth
@@ -687,7 +682,6 @@ const ManageTeacherTable = () => {
                           name="phoneNumber"
                           as={TextField}
                           label="Phone Number"
-                          required
                           value={values.phoneNumber}
                           margin="normal"
                           fullWidth
@@ -703,7 +697,6 @@ const ManageTeacherTable = () => {
                         <TextField
                           type="date"
                           label="Date of birth"
-                          required
                           value={values.dateOfBirth}
                           onChange={(event) =>
                             setFieldValue("dateOfBirth", event.target.value)
@@ -711,12 +704,15 @@ const ManageTeacherTable = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          error={!!errors.dateOfBirth}
-                          helperText={errors.dateOfBirth}
+                          InputFormat = "dd/MM/yyyy"
+                          error={touched.dateOfBirth && !!errors.dateOfBirth}
+                          helperText={touched.dateOfBirth && errors.dateOfBirth}
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <FormControl>
+                        <FormControl
+                          error={touched.gender && !!errors.gender}
+                        >
                           <FormLabel id="gender">Gender</FormLabel>
                           <RadioGroup
                             row
@@ -726,15 +722,14 @@ const ManageTeacherTable = () => {
                             onChange={(event) =>
                               setFieldValue("gender", event.target.value)
                             }
-                            error={touched.gender && !!errors.gender}
-                            helperText={touched.gender && errors.gender}
                           >
                             <FormControlLabel value="1" control={<Radio />} label="Female" />
                             <FormControlLabel value="2" control={<Radio />} label="Male" />
                             <FormControlLabel value="3" control={<Radio />} label="Other" />
                           </RadioGroup>
+                          {touched.gender && errors.gender ? <FormHelperText> {errors.gender}</FormHelperText> : null}
                         </FormControl>
-                        
+
                       </Grid>
                     </Grid>
                     <DialogActions >

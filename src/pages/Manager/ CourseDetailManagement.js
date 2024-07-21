@@ -53,6 +53,7 @@ const CourseDetailPage = () => {
   const [errorMaxParticipant, setErrorMaxParticipant] = useState("");
   const [errorDescription, setErrorDescription] = useState("");
   const [openAdd, setOpenAdd] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [formData, setFormData] = useState({
     code: "",
     name: "",
@@ -60,7 +61,7 @@ const CourseDetailPage = () => {
     description: "",
     startDate: "",
     endDate: "",
-    maxParticipants: 0,
+    maxParticipants: 30,
     isActive: true,
   });
 
@@ -102,7 +103,10 @@ const CourseDetailPage = () => {
   const fetchTeachers = async () => {
     try {
       const response = await ApiInstance.get("/teacher/list");
-      setTeachers(response.data.data);
+      const newData = response.data.data.filter((teacher) => {
+        return teacher.isActive === true;
+      });
+      setTeachers(newData);
     } catch (error) {
       console.error("Error fetching teacher data: ", error);
     }
@@ -115,11 +119,20 @@ const CourseDetailPage = () => {
   const handleClose = () => {
     setOpen(false);
     setOpenAdd(false);
+    setOpenDelete(false);
+    setErrorCode("");
+    setErrorName("");
+    setErrorTeacher("");
+    setErrorDescription("");
+    setErrorStartDate("");
+    setErrorEndDate("");
+    setErrorMaxParticipant("");
   };
   // handle delete class
   const handleConfirmDelete = (cls) => {
     setCurrentClass(cls);
-    setOpen(true);
+    setOpenDelete(true);
+    console.log("currentClass", currentClass);
   };
 
   const handleDeleteAccount = async () => {
@@ -127,7 +140,7 @@ const CourseDetailPage = () => {
       console.log("currentClass", currentClass.id);
       await ApiInstance.delete(`/delete-class/${currentClass.id}`);
       fetchClasses(id);
-      setOpen(false);
+      setOpenDelete(false);
       toast.success(`Class ${currentClass.name} deleted successfully`);
     } catch (error) {
       toast.error(error.response.data.error);
@@ -224,8 +237,7 @@ const CourseDetailPage = () => {
       } else {
         setErrorEndDate("");
       }
-
-      if (formData.maxParticipants === null || formData.maxParticipants > 0) {
+      if (formData.maxParticipants === null || formData.maxParticipants < 0) {
         setErrorMaxParticipant("Max Participant is required");
         error = true;
       } else {
@@ -313,19 +325,28 @@ const CourseDetailPage = () => {
   return (
     <div>
       <Container maxWidth={false}>
-        <div className="header-page">
-          <BackButton />
-
-          <Typography style={{ margin: 0 }} variant="h4" gutterBottom>
-            Class Management
-          </Typography>
-        </div>
+        <MenuComponent role="manager" />
         <Box>
-          <Typography variant="h6" component="h3" gutterBottom>
+          <h1
+            style={{
+              textAlign: "center",
+            }}
+          >
+            Class Management
+          </h1>
+        </Box>
+        <Box>
+          <Typography variant="subtitle1" component="h6"
+            sx={{
+              width: "900px",
+              wordWrap: "break-word",
+            }}
+          >
             {course.code}: {course?.description}
           </Typography>
-          <Typography variant="h6" component="h2">
-            Semester: {course?.semester.name}
+          <Typography variant="subtitle1" component="h6">
+            Semester: {course?.semester.name} 
+            (from {formatDateDay(course?.semester.startDate)} to {formatDateDay(course?.semester.endDate)})
           </Typography>
           <Typography variant="body1" gutterBottom>
             Created by: {course?.manager.firstName} {course?.manager.lastName}
@@ -382,7 +403,7 @@ const CourseDetailPage = () => {
           <Grid item xs={12}>
             <TableContainer
               sx={{
-                height: "480px",
+                height: "450px",
               }}
             >
               <Table stickyHeader>
@@ -453,7 +474,7 @@ const CourseDetailPage = () => {
         </Grid>
 
         <Dialog
-          open={open}
+          open={openDelete}
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -479,7 +500,7 @@ const CourseDetailPage = () => {
               Confirm
             </Button>
             <Button
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               sx={{
                 color: "white",
                 backgroundColor: "#6C757D",
@@ -503,7 +524,6 @@ const CourseDetailPage = () => {
                 <TextField
                   name="code"
                   label="Code"
-                  required
                   value={formData.code}
                   margin="normal"
                   fullWidth
@@ -517,7 +537,6 @@ const CourseDetailPage = () => {
                 <TextField
                   name="name"
                   label="Name"
-                  required
                   value={formData.name}
                   margin="normal"
                   fullWidth
@@ -558,7 +577,6 @@ const CourseDetailPage = () => {
                 <TextField
                   name="maxParticipants"
                   label="Max Participant"
-                  required
                   value={formData.maxParticipants}
                   margin="normal"
                   fullWidth
@@ -576,7 +594,6 @@ const CourseDetailPage = () => {
                 <TextField
                   name="description"
                   label="Description"
-                  required
                   value={formData.description}
                   margin="normal"
                   fullWidth
@@ -593,7 +610,6 @@ const CourseDetailPage = () => {
                 <TextField
                   name="startDate"
                   label="Start Date"
-                  required
                   value={formData.startDate}
                   InputLabelProps={{
                     shrink: true,
@@ -618,7 +634,6 @@ const CourseDetailPage = () => {
                   name="endDate"
                   type="date"
                   label="End Date"
-                  required
                   value={formData.endDate}
                   onChange={handleFormChange}
                   InputLabelProps={{
@@ -691,7 +706,7 @@ const CourseDetailPage = () => {
                 description: "",
                 startDate: "",
                 endDate: "",
-                maxParticipants: 0,
+                maxParticipants: 30,
               }}
               onSubmit={handleCreateClass}
               validationSchema={validationSchema}
@@ -808,8 +823,8 @@ const CourseDetailPage = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          error={!!errors.startDate}
-                          helperText={errors.startDate}
+                          error={touched.startDate && !!errors.startDate}
+                          helperText={touched.startDate && errors.startDate}
                         />
                       </Grid>
                       <Grid
@@ -831,8 +846,8 @@ const CourseDetailPage = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          error={!!errors.endDate}
-                          helperText={errors.endDate}
+                          error={touched.endDate && !!errors.endDate}
+                          helperText={touched.endDate && errors.endDate}
                         />
                       </Grid>
                     </Grid>
