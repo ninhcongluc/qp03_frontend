@@ -76,13 +76,30 @@ const StudentDoQuiz = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+      setConfirmSubmit(true);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, null, window.location.href);
+    };
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuizData(response.data.data);
         setTimeLeft(response?.data?.data?.timeLimitMinutes * 60);
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [quizId]);
 
@@ -222,7 +239,7 @@ const StudentDoQuiz = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        <MenuComponent role="student" />
+        {/* <MenuComponent role="student" /> */}
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={10}>
@@ -378,9 +395,7 @@ const StudentDoQuiz = () => {
                   <Typography variant="h6" mt={2}>
                     Time Remaining:{" "}
                     <span
-                      className={`timer ${
-                        timeLeft <= quizData.timeLimitMinutes ? "timer-red" : ""
-                      }`}
+                      className={`timer ${timeLeft <= 300 ? "timer-red" : ""}`}
                     >
                       {formatTime(timeLeft)}
                     </span>

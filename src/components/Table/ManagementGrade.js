@@ -21,6 +21,14 @@ const ManagementGrade = () => {
   const [quizData, setQuizData] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedQuiz, setSelectedQuiz] = useState("");
+  const [selectedScore, setSelectedScore] = useState("all");
+  const [scoreData, setScoreData] = useState([
+    { id: "all", name: "All Students" },
+    { id: "0-5", name: "0 - 5" },
+    { id: "5-6.5", name: "5 - 6.5" },
+    { id: "6.5-8", name: "6.5 - 8" },
+    { id: "8-10", name: "8 - 10" },
+  ]);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -50,13 +58,31 @@ const ManagementGrade = () => {
     if (selectedClass !== "" && selectedQuiz !== "") {
       ApiInstance.get(`/quiz/${selectedQuiz}/student-grades`)
         .then((response) => {
-          setData(response.data.data);
+          let filteredData = response.data.data;
+          if (selectedScore !== "all") {
+            filteredData = filteredData.filter((student) => {
+              const score = student.score;
+              switch (selectedScore) {
+                case "0-5":
+                  return score < 5;
+                case "5-6.5":
+                  return score >= 5 && score < 6.5;
+                case "6.5-8":
+                  return score >= 6.5 && score < 8;
+                case "8-10":
+                  return score >= 8 && score <= 10;
+                default:
+                  return true;
+              }
+            });
+          }
+          setData(filteredData);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
     }
-  }, [selectedClass, selectedQuiz]);
+  }, [selectedClass, selectedQuiz, selectedScore]);
 
   const handleClassChange = (event) => {
     console.log(event.target.value);
@@ -66,6 +92,11 @@ const ManagementGrade = () => {
   const handleQuizChange = (event) => {
     console.log(event.target.value);
     setSelectedQuiz(event.target.value);
+  };
+
+  const handleScoreChange = (event) => {
+    console.log(event.target.value);
+    setSelectedScore(event.target.value);
   };
 
   return (
@@ -107,6 +138,24 @@ const ManagementGrade = () => {
             {quizData.map((quiz, index) => (
               <MenuItem key={index} value={quiz.id}>
                 {quiz.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+        <Box display="flex" alignItems="center" ml={2}>
+          <InputLabel id="select-score-label" style={{ marginRight: "8px" }}>
+            Select Score
+          </InputLabel>
+          <Select
+            labelId="select-score-label"
+            id="select-score"
+            value={selectedScore}
+            label="Select Score"
+            onChange={handleScoreChange}
+          >
+            {scoreData.map((score, index) => (
+              <MenuItem key={index} value={score.id}>
+                {score.name}
               </MenuItem>
             ))}
           </Select>

@@ -62,17 +62,17 @@ function Login() {
 
   return (
     <div class="login-container">
-      <img
+      {/* <img
         src="https://it.fpt.edu.vn/wp-content/uploads/2020/05/2017-FPTU-S-01.png"
         alt="FPT Logo"
         className="corner-logo"
-      />
+      /> */}
       <div class="login-form">
-        <img
+        {/* <img
           src="https://seeklogo.com/images/F/fpt-university-logo-B3B6D84292-seeklogo.com.png"
           alt="FPT University Logo"
           className="logo"
-        />
+        /> */}
         <h5>LOGIN</h5>
 
         <TextField

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./StudentQuizDetail.css";
 import MenuComponent from "../../components/LeftMenu/Menu";
 import ApiInstance from "../../axios";
+import { formatDate } from "../../commons/function";
 
 const StudentQuizDetail = () => {
   const { quizId } = useParams();
@@ -12,6 +13,11 @@ const StudentQuizDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(
+      "compare",
+      Date.now() < new Date("2024-07-18T18:25:00.000Z").getTime()
+    );
+
     ApiInstance.get(`/quiz/${quizId}/history`)
       .then((response) => {
         console.log("data", response.data.data);
@@ -65,7 +71,7 @@ const StudentQuizDetail = () => {
           </Typography>
 
           <Grid container spacing={3} className="quiz-detail-grid">
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Typography variant="body1" sx={{ color: "black" }}>
                 <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
               </Typography>
@@ -73,6 +79,14 @@ const StudentQuizDetail = () => {
               <Typography variant="body1" sx={{ color: "black" }}>
                 <strong>Max Attempts:</strong>{" "}
                 {quizData?.maxAttempts || "No limit"}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Start Date:</strong> {formatDate(quizData?.startDate)}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>End Date:</strong> {formatDate(quizData?.endDate)}
               </Typography>
             </Grid>
             <Grid item xs={6}></Grid>
@@ -116,8 +130,11 @@ const StudentQuizDetail = () => {
             onClick={handleStartQuiz}
             className="quiz-detail-start-button"
             disabled={
-              quizData?.maxAttempts > 1 &&
-              quizData?.studentQuizResults?.length >= quizData?.maxAttempts
+              (quizData?.maxAttempts > 1 &&
+                quizData?.studentQuizResults?.length >=
+                  quizData?.maxAttempts) ||
+              Date.now() < new Date(quizData?.startDate).getTime() ||
+              Date.now() > new Date(quizData?.endDate).getTime()
             }
           >
             {quizStatus === "doing" ? "Continue" : "Start"}
@@ -129,6 +146,18 @@ const StudentQuizDetail = () => {
                 You have reached your limit for the number of attempts{" "}
               </Typography>
             )}
+
+          {Date.now() < new Date(quizData?.startDate).getTime() && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is not start{" "}
+            </Typography>
+          )}
+
+          {Date.now() > new Date(quizData?.endDate) && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is overdue date{" "}
+            </Typography>
+          )}
         </>
       </Container>
     </Box>

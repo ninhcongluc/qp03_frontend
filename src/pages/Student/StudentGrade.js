@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -16,11 +16,13 @@ import {
   Stack,
 } from "@mui/material";
 import MenuComponent from "../../components/LeftMenu/Menu";
-
+// import ApiInstance from "../../axios";
 
 const StudentGrade = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  // const [grades, setGrades] = useState([]);
+  const [totalGrades, setTotalGrades] = useState(0);
   const gradesPerPage = 7;
 
   // Dữ liệu cứng để hiển thị
@@ -30,105 +32,105 @@ const StudentGrade = () => {
       courseName: "Math 101",
       lecture: "Dr. Smith",
       average: 85,
-      classId: "08541cd5-5d62-4eed-9b96-ce706e7e9b81",
+      quizId: 101,
     },
     {
       id: 2,
-      courseName: "PHYS 101",
+      courseName: "History 201",
       lecture: "Prof. Johnson", 
       average: 78,
-      classId: "513d7a7c-8407-45c6-8c2c-5a98453e158f",
+      quizId: 102,
     },
     {
       id: 3,
-      courseName: "CHEM 101",
+      courseName: "Biology 301",
       lecture: "Dr. Lee",
       average: 92,
-      classId: "7d221d68-0b1a-442e-b01c-4884da50a325",
+      quizId: 103,
     },
     {
       id: 4,
-      courseName: "BIOL 101",
+      courseName: "English 150",
       lecture: "Ms. Williams",
       average: 83,
-      classId: "ef0038cc-9419-4814-a849-7def86523daf",
+      quizId: 104,
     },
     {
       id: 5,
       courseName: "Computer Science 202",
       lecture: "Prof. Chen",
       average: 87,
-      classId: "105",
+      quizId: 105,
     },
     {
       id: 6,
       courseName: "Physics 410",
       lecture: "Dr. Nguyen",
       average: 90,
-      classId: "106",
+      quizId: 106,
     },
     {
       id: 7,
       courseName: "Economics 250",
       lecture: "Prof. Sharma",
       average: 81,
-      classId: "107",
+      quizId: 107,
     },
     {
       id: 8,
       courseName: "Art History 320",
       lecture: "Ms. Gonzalez",
       average: 88,
-      classId: "108",
+      quizId: 108,
     },
     {
       id: 9,
       courseName: "Psychology 201",
       lecture: "Dr. Kim",
       average: 84,
-      classId: "109",
+      quizId: 109,
     },
     {
       id: 10,
       courseName: "Sociology 305",
       lecture: "Prof. Patel",
       average: 79,
-      classId: "110",
+      quizId: 110,
     },
     {
       id: 11,
       courseName: "Accounting 240",
       lecture: "Ms. Tanaka",
       average: 86,
-      classId: "111",
+      quizId: 111,
     },
     {
       id: 12,
       courseName: "Music Theory 180",
       lecture: "Dr. Kowalski",
       average: 92,
-      classId: "112",
+      quizId: 112,
     },
     {
       id: 13,
       courseName: "Business 301",
       lecture: "Prof. Fernandez",
       average: 85,
-      classId: "113",
+      quizId: 113,
     },
     {
       id: 14,
       courseName: "Chemistry 401",
       lecture: "Dr. Zhao",
       average: 88,
-      classId: "114",
+      quizId: 114,
     },
     {
       id: 15,
       courseName: "Classics 250",
       lecture: "Ms. Morales",
       average: 82,
-      classId: "115",
+      quizId: 115,
     }
   ];
 
@@ -142,10 +144,12 @@ const StudentGrade = () => {
     navigate(`/student/course-management/class/${classId}`);
   };
 
+  const pageCount = Math.ceil(totalGrades / gradesPerPage);
+
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "240px" }} >
+      <Container sx={{ marginLeft: "240px" }}>
         <Typography variant="h4" gutterBottom className="student-grade-title">
           Student Grades
         </Typography>
@@ -195,7 +199,7 @@ const StudentGrade = () => {
                           color="primary"
                           size="small"
                           className="student-grade-review-button"
-                          onClick={() => handleReviewClick(grade.classId)}
+                          onClick={() => handleReviewClick(grade.quizId)}
                         >
                           Detail
                         </Button>
@@ -211,7 +215,7 @@ const StudentGrade = () => {
             className="student-grade-pagination"
           >
             <Pagination
-              count={Math.ceil(grades.length / gradesPerPage)}
+              count={pageCount}
               page={page}
               onChange={handlePageChange}
               color="primary"

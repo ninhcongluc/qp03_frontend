@@ -6,6 +6,7 @@ import {
   RemoveRedEye as ViewIcon,
 } from "@mui/icons-material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { formatDate } from "../../commons/function";
 import {
   Avatar,
   Box,
@@ -113,7 +114,7 @@ const TeacherCourseDetailPage = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [courseId]);
 
@@ -274,8 +275,18 @@ const TeacherCourseDetailPage = () => {
       fetchData();
       handleCloseCreateQuizDialog();
     } catch (error) {
-      toast.error(error.response.data.error);
-      console.error("Error submitting quiz form:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.status === "failed"
+      ) {
+        const { details } = error.response.data.error;
+        details.forEach((detail) => {
+          toast.error(detail.message);
+        });
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
@@ -377,20 +388,23 @@ const TeacherCourseDetailPage = () => {
                       {quiz?.status}
                     </TableCell>
                     <TableCell id="action-button">
-                      <IconButton
+                      <Button
                         className="icon-button"
                         onClick={() => handleViewQuiz(quiz)}
+                        style={{ color: "blue", backgroundColor: "#d1ebe3" }}
                       >
-                        <ViewIcon />
-                      </IconButton>
+                        Q&A
+                      </Button>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleEditQuiz(quiz)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleDeleteQuiz(quiz.id)}
                       >
                         <DeleteIcon />
@@ -443,11 +457,7 @@ const TeacherCourseDetailPage = () => {
               <TextField
                 label="Start Date"
                 type="datetime-local"
-                value={
-                  newQuiz.startDate
-                    ? newQuiz.startDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.startDate ? formatDate(newQuiz.startDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
@@ -455,21 +465,23 @@ const TeacherCourseDetailPage = () => {
                   })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
               <TextField
                 label="End Date"
                 type="datetime-local"
-                value={
-                  newQuiz.endDate
-                    ? newQuiz.endDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.endDate ? formatDate(newQuiz.endDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, endDate: new Date(e.target.value) })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
@@ -480,7 +492,7 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
-                    timeLimitMinutes: parseInt(e.target.value),
+                    timeLimitMinutes: e.target.value,
                   })
                 }
                 fullWidth
