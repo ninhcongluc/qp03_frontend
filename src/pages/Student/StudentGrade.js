@@ -27,8 +27,11 @@ const StudentGrade = () => {
 
   const fetchGrades = async (page, limit) => {
     try {
-      const response = await ApiInstance.get(`/student-grades?page=${page}&limit=${limit}`);
+      const response = await ApiInstance.get(
+        `/student-grades?page=${page}&limit=${limit}`
+      );
       setGrades(response.data.data.grades);
+      console.log("grades", response.data.data.grades);
       setTotalGrades(response.data.data.total);
     } catch (error) {
       console.error("Error fetching grades:", error);
@@ -70,40 +73,53 @@ const StudentGrade = () => {
               <TableHead className="student-grade-table-head">
                 <TableRow className="student-grade-table-row">
                   <TableCell className="student-grade-table-cell">No</TableCell>
-                  <TableCell className="student-grade-table-cell">Course Name</TableCell>
-                  <TableCell className="student-grade-table-cell">Lecture</TableCell>
-                  <TableCell className="student-grade-table-cell">Grade</TableCell>
-                  <TableCell className="student-grade-table-cell">Action</TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Course Name
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Lecture
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Grade
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="student-grade-table-body">
-                {grades.slice((page - 1) * gradesPerPage, page * gradesPerPage).map((grade, index) => (
-                  <TableRow key={grade.id} className={`student-grade-table-row-${index}`}>
-                    <TableCell className="student-grade-table-cell">
-                      {(page - 1) * gradesPerPage + index + 1}
-                    </TableCell>
-                    <TableCell className="student-grade-table-cell">
-                      {grade.courseName}
-                    </TableCell>
-                    <TableCell className="student-grade-table-cell">
-                      {grade.lecture}
-                    </TableCell>
-                    <TableCell className="student-grade-table-cell">
-                      {grade.average.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="student-grade-table-cell">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        className="student-grade-review-button"
-                        onClick={() => handleReviewClick(grade.quizId)}
-                      >
-                        Detail
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {grades
+                  ?.slice((page - 1) * gradesPerPage, page * gradesPerPage)
+                  .map((grade, index) => (
+                    <TableRow
+                      key={grade.id}
+                      className={`student-grade-table-row-${index}`}
+                    >
+                      <TableCell className="student-grade-table-cell">
+                        {(page - 1) * gradesPerPage + index + 1}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
+                        {grade.courseName}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
+                        {grade.lecture}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
+                        {grade.average.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          className="student-grade-review-button"
+                          onClick={() => handleReviewClick(grade.quizId)}
+                        >
+                          Detail
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
