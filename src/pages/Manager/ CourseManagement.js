@@ -78,7 +78,7 @@ const CourseManagementPage = () => {
 
   const fetchSemesterData = async () => {
     try {
-      const response = await ApiInstance.get("/semester");
+      const response = await ApiInstance.get("/semester?isActive=true");
       const newData = response.data.data.filter((semester) => {
         return semester.isActive === true;
       });
@@ -330,9 +330,9 @@ const CourseManagementPage = () => {
                 height: "240px ",
               }}
               onClick={
-                course.isActive ?
-                  () => handleCourseDetailClick(course.id) :
-                  () => { }
+                course.isActive
+                  ? () => handleCourseDetailClick(course.id)
+                  : () => {}
               }
             >
               <div
@@ -536,7 +536,8 @@ const CourseManagementPage = () => {
                       />
                     </Grid>
                     <Grid item xs={5}>
-                      <FormControl fullWidth
+                      <FormControl
+                        fullWidth
                         error={touched.semesterId && !!errors.semesterId}
                       >
                         <InputLabel id="addSemester">Semester</InputLabel>
@@ -556,7 +557,9 @@ const CourseManagementPage = () => {
                             </MenuItem>
                           ))}
                         </Select>
-                        {touched.semesterId && errors.semesterId ? <FormHelperText>{errors.semesterId}</FormHelperText> : null}
+                        {touched.semesterId && errors.semesterId ? (
+                          <FormHelperText>{errors.semesterId}</FormHelperText>
+                        ) : null}
                       </FormControl>
                     </Grid>
                   </Grid>

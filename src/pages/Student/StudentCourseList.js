@@ -13,7 +13,7 @@ import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
 
 const StudentCourseList = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +44,7 @@ const StudentCourseList = () => {
 
   const fetchSemesterData = async () => {
     try {
-      const response = await ApiInstance.get("/semester");
+      const response = await ApiInstance.get("/semester?isActive=true");
       setSemesters(response.data.data);
     } catch (error) {
       console.error("Error fetching semester information:", error);
