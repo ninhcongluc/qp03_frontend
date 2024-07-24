@@ -40,7 +40,7 @@ const ManageSemesterTable = () => {
 
   const fetchSemesters = async () => {
     try {
-      const response = await ApiInstance.get("/semester?isActive=true");
+      const response = await ApiInstance.get("/semester");
       setSemesters(response.data.data);
     } catch (error) {
       console.error("Error fetching semester information:", error);
