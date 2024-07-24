@@ -134,6 +134,11 @@ const StudentDoQuiz = () => {
       if (!submitted) {
         setTimeLeft((prevTime) => {
           if (prevTime > 0) {
+            console.log("data", prevTime % 30 === 0);
+            if (prevTime % 10 === 0) {
+              // sau 10s
+              handleAutoSave();
+            }
             return prevTime - 1;
           } else {
             handleConfirmSubmit(); // Tự động nộp bài khi hết thời gian
@@ -147,27 +152,18 @@ const StudentDoQuiz = () => {
     return () => clearInterval(timer);
   }, [submitted, timeLeft]);
 
-  useEffect(() => {
-    const handleAutoSave = async () => {
-      try {
-        const body = {
-          quizResultId,
-          answers,
-          timeLeft,
-        };
-        await ApiInstance.post(`/quiz/${quizId}/auto-save-answers`, body);
-      } catch (error) {
-        console.error("Error saving answers:", error);
-      }
-    };
-
-    const interval = setInterval(handleAutoSave, 10000); // 10 seconds
-    setAutoSaveInterval(interval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [quizResultId, answers]);
+  const handleAutoSave = async () => {
+    try {
+      const body = {
+        quizResultId,
+        answers,
+        timeLeft,
+      };
+      await ApiInstance.post(`/quiz/${quizId}/auto-save-answers`, body);
+    } catch (error) {
+      console.error("Error saving answers:", error);
+    }
+  };
 
   const handleChange = (questionId, value, isMultiple = false) => {
     setAnswers((prevAnswers) => {

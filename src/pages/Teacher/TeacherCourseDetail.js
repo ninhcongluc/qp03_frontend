@@ -230,8 +230,8 @@ const TeacherCourseDetailPage = () => {
       endDate: new Date(quiz.endDate),
       classId: selectedClassId,
       isLimitedAttempts: quiz.isLimitedAttempts,
-      maxAttempts: quiz?.maxAttempts || 0,
-      timeLimitMinutes: quiz.timeLimitMinutes,
+      maxAttempts: Number(quiz?.maxAttempts || 0),
+      timeLimitMinutes: Number(quiz.timeLimitMinutes),
       score: quiz.score,
       showAnswer: quiz.showAnswer,
     });
@@ -530,12 +530,12 @@ const TeacherCourseDetailPage = () => {
               {newQuiz.isLimitedAttempts && (
                 <TextField
                   label="Max Attempts"
-                  type="number"
-                  value={newQuiz?.maxAttempts || 0}
+                  type="text"
+                  value={newQuiz?.maxAttempts}
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      maxAttempts: parseInt(e.target?.value),
+                      maxAttempts: e.target.value.replace(/\D/g, ""),
                     })
                   }
                   fullWidth
