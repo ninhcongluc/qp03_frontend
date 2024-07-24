@@ -227,6 +227,7 @@ const TeacherQuestionListPage = () => {
       await ApiInstance.put(`/quiz/${quizId}/save-qa`, listQuestionAnswers);
       fetchData();
       toast.success("Quiz save successfully");
+      navigate(-1);
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
@@ -250,7 +251,7 @@ const TeacherQuestionListPage = () => {
       );
       fetchData();
       toast.success("You have submitted successfully");
-      // navigate(-1);
+      navigate(-1);
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error save quiz:", error);
