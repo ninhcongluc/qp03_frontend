@@ -524,21 +524,7 @@ const TeacherCourseDetailPage = () => {
                 margin="normal"
                 required
               />
-              <TextField
-                label="Score"
-                type="number"
-                value={newQuiz.score}
-                onChange={(e) =>
-                  setNewQuiz({ ...newQuiz, score: parseInt(e.target.value) })
-                }
-                select
-                fullWidth
-                margin="normal"
-                required
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-              </TextField>
+
               <div>
                 <Typography variant="subtitle1">Limit Attempts:</Typography>
                 <Switch

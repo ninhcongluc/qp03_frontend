@@ -10,18 +10,17 @@ const StudentQuizDetail = () => {
   const { quizId } = useParams();
   const [quizData, setQuizData] = useState(null);
   const [quizStatus, setQuizStatus] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(
-      "compare",
-      Date.now() < new Date("2024-07-18T18:25:00.000Z").getTime()
-    );
-
     ApiInstance.get(`/quiz/${quizId}/history`)
       .then((response) => {
-        console.log("data", response.data.data);
         setQuizData(response.data.data);
+        if (new Date(response.data.data.endDate).getTime() > Date.now()) {
+          setDisabled(true);
+        }
+
         const quizResults = response.data.data?.studentQuizResults;
         setQuizStatus(quizResults[quizResults.length - 1].status);
       })
@@ -105,6 +104,8 @@ const StudentQuizDetail = () => {
                 <li key={index} style={{ marginBottom: "8px" }}>
                   <Typography>
                     <strong>Attempt:</strong> {index + 1} -{" "}
+                    <strong>Attempt:</strong>{" "}
+                    {Date.now() < new Date(quizData.endDate).getTime()}
                     <strong>State:</strong> {data?.status} -{" "}
                     <strong>Marks:</strong> {data?.numberCorrectAnswers}/
                     {quizData?.numberOfQuestions} - <strong>Grade:</strong>{" "}
@@ -113,7 +114,9 @@ const StudentQuizDetail = () => {
                       <a
                         href
                         onClick={() => handleReviewAttempt(data.id)}
-                        className="quiz-detail-review-link"
+                        className={`quiz-detail-review-link ${
+                          disabled ? "disabled" : ""
+                        }`}
                       >
                         Review
                       </a>
@@ -130,7 +133,7 @@ const StudentQuizDetail = () => {
             onClick={handleStartQuiz}
             className="quiz-detail-start-button"
             disabled={
-              (quizData?.maxAttempts > 1 &&
+              (quizData?.isLimitedAttempts === true &&
                 quizData?.studentQuizResults?.length >=
                   quizData?.maxAttempts) ||
               Date.now() < new Date(quizData?.startDate).getTime() ||
@@ -140,7 +143,7 @@ const StudentQuizDetail = () => {
             {quizStatus === "doing" ? "Continue" : "Start"}
           </Button>
 
-          {quizData?.maxAttempts > 1 &&
+          {quizData?.isLimitedAttempts === true &&
             quizData?.studentQuizResults?.length >= quizData?.maxAttempts && (
               <Typography variant="body1" sx={{ color: "red" }}>
                 You have reached your limit for the number of attempts{" "}

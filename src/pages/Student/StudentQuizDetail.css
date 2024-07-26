@@ -4,6 +4,12 @@
   margin-bottom: 3rem;
 }
 
+.quiz-detail-review-link.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .quiz-detail-title {
   color: black;
   padding-top: 20px;
