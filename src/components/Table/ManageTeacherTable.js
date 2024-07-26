@@ -115,9 +115,7 @@ const ManageTeacherTable = () => {
   const handleDeleteAccount = async () => {
     try {
       await ApiInstance.delete(`/teacher/${teacherToDelete?.id}`);
-      setManagerAccounts(
-        managerAccounts.filter((a) => a.id !== teacherToDelete.id)
-      );
+      fetchTeacherAccounts();
       setConfirmationOpen(false);
       toast.success("Teacher account deleted successfully");
     } catch (error) {
