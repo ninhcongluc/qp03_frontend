@@ -37,6 +37,7 @@ import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
 import { useNavigate } from "react-router-dom";
 import "./styles/TeacherCourseDetail.css";
+import * as XLSX from "xlsx";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -171,8 +172,33 @@ const TeacherCourseDetailPage = () => {
             console.error("Error fetching student data:", error);
           });
       } catch (error) {
+        toast.error(error.response.data.error);
+
         console.error("Error importing students:", error);
       }
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      const response = await ApiInstance.post(
+        `/teacher/export-students/${selectedClassId}`,
+        {},
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "DanhSachSinhVien.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error exporting data:", error);
     }
   };
 
@@ -578,6 +604,19 @@ const TeacherCourseDetailPage = () => {
             >
               Import Students
               <input type="file" hidden onChange={handleImportStudents} />
+            </Button>
+
+            <Button
+              sx={{
+                width: "150px",
+                height: "40px",
+                marginLeft: "10px",
+              }}
+              variant="contained"
+              color="primary"
+              onClick={handleExportData}
+            >
+              Export Data
             </Button>
             <Table>
               <TableHead>

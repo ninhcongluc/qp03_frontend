@@ -27,11 +27,11 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import EditIcon from '@mui/icons-material/Edit';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import EditIcon from "@mui/icons-material/Edit";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -83,7 +83,6 @@ const ManageTeacherTable = () => {
     fetchTeacherAccounts();
   }, []);
 
-
   //handle form change
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -116,7 +115,9 @@ const ManageTeacherTable = () => {
   const handleDeleteAccount = async () => {
     try {
       await ApiInstance.delete(`/teacher/${teacherToDelete?.id}`);
-      setManagerAccounts(managerAccounts.filter((a) => a.id !== teacherToDelete.id));
+      setManagerAccounts(
+        managerAccounts.filter((a) => a.id !== teacherToDelete.id)
+      );
       setConfirmationOpen(false);
       toast.success("Teacher account deleted successfully");
     } catch (error) {
@@ -234,8 +235,31 @@ const ManageTeacherTable = () => {
         toast.error(error.response.data.error);
         console.error("Error importing teacher accounts:", error);
       }
-    };
-  }
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      const response = await ApiInstance.post(
+        `/manager/export-teachers`,
+        {},
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "DanhSachGV.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error exporting data:", error);
+    }
+  };
 
   //handle active change
   const handleActiveChange = async (account) => {
@@ -249,19 +273,21 @@ const ManageTeacherTable = () => {
       toast.error(error.response.data.error);
       console.error("Error changing semester active status:", error);
     }
-  }
+  };
 
   //search teacher
   const searchTeacher = (e) => {
     if (e.target.value !== "") {
       const newData = managerAccounts.filter((account) => {
-        return account.code.toUpperCase().includes(e.target.value.toUpperCase());
+        return account.code
+          .toUpperCase()
+          .includes(e.target.value.toUpperCase());
       });
       setManagerAccounts(newData);
     } else {
       fetchTeacherAccounts();
     }
-  }
+  };
 
   const handleCreateAccount = () => {
     setOpenAdd(true);
@@ -305,8 +331,8 @@ const ManageTeacherTable = () => {
               width: "40px",
               height: "40px",
               backgroundColor: "#229342",
-              '&:hover': {
-                backgroundColor: '#1e7b36',
+              "&:hover": {
+                backgroundColor: "#1e7b36",
               },
             }}
             variant="contained"
@@ -328,8 +354,21 @@ const ManageTeacherTable = () => {
             startIcon={<CloudUploadIcon />}
             component="label"
           >
-            Upload file
+            Import Data
             <input type="file" hidden onChange={handleImportTeacher} />
+          </Button>
+
+          <Button
+            sx={{
+              width: "150px",
+              height: "40px",
+              marginLeft: "10px",
+            }}
+            variant="contained"
+            color="primary"
+            onClick={handleExportData}
+          >
+            Export Data
           </Button>
         </div>
       </Box>
@@ -393,7 +432,7 @@ const ManageTeacherTable = () => {
                     style={{
                       marginRight: "8px",
                       width: "50px",
-                      backgroundColor: "#fbd64f"
+                      backgroundColor: "#fbd64f",
                     }}
                   >
                     <EditIcon />
@@ -428,23 +467,26 @@ const ManageTeacherTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteAccount} autoFocus
+          <Button
+            onClick={handleDeleteAccount}
+            autoFocus
             sx={{
               color: "white",
               backgroundColor: "#E00201",
-              '&:hover': {
-                backgroundColor: '#c70404',
+              "&:hover": {
+                backgroundColor: "#c70404",
               },
             }}
           >
             Confirm
           </Button>
-          <Button onClick={() => setConfirmationOpen(false)}
+          <Button
+            onClick={() => setConfirmationOpen(false)}
             sx={{
               color: "white",
               backgroundColor: "#6C757D",
-              '&:hover': {
-                backgroundColor: '#5a6268',
+              "&:hover": {
+                backgroundColor: "#5a6268",
               },
             }}
           >
@@ -454,10 +496,10 @@ const ManageTeacherTable = () => {
       </Dialog>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle
-          style={{ textAlign: "center" }}
-        >
-          {selectedAccount === "view" ? "View Teacher Account" : "Edit Teacher Account"}
+        <DialogTitle style={{ textAlign: "center" }}>
+          {selectedAccount === "view"
+            ? "View Teacher Account"
+            : "Edit Teacher Account"}
         </DialogTitle>
         <DialogContent>
           {viewMode && (
@@ -536,10 +578,10 @@ const ManageTeacherTable = () => {
             required
             disabled={viewMode}
           />
-          <FormControl
-            disabled={viewMode}
-          >
-            <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+          <FormControl disabled={viewMode}>
+            <FormLabel id="demo-row-radio-buttons-group-label">
+              Gender
+            </FormLabel>
             <RadioGroup
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
@@ -567,12 +609,14 @@ const ManageTeacherTable = () => {
         </DialogContent>
         <DialogActions>
           {!viewMode && (
-            <Button onClick={handleSubmit} color="primary"
+            <Button
+              onClick={handleSubmit}
+              color="primary"
               sx={{
                 color: "white",
                 backgroundColor: "#229342",
-                '&:hover': {
-                  backgroundColor: '#1e7b36',
+                "&:hover": {
+                  backgroundColor: "#1e7b36",
                 },
                 width: "100px",
               }}
@@ -580,12 +624,13 @@ const ManageTeacherTable = () => {
               Update
             </Button>
           )}
-          <Button onClick={handleClose}
+          <Button
+            onClick={handleClose}
             sx={{
               color: "white",
               backgroundColor: "#E00201",
-              '&:hover': {
-                backgroundColor: '#c70404',
+              "&:hover": {
+                backgroundColor: "#c70404",
               },
               width: "100px",
             }}
@@ -602,7 +647,8 @@ const ManageTeacherTable = () => {
               color: "white",
               textAlign: "center",
               fontSize: "30px",
-            }}>
+            }}
+          >
             Create teacher account
           </DialogTitle>
           <DialogContent
@@ -689,7 +735,9 @@ const ManageTeacherTable = () => {
                           helperText={touched.phoneNumber && errors.phoneNumber}
                         />
                       </Grid>
-                      <Grid item xs={6}
+                      <Grid
+                        item
+                        xs={6}
                         sx={{
                           marginTop: "16px",
                         }}
@@ -704,15 +752,13 @@ const ManageTeacherTable = () => {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          InputFormat = "dd/MM/yyyy"
+                          InputFormat="dd/MM/yyyy"
                           error={touched.dateOfBirth && !!errors.dateOfBirth}
                           helperText={touched.dateOfBirth && errors.dateOfBirth}
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <FormControl
-                          error={touched.gender && !!errors.gender}
-                        >
+                        <FormControl error={touched.gender && !!errors.gender}>
                           <FormLabel id="gender">Gender</FormLabel>
                           <RadioGroup
                             row
@@ -723,34 +769,51 @@ const ManageTeacherTable = () => {
                               setFieldValue("gender", event.target.value)
                             }
                           >
-                            <FormControlLabel value="1" control={<Radio />} label="Female" />
-                            <FormControlLabel value="2" control={<Radio />} label="Male" />
-                            <FormControlLabel value="3" control={<Radio />} label="Other" />
+                            <FormControlLabel
+                              value="1"
+                              control={<Radio />}
+                              label="Female"
+                            />
+                            <FormControlLabel
+                              value="2"
+                              control={<Radio />}
+                              label="Male"
+                            />
+                            <FormControlLabel
+                              value="3"
+                              control={<Radio />}
+                              label="Other"
+                            />
                           </RadioGroup>
-                          {touched.gender && errors.gender ? <FormHelperText> {errors.gender}</FormHelperText> : null}
+                          {touched.gender && errors.gender ? (
+                            <FormHelperText> {errors.gender}</FormHelperText>
+                          ) : null}
                         </FormControl>
-
                       </Grid>
                     </Grid>
-                    <DialogActions >
+                    <DialogActions>
                       <div>
-                        <Button type="submit" sx={{
-                          backgroundColor: "#229342",
-                          color: "white",
-                          '&:hover': {
-                            backgroundColor: '#1e7b36',
-                          },
-                        }}>
+                        <Button
+                          type="submit"
+                          sx={{
+                            backgroundColor: "#229342",
+                            color: "white",
+                            "&:hover": {
+                              backgroundColor: "#1e7b36",
+                            },
+                          }}
+                        >
                           Save
                         </Button>
                       </div>
                       <div>
-                        <Button onClick={handleClose}
+                        <Button
+                          onClick={handleClose}
                           sx={{
                             backgroundColor: "#f44336",
                             color: "white",
-                            '&:hover': {
-                              backgroundColor: '#d32f2f',
+                            "&:hover": {
+                              backgroundColor: "#d32f2f",
                             },
                           }}
                         >
