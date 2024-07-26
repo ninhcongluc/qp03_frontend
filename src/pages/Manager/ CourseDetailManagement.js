@@ -21,7 +21,6 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { toast } from "react-toastify";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import BackButton from "../../components/BackButton/BackButton";
 import {
   Box,
   Dialog,
@@ -29,7 +28,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Switch,
   FormControl,
   InputLabel,
   MenuItem,
@@ -144,7 +142,7 @@ const CourseDetailPage = () => {
       toast.success(`Class ${currentClass.name} deleted successfully`);
     } catch (error) {
       toast.error(error.response.data.error);
-      setOpen(false);
+      setOpenDelete(false);
       console.error("Error deleting class:", error);
     }
   };
@@ -251,6 +249,7 @@ const CourseDetailPage = () => {
 
       const payload = {
         courseId: id,
+        code: formData.code,
         name: formData.name,
         teacherId: formData.teacherId,
         startDate: formData.startDate,
@@ -269,7 +268,6 @@ const CourseDetailPage = () => {
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(error.response.data.error);
-        setOpen(false);
       } else {
         toast.error("Update class is failed");
       }
