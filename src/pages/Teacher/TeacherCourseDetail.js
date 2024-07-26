@@ -37,7 +37,6 @@ import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
 import { useNavigate } from "react-router-dom";
 import "./styles/TeacherCourseDetail.css";
-import * as XLSX from "xlsx";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
