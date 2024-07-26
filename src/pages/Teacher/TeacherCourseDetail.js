@@ -89,6 +89,7 @@ const TeacherCourseDetailPage = () => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const { courseId } = useParams();
   let navigate = useNavigate();
+  const teacherId = JSON.parse(localStorage.getItem("user")).id;
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
@@ -105,7 +106,7 @@ const TeacherCourseDetailPage = () => {
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
   console.log("courseId", courseId);
   useEffect(() => {
-    ApiInstance.get(`/course/${courseId}`)
+    ApiInstance.get(`/course/${courseId}?teacherId=${teacherId}`)
       .then((response) => {
         const courseData = response.data.data;
         setCourse(courseData);
