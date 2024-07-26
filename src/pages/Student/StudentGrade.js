@@ -30,8 +30,7 @@ const StudentGrade = () => {
       const response = await ApiInstance.get(
         `/student-grades?page=${page}&limit=${limit}`
       );
-      setGrades(response.data.data.grades);
-      console.log("grades", response.data.data.grades);
+      setGrades(response.data.data);
       setTotalGrades(response.data.data.total);
     } catch (error) {
       console.error("Error fetching grades:", error);
@@ -105,7 +104,7 @@ const StudentGrade = () => {
                         {grade.lecture}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
-                        {grade.average.toFixed(2)}
+                        {grade.score.toFixed(2)}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
                         <Button
