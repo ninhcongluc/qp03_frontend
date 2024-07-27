@@ -40,7 +40,7 @@ const TeacherCourseListPage = () => {
 
   const fetchSemesterData = async () => {
     try {
-      const response = await ApiInstance.get("/semester");
+      const response = await ApiInstance.get("/semester?isActive=true");
       setSemesters(response.data.data);
     } catch (error) {
       console.error("Error fetching semester information:", error);

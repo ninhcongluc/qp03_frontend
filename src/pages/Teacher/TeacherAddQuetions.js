@@ -1,3 +1,5 @@
+import { Add as AddIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -13,30 +15,50 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ApiInstance from "../../axios";
+import BackButton from "../../components/BackButton/BackButton";
+
 import "./styles/TeacherAddQuestion.css";
+import { toast } from "react-toastify";
+import QuestionBankDialog from "../../components/Dialog/QuestionBank";
 
 const TeacherQuestionListPage = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([
     { id: 1, type: "selectOne", answerOptions: [""] },
   ]);
   const [quiz, setQuiz] = useState(null);
   const { quizId } = useParams();
+  const [showQuestionBankDialog, setShowQuestionBankDialog] = useState(false);
+  const [isTaken, setIsTaken] = useState(false);
 
-  let navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("quizId", quizId);
+  const fetchData = async () => {
     ApiInstance.get(`/quiz/${quizId}/question-answers`)
       .then((response) => {
         setQuiz(response.data.data);
         setQuestions(response.data.data.questions);
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
+  };
+
+  const checkQuizStatus = async () => {
+    ApiInstance.get(`/quiz/${quizId}/check-quiz`)
+      .then((response) => {
+        console.log("response", response.data.data);
+        setIsTaken(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    fetchData();
+    checkQuizStatus();
   }, [quizId]);
 
   // Handle question text change
@@ -53,6 +75,7 @@ const TeacherQuestionListPage = () => {
 
   // Handle option text change
   const handleOptionTextChange = (event, questionId, optionIndex) => {
+    console.log("handleOptionTextChange");
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
@@ -73,12 +96,27 @@ const TeacherQuestionListPage = () => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
-          const updatedOptions = question.answerOptions.map(
-            (option, index) => ({
-              ...option,
-              isCorrect: index === optionIndex,
-            })
-          );
+          const updatedOptions = question.answerOptions.map((option, index) => {
+            if (
+              index === optionIndex &&
+              question.id === questionId &&
+              question.type === "multiple_choice"
+            ) {
+              return {
+                ...option,
+                isCorrect: event.target.checked,
+              };
+            }
+            if (question.type === "select_one") {
+              return {
+                ...option,
+                isCorrect: index === optionIndex,
+              };
+            }
+            return option;
+          });
+          console.log(updatedOptions);
+
           return { ...question, answerOptions: updatedOptions };
         }
         return question;
@@ -101,8 +139,10 @@ const TeacherQuestionListPage = () => {
   const handleAddQuestion = () => {
     const newQuestion = {
       id: questions?.length ? questions.length + 1 : 1,
-      type: "selectOne",
+      type: "select_one",
+      score: 0,
       answerOptions: [""],
+      createdAt: new Date(),
     };
 
     if (questions) {
@@ -142,27 +182,111 @@ const TeacherQuestionListPage = () => {
     setQuestions(newQuestions);
   };
 
-  const handleSaveAsDraft = () => {
+  const handleScoreChange = (event, questionId) => {
+    const newScore = event.target.value;
+    console.log("newScore", newScore);
+
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) => {
+        console.log("question", question.id);
+        console.log("questionId", questionId);
+
+        return question.id === questionId
+          ? { ...question, score: newScore }
+          : question;
+      })
+    );
+  };
+
+  const handleOptionScoreChange = (event, questionId, optionIndex) => {
+    const newScore = event.target.value;
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              answerOptions: question.answerOptions.map((option, idx) =>
+                idx === optionIndex ? { ...option, score: newScore } : option
+              ),
+            }
+          : question
+      )
+    );
+  };
+
+  const handleSaveAsDraft = async () => {
     const listQuestionAnswers = questions.map((question) => ({
       id: question.id,
       text: question.text,
+      score: question.score,
       type: question.type,
       answerOptions: question.answerOptions,
     }));
 
+    try {
+      await ApiInstance.put(`/quiz/${quizId}/save-qa`, listQuestionAnswers);
+      fetchData();
+      toast.success("Quiz save successfully");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const listQuestionAnswers = questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      score: question.score,
+      answerOptions: question.answerOptions,
+    }));
+
     console.log("listQuestionAnswers", listQuestionAnswers);
+    try {
+      await ApiInstance.put(
+        `/quiz/${quizId}/save-qa?isSubmit=true`,
+        listQuestionAnswers
+      );
+      fetchData();
+      toast.success("You have submitted successfully");
+      navigate(-1);
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error save quiz:", error);
+    }
+  };
+
+  const handleSelectFromBank = () => {
+    setShowQuestionBankDialog(true);
+  };
+
+  const handleAddQuestions = (selectedQuestions) => {
+    console.log("selectedQuestions", selectedQuestions);
+    console.log("questions", questions);
+    setQuestions([...questions, ...selectedQuestions]);
   };
   return (
-    <div>
-      <Box className="container">
-        <button className="back-button" onClick={() => navigate(-1)}></button>
+    <div className="container">
+      <Box>
+        <div className="header-page">
+          <BackButton />
 
-        <Typography className="text-header" variant="h4" gutterBottom>
-          Set Up Q&A
-        </Typography>
+          <Typography style={{ margin: 0 }} variant="h4" gutterBottom>
+            Set Up Q&A
+          </Typography>
+        </div>
+
         <Box
-          className="header"
-          sx={{ backgroundColor: "#4cdbe6", color: "black", p: 2 }}
+          className="summary-info"
+          sx={{
+            backgroundColor: "#fff",
+            alignItems: "center",
+            p: 2,
+            borderRadius: 1,
+            boxShadow: 1,
+            mb: 5,
+          }}
         >
           <Typography variant="h6" gutterBottom>
             Quiz Name: {quiz?.name}
@@ -172,6 +296,9 @@ const TeacherQuestionListPage = () => {
           </Typography>
           <Typography variant="body1" gutterBottom>
             Time: {quiz?.timeLimitMinutes} minutes
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Total Score: {quiz?.score}
           </Typography>
         </Box>
         <Box>
@@ -195,6 +322,18 @@ const TeacherQuestionListPage = () => {
                             handleTextChange(event, question.id)
                           }
                         />
+                        <TextField
+                          id="question-score"
+                          label="Score"
+                          value={question.score}
+                          variant="standard"
+                          type="number"
+                          className="scoreField"
+                          onChange={(event) =>
+                            handleScoreChange(event, question.id)
+                          }
+                          sx={{ marginTop: 2, width: "20%" }}
+                        />
                       </TableCell>
                       <TableCell sx={{ verticalAlign: "top" }}>
                         <FormControl fullWidth>
@@ -203,6 +342,10 @@ const TeacherQuestionListPage = () => {
                             onChange={(event) =>
                               handleTypeChange(event, question.id)
                             }
+                            sx={{
+                              width: 155,
+                              fontSize: 15,
+                            }}
                           >
                             <MenuItem value="select_one">Select One</MenuItem>
                             <MenuItem value="multiple_choice">
@@ -223,7 +366,7 @@ const TeacherQuestionListPage = () => {
                             }
                             name={`question${question.id}`}
                             value={optionIndex}
-                            onChange={(event) =>
+                            onClick={(event) =>
                               handleCorrectAnswerChange(
                                 event,
                                 question.id,
@@ -245,47 +388,70 @@ const TeacherQuestionListPage = () => {
                                 optionIndex
                               )
                             }
-                            sx={{ width: "90%" }}
+                            sx={{ width: "70%" }}
                           />
+                          {question.type === "multiple_choice" && (
+                            <TextField
+                              id="option-score"
+                              label="Score"
+                              value={option.score}
+                              variant="standard"
+                              type="number"
+                              onChange={(event) =>
+                                handleOptionScoreChange(
+                                  event,
+                                  question.id,
+                                  optionIndex
+                                )
+                              }
+                              sx={{ width: "20%", marginLeft: 2 }}
+                            />
+                          )}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            size="small"
-                            sx={{ width: "70px" }}
+                          <CloseIcon
+                            sx={{
+                              color: "red",
+                              "&:hover": {
+                                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                              },
+                            }}
                             onClick={() =>
                               handleDeleteOption(question.id, optionIndex)
                             }
-                          >
-                            Delete
-                          </Button>
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
                       <TableCell colSpan={2}>
                         <Box className="optionButtons">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
+                          <AddIcon
                             sx={{
-                              width: "100px",
-                              marginRight: "8px",
+                              width: "30px",
+                              height: "30px",
+                              marginLeft: "20px",
+                              marginRight: 8,
+                              color: "primary.main",
+                              "&:hover": {
+                                backgroundColor: "#749bd4",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                                color: "white",
+                              },
                             }}
                             onClick={() => handleAddOption(question.id)}
-                          >
-                            Add
-                          </Button>
+                          />{" "}
                           <Button
                             variant="contained"
-                            color="secondary"
+                            color="error"
                             size="small"
-                            sx={{ width: "200px", marginTop: "16px" }}
+                            sx={{ width: "150px", marginTop: "16px" }}
                             onClick={() => handleDeleteQuestion(question.id)}
                           >
-                            Delete Question
+                            Delete
                           </Button>
                         </Box>
                       </TableCell>
@@ -304,14 +470,34 @@ const TeacherQuestionListPage = () => {
               style={{
                 width: "150px",
                 height: "40px",
-                backgroundColor: "#56e349",
                 "&:hover": {
                   backgroundColor: "#3cb730",
                 },
               }}
             >
-              Add Question
+              New Question
             </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSelectFromBank}
+              style={{
+                width: "180px",
+                height: "40px",
+                "&:hover": {
+                  backgroundColor: "#3cb730",
+                },
+              }}
+            >
+              Select From Bank
+            </Button>
+            <QuestionBankDialog
+              open={showQuestionBankDialog}
+              onClose={() => setShowQuestionBankDialog(false)}
+              onAddQuestions={handleAddQuestions}
+            />
           </Box>
         </Box>
 
@@ -326,6 +512,7 @@ const TeacherQuestionListPage = () => {
             color="secondary"
             size="small"
             id="submit-button"
+            disabled={isTaken}
             onClick={handleSaveAsDraft}
           >
             Save As Draft
@@ -335,9 +522,17 @@ const TeacherQuestionListPage = () => {
             color="success"
             size="small"
             id="submit-button"
+            disabled={isTaken}
+            onClick={handleSubmit}
           >
             Submit
           </Button>
+          {isTaken && (
+            <Typography variant="body1" style={{ color: "red" }}>
+              This quiz has already been used by the student. You cannot make
+              any further changes.
+            </Typography>
+          )}
         </Box>
       </Box>
     </div>

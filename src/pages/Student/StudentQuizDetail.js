@@ -1,130 +1,167 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Button, Container, Grid, Typography, Box } from "@mui/material";
-import MenuComponent from "../../components/LeftMenu/Menu";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "./StudentQuizDetail.css";
-
-const quizData = [
-  {
-    id: "4713fc09-2967-4e59-a832-04db1379baad",
-    courseId: "ACC 101",
-    quizzes: [
-      {
-        quizId: "PT1",
-        title: "Quiz PT1",
-        duration: "30 minutes",
-        passingScore: 50,
-        history: [
-          {
-            attemptId: 1,
-            state: "Completed",
-            score: 85,
-            grade: "A",
-          },
-          {
-            attemptId: 2,
-            state: "Completed",
-            score: 75,
-            grade: "B",
-          },
-        ],
-      },
-      // ...
-    ],
-  },
-  // ...
-];
+import MenuComponent from "../../components/LeftMenu/Menu";
+import ApiInstance from "../../axios";
+import { formatDate } from "../../commons/function";
 
 const StudentQuizDetail = () => {
-  const { courseId, quizId } = useParams();
+  const { quizId } = useParams();
+  const [quizData, setQuizData] = useState(null);
+  const [quizStatus, setQuizStatus] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
-  const [quizDetail, setQuizDetail] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const course = quizData.find((course) => course.id === courseId);
-    if (course) {
-      const quiz = course.quizzes.find((quiz) => quiz.quizId === quizId);
-      setQuizDetail(quiz);
-    }
-    setIsLoading(false);
-  }, [courseId, quizId]);
+    ApiInstance.get(`/quiz/${quizId}/history`)
+      .then((response) => {
+        setQuizData(response.data.data);
+        if (new Date(response.data.data.endDate).getTime() > Date.now()) {
+          setDisabled(true);
+        }
 
-  const handleStartQuiz = () => {
-    navigate(`/student/course-management/class/${courseId}/${quizId}/start`);
+        const quizResults = response.data.data?.studentQuizResults;
+        setQuizStatus(quizResults[quizResults.length - 1].status);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [quizId]);
+
+  const handleStartQuiz = async () => {
+    try {
+      if (quizStatus === "doing") {
+        const { studentQuizResults } = quizData;
+        console.log("🚀 ~ handleStartQuiz ~ quizData:", quizData);
+        const quizResultId =
+          studentQuizResults[studentQuizResults.length - 1].id;
+        navigate(
+          `/student/quiz-detail/${quizId}/do-quiz/${quizResultId}?status=continue`
+        );
+        return;
+      }
+
+      const response = await ApiInstance.post(`/quiz/${quizId}/start-quiz`);
+      const { id: quizResultId } = response.data.data;
+      navigate(`/student/quiz-detail/${quizId}/do-quiz/${quizResultId}`);
+    } catch (error) {
+      console.error("Error starting quiz:", error);
+    }
   };
 
   const handleReviewAttempt = (attemptId) => {
-    navigate(`/student/course-management/class/${courseId}/${quizId}/review`);
+    navigate(`/student/quiz-review/${attemptId}`);
   };
 
   return (
     <Box sx={{ display: "flex" }}>
       <MenuComponent role="student" />
+
       <Container className="quiz-detail-container">
-        {isLoading ? (
-          <Typography variant="body1">Loading quiz detail...</Typography>
-        ) : quizDetail ? (
-          <>
-            <Typography
-              variant="h3"
-              align="center"
-              gutterBottom
-              className="quiz-detail-title"
-            >
-              {quizDetail.title}
-            </Typography>
+        <>
+          <Typography
+            variant="h3"
+            align="center"
+            gutterBottom
+            className="quiz-detail-title"
+          >
+            {quizData?.name}
+          </Typography>
 
-            <Grid container spacing={3} className="quiz-detail-grid">
-              <Grid item xs={6}>
-                <Typography variant="body1" sx={{ color: "black" }}>
-                  <strong>Duration:</strong> {quizDetail.duration}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}></Grid>
+          <Grid container spacing={3} className="quiz-detail-grid">
+            <Grid item xs={12}>
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Duration:</strong> {quizData?.timeLimitMinutes}'
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Max Attempts:</strong>{" "}
+                {quizData?.maxAttempts || "No limit"}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>Start Date:</strong> {formatDate(quizData?.startDate)}
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: "black" }}>
+                <strong>End Date:</strong> {formatDate(quizData?.endDate)}
+              </Typography>
             </Grid>
+            <Grid item xs={6}></Grid>
+          </Grid>
 
-            <Typography
-              variant="h6"
-              gutterBottom
-              className="quiz-detail-history-title"
-            >
-              History
-            </Typography>
-            <Box className="quiz-detail-history">
-              <ul style={{ padding: 0 }}>
-                {quizDetail.history.map((attempt, index) => (
-                  <li key={index} style={{ marginBottom: "8px" }}>
-                    <Typography>
-                      <strong>Attempt:</strong> {attempt.attemptId} -{" "}
-                      <strong>State:</strong> {attempt.state} -{" "}
-                      <strong>Marks:</strong> {attempt.score} -{" "}
-                      <strong>Grade:</strong> {attempt.grade}{" "}
+          <Typography
+            variant="h6"
+            gutterBottom
+            className="quiz-detail-history-title"
+          >
+            History
+          </Typography>
+          <Box className="quiz-detail-history">
+            <ul style={{ padding: 0 }}>
+              {quizData?.studentQuizResults?.map((data, index) => (
+                <li key={index} style={{ marginBottom: "8px" }}>
+                  <Typography>
+                    <strong>Attempt:</strong> {index + 1} -{" "}
+                    <strong>Attempt:</strong>{" "}
+                    {Date.now() < new Date(quizData.endDate).getTime()}
+                    <strong>State:</strong> {data?.status} -{" "}
+                    <strong>Marks:</strong> {data?.numberCorrectAnswers}/
+                    {quizData?.numberOfQuestions} - <strong>Grade:</strong>{" "}
+                    {data.score}{" "}
+                    {quizData.showAnswer && data.status === "done" && (
                       <a
                         href
-                        onClick={() => handleReviewAttempt(attempt.attemptId)}
-                        className="quiz-detail-review-link"
+                        onClick={() => handleReviewAttempt(data.id)}
+                        className={`quiz-detail-review-link ${
+                          disabled ? "disabled" : ""
+                        }`}
                       >
                         Review
                       </a>
-                    </Typography>
-                  </li>
-                ))}
-              </ul>
-            </Box>
+                    )}
+                  </Typography>
+                </li>
+              ))}
+            </ul>
+          </Box>
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleStartQuiz}
-              className="quiz-detail-start-button"
-            >
-              Start
-            </Button>
-          </>
-        ) : (
-          <p>No quiz data found for this course and quiz ID.</p>
-        )}
+          <Button
+            variant="contained"
+            color={quizStatus === "doing" ? "error" : "primary"}
+            onClick={handleStartQuiz}
+            className="quiz-detail-start-button"
+            disabled={
+              (quizData?.isLimitedAttempts === true &&
+                quizData?.studentQuizResults?.length >=
+                  quizData?.maxAttempts) ||
+              Date.now() < new Date(quizData?.startDate).getTime() ||
+              Date.now() > new Date(quizData?.endDate).getTime()
+            }
+          >
+            {quizStatus === "doing" ? "Continue" : "Start"}
+          </Button>
+
+          {quizData?.isLimitedAttempts === true &&
+            quizData?.studentQuizResults?.length >= quizData?.maxAttempts && (
+              <Typography variant="body1" sx={{ color: "red" }}>
+                You have reached your limit for the number of attempts{" "}
+              </Typography>
+            )}
+
+          {Date.now() < new Date(quizData?.startDate).getTime() && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is not start{" "}
+            </Typography>
+          )}
+
+          {Date.now() > new Date(quizData?.endDate) && (
+            <Typography variant="body1" sx={{ color: "red" }}>
+              Quiz is overdue date{" "}
+            </Typography>
+          )}
+        </>
       </Container>
     </Box>
   );

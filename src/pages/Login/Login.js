@@ -91,13 +91,13 @@ function Login() {
         />
         <div className="rememberDiv">
           <div>
-            <Checkbox
+            {/* <Checkbox
               checked={rememberMe}
               onChange={handleRememberMeChange}
               label="Remember me"
               style={{ color: "orange" }}
             />
-            <label class="remember-me-label">Remember me</label>
+            <label class="remember-me-label">Remember me</label> */}
           </div>
           <div className="forgot-div">
             <a href="/forgot-password" style={{ color: "orange" }}>
@@ -116,7 +116,7 @@ function Login() {
         </Button>
         <div class="or">OR </div>
 
-        <GoogleLogin 
+        <GoogleLogin
           clientId="136665406201-o3244ge21kai14aaehs4gtvrbo3vomih.apps.googleusercontent.com"
           buttonText="Sign in with Google"
           onSuccess={responseGoogle}

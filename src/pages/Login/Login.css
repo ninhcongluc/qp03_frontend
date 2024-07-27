@@ -44,7 +44,7 @@ body {
   font-size: 14.58px; /* Giảm kích thước font thêm 10% */
 }
 
-.rememberDiv{
+.rememberDiv {
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
@@ -59,7 +59,7 @@ body {
   left: -100px;
 }
 
-.forgot-div{
+.forgot-div {
   margin-top: 7px;
 }
 
@@ -100,4 +100,3 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
-

@@ -1,100 +1,116 @@
-import React from "react";
-import {
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Container,
-} from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
 import MenuComponent from "../../components/LeftMenu/Menu";
-import { Box } from "@mui/system";
-import "./StudentQuizPage.css";
-
-const quizData = [
-  {
-    id: "4713fc09-2967-4e59-a832-04db1379baad",
-    courseName: "ACC 101",
-    quizzes: [
-      { quizId: "PT1", title: "Quiz PT1", timeLimit: "30 minutes" },
-      { quizId: "PT2", title: "Quiz PT2", timeLimit: "45 minutes" },
-      { quizId: "PT3", title: "Quiz PT3", timeLimit: "60 minutes" },
-      { quizId: "Mid Terms", title: "Mid Terms", timeLimit: "90 minutes" },
-      { quizId: "Final Exam", title: "Final Exam", timeLimit: "120 minutes" },
-    ],
-  },
-  {
-    id: "f5a016b9-97c2-4832-ba68-490d8825225e",
-    courseName: "SWR 302",
-    quizzes: [
-      { quizId: "PT1", title: "Quiz PT1", timeLimit: "30 minutes" },
-      { quizId: "PT2", title: "Quiz PT2", timeLimit: "45 minutes" },
-      { quizId: "PT3", title: "Quiz PT3", timeLimit: "60 minutes" },
-      { quizId: "Mid Terms", title: "Mid Terms", timeLimit: "90 minutes" },
-      { quizId: "Final Exam", title: "Final Exam", timeLimit: "120 minutes" },
-    ],
-  },
-  // Thêm các khóa học và bài kiểm tra khác ở đây
-];
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActionArea from "@mui/material/CardActionArea";
+import Typography from "@mui/material/Typography";
 
 const StudentQuizPage = () => {
-  const { courseId } = useParams();
+  const { classId } = useParams();
   const navigate = useNavigate();
-  const courseQuiz = quizData.find((data) => data.id === courseId);
+  const [page, setPage] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
+  const [quizzes, setQuizzes] = useState([]);
+  const quizzesPerPage = 6;
+  const [course, setCourse] = useState();
 
-  if (!courseQuiz) {
-    return <Typography>No quizzes available for this course.</Typography>;
-  }
+  const fetchQuizData = useCallback(
+    async (page, limit, searchTerm = "") => {
+      try {
+        const response = await ApiInstance.get(
+          `/student/course-management/class/${classId}?type=quizzes&page=${page}&limit=${limit}&name=${searchTerm}`
+        );
+        const { data } = response.data;
 
-  const handleQuizClick = (quizId) => {
-    navigate(`/student/course-management/class/${courseId}/${quizId}`);
+        setQuizzes(response.data.data.quizzes);
+        setCourse(response.data.data?.courseInfo.course);
+        setTotalItem(data.total);
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    },
+    [classId]
+  );
+
+  useEffect(() => {
+    fetchQuizData(1, quizzesPerPage);
+  }, [fetchQuizData, quizzesPerPage]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchQuizData(page, quizzesPerPage);
+    }, 30000); // Refresh data every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchQuizData, page, quizzesPerPage]);
+
+  const pageCount = Math.ceil(totalItem / quizzesPerPage);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    fetchQuizData(value, quizzesPerPage);
+  };
+
+  const handleQuizDetailClick = (quizId) => {
+    navigate(`/student/quiz-detail/${quizId}`);
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <div>
       <MenuComponent role="student" />
-      <Container className="container">
-        <Typography variant="h3" className="title" gutterBottom>
-          Quizzes for {courseQuiz.courseName}
-        </Typography>
-        <Grid container className="grid-container" spacing={2}>
-          {courseQuiz.quizzes.map((quiz) => (
-            <Grid
-              item
-              className="grid-item"
-              key={quiz.quizId}
-              xs={12}
-              sm={6}
-              md={4}
-            >
-              <Card className="card">
-                <CardContent>
-                  <Typography variant="h6" className="card-title">
-                    {quiz.title}
-                  </Typography>
-                  <Typography variant="body2" className="card-time">
-                    Time: {quiz.timeLimit}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "blue",
-                      color: "white",
-                      "&:hover": { backgroundColor: "darkpink" },
-                    }}
-                    className="card-button"
-                    onClick={() => handleQuizClick(quiz.quizId)}
-                  >
-                    Start {quiz.title}
-                  </Button>
-                </CardContent>
+      <div className="tilte-class" style={{ marginLeft: "21%" }}>
+        <h2>
+          {course?.code}-{course?.name}
+        </h2>
+        <p>{course?.description}</p>
+      </div>
+      <Container sx={{ marginLeft: "240px" }}>
+        <Grid
+          container
+          spacing={4}
+          sx={{ marginTop: 2, minHeight: 100, width: "900px" }}
+        >
+          {quizzes.map((quiz, index) => (
+            <Grid item key={index} xs={12} sm={6} md={4}>
+              <Card onClick={() => handleQuizDetailClick(quiz.id)}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {quiz.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {quiz.description}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Start Date:{" "}
+                      {new Date(quiz.startDate).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      End Date: {new Date(quiz.endDate).toLocaleDateString()}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
               </Card>
             </Grid>
           ))}
         </Grid>
+        <Stack spacing={2} sx={{ marginTop: 4, alignItems: "center" }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            className="pagination"
+          />
+        </Stack>
       </Container>
-    </Box>
+    </div>
   );
 };
 

@@ -80,23 +80,33 @@ const MenuComponent = ({ role }) => {
         icon: <PortraitIcon />,
         onClick: () => navigate("/teacher/course-management"),
       },
+      {
+        text: "Grades",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/teacher/teacher-grade")
+      }
     ],
     student: [
       {
-        text: "My Class",
+        text: "Course",
         icon: <PortraitIcon />,
         onClick: () => navigate("/student/course-management"),
       },
+      {
+        text: "Grades",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/student/grade"),
+      },
     ],
   };
-
+  
   return (
     <Drawer
       variant="permanent"
       anchor="left"
       sx={{
         "& .MuiDrawer-paper": {
-          backgroundColor: "#fff",
+          backgroundColor: "#FFFAFA",
         },
       }}
     >

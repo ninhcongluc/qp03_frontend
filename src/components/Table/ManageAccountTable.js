@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import ApiInstance from "../../axios";
 
 const ManagerAccountTable = () => {
   const [managerAccounts, setManagerAccounts] = useState([]);
@@ -40,20 +40,10 @@ const ManagerAccountTable = () => {
   });
   const fetchManagerAccounts = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-      const response = await axios.get(
-        "http://localhost:8000/manager/list",
-        config
-      );
+      const response = await ApiInstance.get("/manager/list");
       setManagerAccounts(response.data.data);
     } catch (error) {
-      setError("Error fetching manager accounts");
+      toast.error(error.response.data.error);
       console.error("Error fetching manager accounts:", error);
     }
   };
@@ -92,14 +82,8 @@ const ManagerAccountTable = () => {
 
   const handleDeleteAccount = async (account) => {
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      await axios.delete(`http://localhost:8000/manager/${account.id}`, config);
-      setManagerAccounts(managerAccounts.filter((a) => a.id !== account.id));
+      await ApiInstance.delete(`/manager/${account.id}`);
+      fetchManagerAccounts();
       toast.success("You have deleted successfully");
     } catch (error) {
       toast.error(error.response.data.error);
@@ -180,8 +164,18 @@ const ManagerAccountTable = () => {
       toast.success("You have saved successfully");
       setOpen(false);
     } catch (error) {
-      toast.error(error.response.data.error);
-      console.error("Error saving manager account:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.status === "failed"
+      ) {
+        const { details } = error.response.data.error;
+        details.forEach((detail) => {
+          toast.error(detail.message);
+        });
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
@@ -247,11 +241,12 @@ const ManagerAccountTable = () => {
                   </>
                 )}
                 <TableCell>
-                  <Switch
-                    checked={account.isActive}
-                    onChange={() => handleActiveChange(account)}
-                    color="primary"
-                  />
+                  <Box
+                    color={account.isActive ? "green" : "red"}
+                    fontWeight="bold"
+                  >
+                    {account.isActive ? "active" : "inactive"}
+                  </Box>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -327,8 +322,8 @@ const ManagerAccountTable = () => {
             margin="normal"
             fullWidth
             required
-            error={!formData.code}
-            helperText={!formData.code && "Code is required"}
+            // error={!formData.code}
+            // helperText={!formData.code && "Code is required"}
           />
           <TextField
             name="email"
@@ -339,8 +334,8 @@ const ManagerAccountTable = () => {
             margin="normal"
             fullWidth
             required
-            error={!formData.email}
-            helperText={!formData.email && "Email is required"}
+            // error={!formData.email}
+            // helperText={!formData.email && "Email is required"}
           />
           {viewMode && (
             <>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { useNavigate, useParams } from "react-router-dom";
+import ApiInstance from "../../axios";
+import { toast } from "react-toastify";
+
 import {
   Container,
   Typography,
@@ -57,273 +61,84 @@ const theme = createTheme({
   },
 });
 
-const quizData = {
-  courseName: "ACC101",
-  courseTitle: "Accounting Principles",
-  quizId: "PT1",
-  quizName: "Practice Test 1",
-  questions: [
-    {
-      questionId: 1,
-      question: "Which is the largest continent by area?",
-      options: ["Africa", "Asia", "Europe", "North America"],
-      correctAnswer: "Asia",
-    },
-    {
-      questionId: 2,
-      question: "What is the longest river in the world?",
-      options: [
-        "Amazon River",
-        "Nile River",
-        "Yangtze River",
-        "Mississippi River",
-      ],
-      correctAnswer: "Nile River",
-    },
-    {
-      questionId: 3,
-      question: "Which country has the largest population?",
-      options: ["United States", "India", "China", "Indonesia"],
-      correctAnswer: "China",
-    },
-    {
-      questionId: 4,
-      question: "Which is the smallest country in the world by area?",
-      options: ["Monaco", "San Marino", "Liechtenstein", "Vatican City"],
-      correctAnswer: "Vatican City",
-    },
-    {
-      questionId: 5,
-      question: "Which country is the largest producer of coffee?",
-      options: ["Colombia", "Vietnam", "Ethiopia", "Brazil"],
-      correctAnswer: ["Brazil"],
-      multipleAnswers: true,
-    },
-    // New multiple-choice question
-    {
-      questionId: 11,
-      question: "What is the tallest mountain in the world?",
-      options: ["K2", "Kangchenjunga", "Lhotse", "Mount Everest"],
-      correctAnswer: "Mount Everest",
-    },
-    {
-      questionId: 12,
-      question: "What is the capital city of Canada?",
-      options: ["Toronto", "Vancouver", "Ottawa", "Montreal"],
-      correctAnswer: "Ottawa",
-    },
-    {
-      questionId: 13,
-      question: "Which is the largest island in the world?",
-      options: ["Borneo", "Greenland", "New Guinea", "Madagascar"],
-      correctAnswer: "Greenland",
-    },
-    {
-      questionId: 14,
-      question: "What is the longest wall in the world?",
-      options: [
-        "Berlin Wall",
-        "Great Wall of China",
-        "Hadrian's Wall",
-        "Western Wall",
-      ],
-      correctAnswer: "Great Wall of China",
-    },
-    {
-      questionId: 15,
-      question: "Which country has the largest number of lakes?",
-      options: ["Canada", "United States", "Finland", "Russia"],
-      correctAnswer: "Canada",
-    },
-    {
-      questionId: 16,
-      question: "Which is the largest ocean in the world?",
-      options: [
-        "Atlantic Ocean",
-        "Indian Ocean",
-        "Arctic Ocean",
-        "Pacific Ocean",
-      ],
-      correctAnswer: "Pacific Ocean",
-    },
-    {
-      questionId: 17,
-      question: "What is the largest country in the world by area?",
-      options: ["China", "Canada", "Russia", "United States"],
-      correctAnswer: "Russia",
-    },
-    {
-      questionId: 18,
-      question: "Which river flows through Paris?",
-      options: ["Seine", "Thames", "Danube", "Rhone"],
-      correctAnswer: "Seine",
-    },
-    {
-      questionId: 19,
-      question: "What is the smallest continent by area?",
-      options: ["Antarctica", "Europe", "Australia", "South America"],
-      correctAnswer: "Australia",
-    },
-    {
-      questionId: 20,
-      question: "Which is the most spoken language in the world?",
-      options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
-      correctAnswer: "Mandarin Chinese",
-    },
-    {
-      questionId: 21,
-      question: "What is the currency of Japan?",
-      options: ["Yuan", "Won", "Yen", "Dollar"],
-      correctAnswer: "Yen",
-    },
-    {
-      questionId: 22,
-      question: "Which planet is known as the Red Planet?",
-      options: ["Venus", "Mars", "Jupiter", "Saturn"],
-      correctAnswer: "Mars",
-    },
-    {
-      questionId: 23,
-      question: "What is the largest mammal in the world?",
-      options: [
-        "African Elephant",
-        "Blue Whale",
-        "Giraffe",
-        "White Rhinoceros",
-      ],
-      correctAnswer: "Blue Whale",
-    },
-    {
-      questionId: 24,
-      question: "Which country is famous for the Eiffel Tower?",
-      options: ["Germany", "Italy", "Spain", "France"],
-      correctAnswer: "France",
-    },
-    {
-      questionId: 25,
-      question: "What is the hottest planet in the solar system?",
-      options: ["Mercury", "Venus", "Earth", "Mars"],
-      correctAnswer: "Venus",
-    },
-    {
-      questionId: 26,
-      question: "Which is the most populated city in the world?",
-      options: ["New York", "Shanghai", "Tokyo", "Mumbai"],
-      correctAnswer: "Tokyo",
-    },
-    {
-      questionId: 27,
-      question: "What is the official language of Egypt?",
-      options: ["English", "French", "Arabic", "Spanish"],
-      correctAnswer: "Arabic",
-    },
-    {
-      questionId: 28,
-      question: "Which country is known as the Land of the Midnight Sun?",
-      options: ["Sweden", "Norway", "Finland", "Denmark"],
-      correctAnswer: "Norway",
-    },
-    {
-      questionId: 29,
-      question: "What is the largest rainforest in the world?",
-      options: [
-        "Congo Rainforest",
-        "Amazon Rainforest",
-        "Daintree Rainforest",
-        "Valdivian Rainforest",
-      ],
-      correctAnswer: "Amazon Rainforest",
-    },
-    {
-      questionId: 30,
-      question: "Which is the smallest planet in our solar system?",
-      options: ["Mercury", "Venus", "Earth", "Mars"],
-      correctAnswer: "Mercury",
-    },
-    {
-      questionId: 31,
-      question: "Which country has the most volcanoes?",
-      options: ["Indonesia", "Japan", "United States", "Philippines"],
-      correctAnswer: "Indonesia",
-    },
-    {
-      questionId: 32,
-      question: "What is the capital city of Brazil?",
-      options: ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"],
-      correctAnswer: "Brasília",
-    },
-    {
-      questionId: 33,
-      question: "Which country is known for the Great Barrier Reef?",
-      options: ["New Zealand", "Australia", "Indonesia", "Philippines"],
-      correctAnswer: "Australia",
-    },
-    {
-      questionId: 34,
-      question: "Which river is the longest in Africa?",
-      options: ["Congo River", "Zambezi River", "Niger River", "Nile River"],
-      correctAnswer: "Nile River",
-    },
-    {
-      questionId: 35,
-      question: "What is the currency of the United Kingdom?",
-      options: ["Euro", "Dollar", "Pound Sterling", "Yen"],
-      correctAnswer: "Pound Sterling",
-    },
-    {
-      questionId: 36,
-      question: "Which desert is the hottest in the world?",
-      options: [
-        "Gobi Desert",
-        "Sahara Desert",
-        "Arabian Desert",
-        "Mojave Desert",
-      ],
-      correctAnswer: "Sahara Desert",
-    },
-    {
-      questionId: 37,
-      question: "What is the capital city of Italy?",
-      options: ["Rome", "Venice", "Florence", "Milan"],
-      correctAnswer: "Rome",
-    },
-    {
-      questionId: 38,
-      question: "Select countries in North America:",
-      options: ["Brazil", "Canada", "Argentina", "Australia"],
-      correctAnswer: "Canada",
-    },
-    {
-      questionId: 39,
-      question: "Select two countries in South America:",
-      options: ["Brazil", "Canada", "Argentina", "Australia"],
-      correctAnswer: ["Brazil", "Argentina"],
-      multipleAnswers: true,
-    },
-
-    // New multiple-choice question
-    {
-      questionId: 40,
-      question: "Select two programming languages:",
-      options: ["Python", "HTML", "JavaScript", "CSS"],
-      correctAnswer: ["Python", "JavaScript"],
-      multipleAnswers: true,
-    },
-  ],
-};
-
 const StudentDoQuiz = () => {
+  const { quizId, quizResultId } = useParams();
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(0);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
+  const [quizData, setQuizData] = useState({ questions: [] });
+  const [autoSaveInterval, setAutoSaveInterval] = useState(null);
+  const status = new URLSearchParams(window.location.search).get("status");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+      setConfirmSubmit(true);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, null, window.location.href);
+    };
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    ApiInstance.get(`/quiz/${quizId}/question-answers`)
+      .then((response) => {
+        setQuizData(response.data.data);
+        setTimeLeft(response?.data?.data?.timeLimitMinutes * 60);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [quizId]);
+
+  useEffect(() => {
+    ApiInstance.get(`/student-quiz-result/${quizResultId}`)
+      .then((response) => {
+        if (status === "continue") {
+          const formattedAnswers = response.data.data.answers.reduce(
+            (acc, curr) => {
+              acc[curr.questionId] = curr.answerOptionIds;
+              return acc;
+            },
+            {}
+          );
+          setAnswers(formattedAnswers);
+          if (response.data.data.timeLeft > 0) {
+            setTimeLeft(response.data.data.timeLeft);
+          } else {
+            setTimeLeft(quizData.timeLimitMinutes * 60);
+          }
+        } else {
+          setTimeLeft(quizData.timeLimitMinutes * 60);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [quizResultId]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (!submitted) {
         setTimeLeft((prevTime) => {
           if (prevTime > 0) {
+            console.log("data", prevTime % 30 === 0);
+            if (prevTime % 10 === 0) {
+              // sau 10s
+              handleAutoSave();
+            }
             return prevTime - 1;
           } else {
             handleConfirmSubmit(); // Tự động nộp bài khi hết thời gian
@@ -335,12 +150,26 @@ const StudentDoQuiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [submitted]);
+  }, [submitted, timeLeft]);
+
+  const handleAutoSave = async () => {
+    try {
+      const body = {
+        quizResultId,
+        answers,
+        timeLeft,
+      };
+      await ApiInstance.post(`/quiz/${quizId}/auto-save-answers`, body);
+    } catch (error) {
+      console.error("Error saving answers:", error);
+    }
+  };
 
   const handleChange = (questionId, value, isMultiple = false) => {
     setAnswers((prevAnswers) => {
       if (isMultiple) {
         const currentAnswers = prevAnswers[questionId] || [];
+        console.log("currentAnswers", currentAnswers);
         const newAnswers = currentAnswers.includes(value)
           ? currentAnswers.filter((answer) => answer !== value)
           : [...currentAnswers, value];
@@ -368,16 +197,28 @@ const StudentDoQuiz = () => {
   };
 
   const handleFinish = () => {
-    if (currentQuestion === quizData.questions.length - 1) {
-      setSubmitted(true);
-    } else {
-      setConfirmSubmit(true);
-    }
+    // if (Object.keys(answers).length === quizData.questions.length) {
+    //   setSubmitted(true);
+    // } else {
+    //   setConfirmSubmit(true);
+    // }
+
+    setConfirmSubmit(true);
   };
 
-  const handleConfirmSubmit = () => {
-    setSubmitted(true);
-    setConfirmSubmit(false);
+  const handleConfirmSubmit = async () => {
+    const body = {
+      quizResultId,
+      answers,
+    };
+    try {
+      await ApiInstance.post(`/quiz/${quizId}/submit`, body);
+      setSubmitted(true);
+      setConfirmSubmit(false);
+      navigate(`/student/quiz-detail/${quizId}`);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
   };
 
   const handleCancelSubmit = () => {
@@ -394,10 +235,10 @@ const StudentDoQuiz = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box className="student-do-quiz">
-        <MenuComponent role="student" />
+        {/* <MenuComponent role="student" /> */}
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={8}>
+            <Grid item xs={10}>
               <Card className="do-quiz-header">
                 <CardContent>
                   <Typography
@@ -405,8 +246,7 @@ const StudentDoQuiz = () => {
                     align="center"
                     className="do-quiz-title"
                   >
-                    {quizData.courseName} {quizData.courseTitle} -{" "}
-                    {quizData.quizName}
+                    {quizData?.name}
                   </Typography>
                 </CardContent>
               </Card>
@@ -419,75 +259,88 @@ const StudentDoQuiz = () => {
                     Question {currentQuestion + 1}
                   </Typography>
                   <Typography variant="body1" className="do-quiz-question-text">
-                    {quizData.questions[currentQuestion]?.question}
+                    {quizData?.questions[currentQuestion]?.text}
                   </Typography>
                   <FormControl
                     component="fieldset"
                     className="do-quiz-options-form"
                   >
-                    {quizData.questions[currentQuestion]?.multipleAnswers ? (
+                    {quizData?.questions[currentQuestion]?.type ===
+                    "multiple_choice" ? (
                       <FormLabel component="legend">Choose multiple:</FormLabel>
                     ) : (
                       <FormLabel component="legend">Choose one:</FormLabel>
                     )}
-                    {quizData.questions[currentQuestion]?.multipleAnswers ? (
-                      quizData.questions[currentQuestion]?.options.map(
-                        (option, index) => (
+                    {quizData?.questions[currentQuestion]?.type ===
+                      "multiple_choice" && (
+                      <FormLabel
+                        component="legend"
+                        className="multiple-choice-instructions"
+                      >
+                        Choose{" "}
+                        {
+                          quizData?.questions[
+                            currentQuestion
+                          ]?.answerOptions.filter((a) => a.isCorrect === true)
+                            ?.length
+                        }{" "}
+                        options
+                      </FormLabel>
+                    )}
+                    {quizData?.questions[currentQuestion]?.type ===
+                    "multiple_choice" ? (
+                      quizData.questions[currentQuestion]?.answerOptions?.map(
+                        (option) => (
                           <FormControlLabel
-                            key={index}
+                            key={option.id}
                             control={
                               <Checkbox
                                 checked={
                                   answers[
-                                    quizData.questions[currentQuestion]
-                                      ?.questionId
-                                  ]?.includes(option) || false
+                                    quizData.questions[currentQuestion]?.id
+                                  ]?.includes(option.id) || false
                                 }
                                 onChange={(e) =>
                                   handleChange(
-                                    quizData.questions[currentQuestion]
-                                      ?.questionId,
-                                    option,
+                                    quizData.questions[currentQuestion]?.id,
+                                    option.id,
                                     true
                                   )
                                 }
                               />
                             }
-                            label={option}
+                            label={option.optionText}
                             className="option"
                           />
                         )
                       )
                     ) : (
                       <RadioGroup
-                        name={`question_${quizData.questions[currentQuestion]?.questionId}`}
+                        name={`question_${quizData.questions[currentQuestion]?.id}`}
                         value={
-                          answers[
-                            quizData.questions[currentQuestion]?.questionId
-                          ] || ""
+                          answers[quizData.questions[currentQuestion]?.id] || ""
                         }
                         onChange={(e) =>
                           handleChange(
-                            quizData.questions[currentQuestion]?.questionId,
+                            quizData.questions[currentQuestion]?.id,
                             e.target.value
                           )
                         }
                       >
-                        {quizData.questions[currentQuestion]?.options.map(
-                          (option, index) => (
-                            <FormControlLabel
-                              key={index}
-                              value={option}
-                              control={<Radio />}
-                              label={option}
-                              className="option"
-                            />
-                          )
-                        )}
+                        {quizData.questions[
+                          currentQuestion
+                        ]?.answerOptions?.map((option) => (
+                          <FormControlLabel
+                            key={option.id}
+                            value={option.id}
+                            control={<Radio />}
+                            label={option.optionText}
+                            className="option"
+                          />
+                        ))}
                       </RadioGroup>
                     )}
                   </FormControl>
-
                   <Box mt={2} className="do-quiz-navigation-buttons">
                     <Button
                       onClick={handlePrevious}
@@ -515,17 +368,15 @@ const StudentDoQuiz = () => {
                   <Box className="do-quiz-navigation">
                     {quizData.questions.map((question, index) => (
                       <Button
-                        key={question.questionId}
+                        key={question.id}
                         variant={
-                          answers[question.questionId]
-                            ? "contained"
-                            : "outlined"
+                          answers[question.id] ? "contained" : "outlined"
                         }
                         onClick={() => setCurrentQuestion(index)}
                         color="primary"
                         className="do-quiz-navigation-button"
                       >
-                        {question.questionId}
+                        {index + 1}
                       </Button>
                     ))}
                   </Box>
@@ -540,9 +391,7 @@ const StudentDoQuiz = () => {
                   <Typography variant="h6" mt={2}>
                     Time Remaining:{" "}
                     <span
-                      className={`timer ${
-                        timeLeft <= 5 * 60 ? "timer-red" : ""
-                      }`}
+                      className={`timer ${timeLeft <= 300 ? "timer-red" : ""}`}
                     >
                       {formatTime(timeLeft)}
                     </span>
@@ -557,20 +406,14 @@ const StudentDoQuiz = () => {
       <Dialog open={confirmSubmit} onClose={handleCancelSubmit}>
         <DialogTitle>Confirm Submit</DialogTitle>
         <DialogContent>
-          <Typography>
-            {/* You have not completed all questions. Are you sure you want to
-            submit? */}
-            Mày đã làm hết đâu mà đòi nộp bài, Ken xồ ra mà làm tiếp đi còn gì
-          </Typography>
+          <Typography>Are you sure you want to submit the quiz?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelSubmit} color="primary">
-            {/* Cancel */}
-            Ken xồ
+            Cancel
           </Button>
           <Button onClick={handleConfirmSubmit} color="primary">
-            {/* Submit Anyway */}
-            Vẫn Nộp = Ngu
+            Submit Anyway
           </Button>
         </DialogActions>
       </Dialog>

@@ -6,6 +6,7 @@ import {
   RemoveRedEye as ViewIcon,
 } from "@mui/icons-material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { formatDate } from "../../commons/function";
 import {
   Avatar,
   Box,
@@ -28,11 +29,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import BackButton from "../../components/BackButton/BackButton";
+
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
-// import MenuComponent from "../../components/LeftMenu/Menu";
 import { useNavigate } from "react-router-dom";
 import "./styles/TeacherCourseDetail.css";
 
@@ -87,6 +89,7 @@ const TeacherCourseDetailPage = () => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const { courseId } = useParams();
   let navigate = useNavigate();
+  const teacherId = JSON.parse(localStorage.getItem("user")).id;
 
   const [newQuiz, setNewQuiz] = useState({
     name: "",
@@ -101,14 +104,18 @@ const TeacherCourseDetailPage = () => {
     showAnswer: false,
   });
   const [showCreateQuizDialog, setShowCreateQuizDialog] = useState(false);
-
+  console.log("courseId", courseId);
   useEffect(() => {
-    ApiInstance.get(`/course/${courseId}`)
+    ApiInstance.get(`/course/${courseId}?teacherId=${teacherId}`)
       .then((response) => {
-        setCourse(response.data.data);
+        const courseData = response.data.data;
+        setCourse(courseData);
+        if (courseData?.classes.length > 0) {
+          setSelectedClassId(courseData?.classes[0].id);
+        }
       })
       .catch((error) => {
-        console.error("Error fetching course data:", error);
+        console.error("Error fetching data:", error);
       });
   }, [courseId]);
 
@@ -147,11 +154,15 @@ const TeacherCourseDetailPage = () => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        await ApiInstance.post(`/import-student/${selectedClassId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await ApiInstance.post(
+          `/teacher/import-student/${selectedClassId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         ApiInstance.get(`/student/${selectedClassId}`)
           .then((response) => {
             setStudents(response.data.data);
@@ -161,8 +172,33 @@ const TeacherCourseDetailPage = () => {
             console.error("Error fetching student data:", error);
           });
       } catch (error) {
+        toast.error(error.response.data.error);
+
         console.error("Error importing students:", error);
       }
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      const response = await ApiInstance.post(
+        `/teacher/export-students/${selectedClassId}`,
+        {},
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "DanhSachSinhVien.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error("Error exporting data:", error);
     }
   };
 
@@ -204,6 +240,7 @@ const TeacherCourseDetailPage = () => {
       score: 10,
       showAnswer: false,
     });
+    console.log("newQuiz", selectedClassId);
   };
 
   const handleViewQuiz = (quiz) => {
@@ -219,8 +256,8 @@ const TeacherCourseDetailPage = () => {
       endDate: new Date(quiz.endDate),
       classId: selectedClassId,
       isLimitedAttempts: quiz.isLimitedAttempts,
-      maxAttempts: quiz.maxAttempts,
-      timeLimitMinutes: quiz.timeLimitMinutes,
+      maxAttempts: Number(quiz?.maxAttempts || 0),
+      timeLimitMinutes: Number(quiz.timeLimitMinutes),
       score: quiz.score,
       showAnswer: quiz.showAnswer,
     });
@@ -229,13 +266,7 @@ const TeacherCourseDetailPage = () => {
 
   const handleDeleteQuiz = async (quizId) => {
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      await ApiInstance.delete(`/quiz/${quizId}`, config);
+      await ApiInstance.delete(`/quiz/${quizId}`);
       fetchData();
       toast.success("Quiz deleted successfully");
     } catch (error) {
@@ -254,40 +285,42 @@ const TeacherCourseDetailPage = () => {
   const handleQuizFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
       if (selectedQuiz) {
         // Update existing quiz
-        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz, config);
+        await ApiInstance.put(`/quiz/${selectedQuiz.id}`, newQuiz);
         toast.success("Quiz updated successfully");
       } else {
         // Create new quiz
-        await ApiInstance.post(
-          `/quiz/create`,
-          { ...newQuiz, classId: selectedClassId },
-          config
-        );
+        await ApiInstance.post(`/quiz/create`, {
+          ...newQuiz,
+          classId: selectedClassId,
+        });
         toast.success("Quiz created successfully");
       }
 
       fetchData();
       handleCloseCreateQuizDialog();
     } catch (error) {
-      toast.error(error.response.data.error);
-      console.error("Error submitting quiz form:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.status === "failed"
+      ) {
+        const { details } = error.response.data.error;
+        details.forEach((detail) => {
+          toast.error(detail.message);
+        });
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
   return (
     <Box className="teacher-course-detail-page">
-      {/* <MenuComponent role="teacher" /> */}
       <div className="content">
-        <button className="back-button" onClick={() => navigate(-1)}></button>
+        <BackButton />
+
         <div className="class-select">
           <Typography variant="h4" gutterBottom>
             {course ? course.name : "Loading..."}
@@ -373,22 +406,31 @@ const TeacherCourseDetailPage = () => {
                     >
                       {quiz.showAnswer ? "True" : "False"}
                     </TableCell>{" "}
-                    <TableCell>{quiz?.status}</TableCell>
+                    <TableCell
+                      style={{
+                        color: quiz?.status === "submitted" ? "green" : "red",
+                      }}
+                    >
+                      {quiz?.status}
+                    </TableCell>
                     <TableCell id="action-button">
-                      <IconButton
+                      <Button
                         className="icon-button"
                         onClick={() => handleViewQuiz(quiz)}
+                        style={{ color: "blue", backgroundColor: "#d1ebe3" }}
                       >
-                        <ViewIcon />
-                      </IconButton>
+                        Q&A
+                      </Button>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleEditQuiz(quiz)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         className="icon-button"
+                        disabled={quiz?.isTaken}
                         onClick={() => handleDeleteQuiz(quiz.id)}
                       >
                         <DeleteIcon />
@@ -441,11 +483,7 @@ const TeacherCourseDetailPage = () => {
               <TextField
                 label="Start Date"
                 type="datetime-local"
-                value={
-                  newQuiz.startDate
-                    ? newQuiz.startDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.startDate ? formatDate(newQuiz.startDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
@@ -453,21 +491,23 @@ const TeacherCourseDetailPage = () => {
                   })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
               <TextField
                 label="End Date"
                 type="datetime-local"
-                value={
-                  newQuiz.endDate
-                    ? newQuiz.endDate.toISOString().slice(0, -1)
-                    : ""
-                }
+                value={newQuiz.endDate ? formatDate(newQuiz.endDate) : ""}
                 onChange={(e) =>
                   setNewQuiz({ ...newQuiz, endDate: new Date(e.target.value) })
                 }
                 fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 margin="normal"
                 required
               />
@@ -478,28 +518,14 @@ const TeacherCourseDetailPage = () => {
                 onChange={(e) =>
                   setNewQuiz({
                     ...newQuiz,
-                    timeLimitMinutes: parseInt(e.target.value),
+                    timeLimitMinutes: e.target.value,
                   })
                 }
                 fullWidth
                 margin="normal"
                 required
               />
-              <TextField
-                label="Score"
-                type="number"
-                value={newQuiz.score}
-                onChange={(e) =>
-                  setNewQuiz({ ...newQuiz, score: parseInt(e.target.value) })
-                }
-                select
-                fullWidth
-                margin="normal"
-                required
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-              </TextField>
+
               <div>
                 <Typography variant="subtitle1">Limit Attempts:</Typography>
                 <Switch
@@ -516,12 +542,12 @@ const TeacherCourseDetailPage = () => {
               {newQuiz.isLimitedAttempts && (
                 <TextField
                   label="Max Attempts"
-                  type="number"
-                  value={newQuiz.maxAttempts}
+                  type="text"
+                  value={newQuiz?.maxAttempts}
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      maxAttempts: parseInt(e.target.value),
+                      maxAttempts: e.target.value.replace(/\D/g, ""),
                     })
                   }
                   fullWidth
@@ -564,6 +590,19 @@ const TeacherCourseDetailPage = () => {
             >
               Import Students
               <input type="file" hidden onChange={handleImportStudents} />
+            </Button>
+
+            <Button
+              sx={{
+                width: "150px",
+                height: "40px",
+                marginLeft: "10px",
+              }}
+              variant="contained"
+              color="primary"
+              onClick={handleExportData}
+            >
+              Export Data
             </Button>
             <Table>
               <TableHead>

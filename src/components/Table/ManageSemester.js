@@ -22,8 +22,8 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import ApiInstance from "../../axios";
 import { formatDateDay } from "../../commons/function";
-import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
-import PostAddIcon from '@mui/icons-material/PostAdd';
+import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import "./ManagerCss/ManagerSemester.css";
 
 const validationSchema = Yup.object().shape({
@@ -93,7 +93,6 @@ const ManageSemesterTable = () => {
   const handleActiveChange = async (semester) => {
     try {
       await ApiInstance.put(`/semester/${semester.id}`, {
-        
         isActive: !semester.isActive,
       });
       toast.success("Change semester active status successfully");
@@ -102,7 +101,7 @@ const ManageSemesterTable = () => {
       toast.error(error.response.data.error);
       console.error("Error changing semester active status:", error);
     }
-  }
+  };
 
   return (
     <Box>
@@ -112,8 +111,8 @@ const ManageSemesterTable = () => {
             width: "30px",
             height: "30px",
             backgroundColor: "#229342",
-            '&:hover': {
-              backgroundColor: '#1e7b36',
+            "&:hover": {
+              backgroundColor: "#1e7b36",
             },
           }}
           variant="contained"
@@ -129,7 +128,7 @@ const ManageSemesterTable = () => {
         sx={{
           height: "540px",
           width: "1200px",
-          marginLeft: "270px"
+          marginLeft: "270px",
         }}
       >
         <Table stickyHeader>
@@ -188,26 +187,29 @@ const ManageSemesterTable = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDelete} autoFocus
+          <Button
+            onClick={handleDelete}
+            autoFocus
             sx={{
               color: "white",
               backgroundColor: "#E00201",
-              '&:hover': {
-                backgroundColor: '#c70404',
+              "&:hover": {
+                backgroundColor: "#c70404",
               },
             }}
           >
             Confirm
           </Button>
-          <Button onClick={() => setConfirmationOpen(false)} 
-              sx={{
-                color: "white",
-                backgroundColor: "#6C757D",
-                '&:hover': {
-                  backgroundColor: '#5a6268',
-                },
-              }}
-            >
+          <Button
+            onClick={() => setConfirmationOpen(false)}
+            sx={{
+              color: "white",
+              backgroundColor: "#6C757D",
+              "&:hover": {
+                backgroundColor: "#5a6268",
+              },
+            }}
+          >
             Cancel
           </Button>
         </DialogActions>
@@ -220,7 +222,8 @@ const ManageSemesterTable = () => {
               color: "white",
               textAlign: "center",
               fontSize: "30px",
-            }}>
+            }}
+          >
             Create Semester
           </DialogTitle>
           <DialogContent
@@ -244,7 +247,6 @@ const ManageSemesterTable = () => {
                         name="name"
                         as={TextField}
                         label="Semester Name"
-                        required
                         value={values.name}
                         margin="normal"
                         fullWidth
@@ -256,7 +258,6 @@ const ManageSemesterTable = () => {
                       <TextField
                         type="date"
                         label="Start Date"
-                        required
                         value={values.startDate}
                         onChange={(event) =>
                           setFieldValue("startDate", event.target.value)
@@ -264,15 +265,14 @@ const ManageSemesterTable = () => {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        error={!!errors.startDate}
-                        helperText={errors.startDate}
+                        error={touched.startDate && !!errors.startDate}
+                        helperText={touched.startDate && errors.startDate}
                       />
                     </div>
                     <div className="inputField">
                       <TextField
                         type="date"
                         label="End Date"
-                        required
                         value={values.endDate}
                         onChange={(event) => {
                           setFieldValue("endDate", event.target.value);
@@ -288,25 +288,29 @@ const ManageSemesterTable = () => {
                         helperText={touched.endDate && errors.endDate}
                       />
                     </div>
-                    <DialogActions >
+                    <DialogActions>
                       <div className="handleSubmit">
-                        <Button type="submit" sx={{
-                          backgroundColor: "#229342",
-                          color: "white",
-                          '&:hover': {
-                            backgroundColor: '#1e7b36',
-                          },
-                        }}>
+                        <Button
+                          type="submit"
+                          sx={{
+                            backgroundColor: "#229342",
+                            color: "white",
+                            "&:hover": {
+                              backgroundColor: "#1e7b36",
+                            },
+                          }}
+                        >
                           Save
                         </Button>
                       </div>
                       <div className="handleCancel">
-                        <Button onClick={handleClose}
+                        <Button
+                          onClick={handleClose}
                           sx={{
                             backgroundColor: "#f44336",
                             color: "white",
-                            '&:hover': {
-                              backgroundColor: '#d32f2f',
+                            "&:hover": {
+                              backgroundColor: "#d32f2f",
                             },
                           }}
                         >
