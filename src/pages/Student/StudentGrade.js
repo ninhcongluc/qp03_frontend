@@ -76,6 +76,9 @@ const StudentGrade = () => {
                     Course Name
                   </TableCell>
                   <TableCell className="student-grade-table-cell">
+                    Quiz Name
+                  </TableCell>
+                  <TableCell className="student-grade-table-cell">
                     Lecture
                   </TableCell>
                   <TableCell className="student-grade-table-cell">
@@ -98,13 +101,16 @@ const StudentGrade = () => {
                         {(page - 1) * gradesPerPage + index + 1}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
-                        {grade.courseName}
+                        {grade?.courseName}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
-                        {grade.lecture}
+                        {grade?.quizName}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
-                        {grade.score.toFixed(2)}
+                        {grade?.lecture}
+                      </TableCell>
+                      <TableCell className="student-grade-table-cell">
+                        {grade?.score.toFixed(2)}
                       </TableCell>
                       <TableCell className="student-grade-table-cell">
                         <Button

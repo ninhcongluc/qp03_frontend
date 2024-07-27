@@ -156,7 +156,10 @@ const TeacherCourseListPage = () => {
                 </div>
                 <p>{course.description}</p>
                 <p>Semester: {course?.semester.name}</p>
-                <p>Created by: {course.createdBy}</p>
+                <p>
+                  Created by: {course?.manager.firstName}{" "}
+                  {course?.manager.lastName}
+                </p>
               </div>
             </Grid>
           ))}
