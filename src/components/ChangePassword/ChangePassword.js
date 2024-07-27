@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { TextField, Button, IconButton, InputAdornment } from "@material-ui/core";
+import {
+  TextField,
+  Button,
+  IconButton,
+  InputAdornment,
+} from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,8 +13,10 @@ import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
+import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ChangePassword.css";
+import ApiInstance from "../../axios";
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
@@ -30,7 +37,7 @@ function ChangePassword() {
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
   };
-  const id = new URLSearchParams(window.location.search).get("userId");
+  const { userId } = useParams();
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
@@ -39,21 +46,27 @@ function ChangePassword() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/user/change-password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: id, oldPassword, newPassword, confirmPassword }),
+      await ApiInstance.put("/user/change-password", {
+        userId,
+        oldPassword,
+        newPassword,
+        confirmPassword,
       });
-
-      if (response.ok) {
-        toast.success('Password has been change successfully.');
-      } else {
-        toast.error('Failed to change password.');
-      }
+      toast.success("Password has been change successfully.");
+      setIsModalOpen(false);
     } catch (error) {
-      console.error('Error changing password:', error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.status === "failed"
+      ) {
+        const { details } = error.response.data.error;
+        details.forEach((detail) => {
+          toast.error(detail.message);
+        });
+      } else {
+        toast.error(error.response.data.error);
+      }
     }
   };
 
@@ -67,33 +80,36 @@ function ChangePassword() {
 
   return (
     <div className="change-password-container">
-      <Button style={{color:'white'}}onClick={() => setIsModalOpen(true)}>
-       Change Password
+      <Button style={{ color: "white" }} onClick={() => setIsModalOpen(true)}>
+        Change Password
       </Button>
       <Modal
         aria-labelledby="modal-title"
         aria-describedby="modal-desc"
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
         <Sheet
           variant="outlined"
           sx={{
             maxWidth: 500,
-            borderRadius: 'md',
+            borderRadius: "md",
             p: 3,
-            boxShadow: 'lg',
+            boxShadow: "lg",
           }}
         >
-          <ModalClose className="Close-button" variant="plain" onClick={() => setIsModalOpen(false)} />
+          <ModalClose
+            className="Close-button"
+            variant="plain"
+            onClick={() => setIsModalOpen(false)}
+          />
           <Typography
             component="h2"
             id="modal-title"
             level="h4"
             textColor="inherit"
             fontWeight="lg"
-            
           >
             Change Password
           </Typography>
@@ -148,10 +164,15 @@ function ChangePassword() {
           <Button
             variant="contained"
             onClick={handleChangePassword}
-           style={{marginLeft:'80%', width: '20%', backgroundColor: 'Highlight', color:'white'}}
+            style={{
+              marginLeft: "80%",
+              width: "20%",
+              backgroundColor: "Highlight",
+              color: "white",
+            }}
           >
-            Save       
-            </Button>
+            Save
+          </Button>
         </Sheet>
       </Modal>
     </div>

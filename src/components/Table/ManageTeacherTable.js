@@ -217,6 +217,7 @@ const ManageTeacherTable = () => {
   const handleImportTeacher = async (event) => {
     // Add logic to import manager accounts
     const fileInput = event.target.files[0];
+    console.log("🚀 ~ handleImportTeacher ~ fileInput:", fileInput);
     if (fileInput) {
       const formData = new FormData();
       formData.append("file", fileInput);
