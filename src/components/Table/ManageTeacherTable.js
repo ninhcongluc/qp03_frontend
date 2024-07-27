@@ -195,7 +195,6 @@ const ManageTeacherTable = () => {
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(error.response.data.error);
-        setOpen(false);
       } else {
         toast.error("Update teacher account is failed");
       }
@@ -263,6 +262,13 @@ const ManageTeacherTable = () => {
   const handleActiveChange = async (account) => {
     try {
       await ApiInstance.put(`/teacher/${account.id}`, {
+        firstName: account.firstName,
+        lastName: account.lastName,
+        code: account.code,
+        email: account.email,
+        dateOfBirth: account.dateOfBirth,
+        phoneNumber: account.phoneNumber,
+        gender: account.gender,
         isActive: !account.isActive,
       });
       toast.success("Change user active status successfully");
@@ -500,30 +506,25 @@ const ManageTeacherTable = () => {
             : "Edit Teacher Account"}
         </DialogTitle>
         <DialogContent>
-          {viewMode && (
-            <>
-              <TextField
-                name="code"
-                label="Code"
-                value={formData.code}
-                onChange={handleFormChange}
-                margin="normal"
-                fullWidth
-                disabled={viewMode}
-              />
-              <TextField
-                name="email"
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                margin="normal"
-                fullWidth
-                disabled={viewMode}
-              />
-            </>
-          )}
-
+          <TextField
+            name="code"
+            label="Code"
+            value={formData.code}
+            onChange={handleFormChange}
+            margin="normal"
+            fullWidth
+            disabled={viewMode}
+          />
+          <TextField
+            name="email"
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={handleFormChange}
+            margin="normal"
+            fullWidth
+            disabled={viewMode}
+          />
           <TextField
             name="firstName"
             label="First Name"

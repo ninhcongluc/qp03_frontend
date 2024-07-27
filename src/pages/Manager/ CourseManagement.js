@@ -142,6 +142,7 @@ const CourseManagementPage = () => {
     } catch (error) {
       toast.error(error.response.data.error);
       console.error("Error deleting course:", error);
+      setIsOpenDelete(false);
     }
   };
 
@@ -230,7 +231,6 @@ const CourseManagementPage = () => {
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(error.response.data.error);
-        setIsEditModalOpen(false);
       } else {
         toast.error("Update teacher account is failed");
       }
