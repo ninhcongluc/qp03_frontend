@@ -19,6 +19,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ApiInstance from "../../axios";
 
 const ManagerAccountTable = () => {
@@ -89,7 +92,7 @@ const ManagerAccountTable = () => {
   };
 
   const handleViewAccount = (account) => {
-    setSelectedAccount(account);
+    setSelectedAccount("view");
     setFormData({
       firstName: account.firstName,
       lastName: account.lastName,
@@ -248,30 +251,32 @@ const ManagerAccountTable = () => {
                 <TableCell>
                   <Button
                     variant="contained"
-                    color="warning"
+                    color="primary"
                     size="small"
                     onClick={() => handleViewAccount(account)}
-                    style={{ marginRight: "8px", width: "70px" }}
+                    style={{ marginRight: "8px", width: "50px" }}
                   >
-                    View
+                    <RemoveRedEyeIcon />
                   </Button>
                   <Button
                     variant="contained"
                     color="secondary"
                     size="small"
                     onClick={() => handleEditAccount(account)}
-                    style={{ marginRight: "8px", width: "70px" }}
+                    style={{ marginRight: "8px",
+                    width: "50px",
+                    backgroundColor: "#fbd64f" }}
                   >
-                    Edit
+                    <EditIcon />
                   </Button>
                   <Button
                     variant="contained"
                     color="error"
                     size="small"
                     onClick={() => handleDeleteAccount(account)}
-                    style={{ width: "70px" }}
+                    style={{ width: "40px" }}
                   >
-                    Delete
+                    <DeleteIcon />
                   </Button>
                 </TableCell>
               </TableRow>

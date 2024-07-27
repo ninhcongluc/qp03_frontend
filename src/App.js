@@ -36,7 +36,7 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
 
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
