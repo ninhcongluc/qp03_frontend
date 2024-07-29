@@ -30,6 +30,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import StudentGrade from "./pages/Student/StudentGrade";
 import TeacherGrade from "./pages/Teacher/TeacherGrade";
+import Calendar from "./pages/Calender";
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
         />
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
+        <Route path="/teacher/calendar" element={<Calendar />} />
 
         <Route
           path="/teacher/quiz/:quizId/question-list"
