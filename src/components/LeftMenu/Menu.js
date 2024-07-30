@@ -84,6 +84,11 @@ const MenuComponent = ({ role }) => {
         text: "Grades",
         icon: <PortraitIcon />,
         onClick: () => navigate("/teacher/teacher-grade")
+      },
+      {
+        text: "Question Bank",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/teacher/question-bank")
       }
     ],
     student: [
