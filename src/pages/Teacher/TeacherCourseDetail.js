@@ -316,6 +316,10 @@ const TeacherCourseDetailPage = () => {
     }
   };
 
+  const handleViewQuizDetails = (quiz) => {
+    navigate(`/teacher/quiz-detail/${quiz.id}`);
+  };
+
   return (
     <Box className="teacher-course-detail-page">
       <div className="content">
@@ -345,7 +349,7 @@ const TeacherCourseDetailPage = () => {
 
         <div className="quiz-management">
           <Typography variant="h4" gutterBottom>
-            Quiz Management
+            Quiz List
           </Typography>
           <div className="button-group">
             <Button
@@ -413,29 +417,42 @@ const TeacherCourseDetailPage = () => {
                     >
                       {quiz?.status}
                     </TableCell>
-                    <TableCell id="action-button">
-                      <Button
-                        className="icon-button"
-                        onClick={() => handleViewQuiz(quiz)}
-                        style={{ color: "blue", backgroundColor: "#d1ebe3" }}
-                      >
-                        Q&A
-                      </Button>
-                      <IconButton
-                        className="icon-button"
-                        disabled={quiz?.isTaken}
-                        onClick={() => handleEditQuiz(quiz)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        className="icon-button"
-                        disabled={quiz?.isTaken}
-                        onClick={() => handleDeleteQuiz(quiz.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    {!quiz?.isTaken ? (
+                      <TableCell id="action-button">
+                        <Button
+                          className="icon-button"
+                          onClick={() => handleViewQuiz(quiz)}
+                          style={{ color: "blue", backgroundColor: "#d1ebe3" }}
+                        >
+                          Q&A
+                        </Button>
+                        <IconButton
+                          className="icon-button"
+                          disabled={quiz?.isTaken}
+                          onClick={() => handleEditQuiz(quiz)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          className="icon-button"
+                          disabled={quiz?.isTaken}
+                          onClick={() => handleDeleteQuiz(quiz.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+
+                    ) : (
+                      <TableCell id="action-button">
+                        <Button
+                          className="icon-button"
+                          onClick={() => handleViewQuizDetails(quiz)}
+                          style={{ color: "blue", backgroundColor: "#d1ebe3" }}
+                        >
+                          Review Quiz
+                        </Button>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -621,9 +638,8 @@ const TeacherCourseDetailPage = () => {
                     </TableCell>
                     <TableCell>{student.code}</TableCell>
                     <TableCell>{student.email}</TableCell>
-                    <TableCell>{`${student?.firstName || ""} ${
-                      student?.lastName || ""
-                    }`}</TableCell>
+                    <TableCell>{`${student?.firstName || ""} ${student?.lastName || ""
+                      }`}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

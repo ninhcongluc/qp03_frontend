@@ -95,7 +95,7 @@ const TeacherQuestionBank = () => {
 
     return (
         <div className="container" style={{ marginRight: "-270px" }}>
-            <MenuComponent />
+            <MenuComponent role="teacher"/>
             <Box>
                 <div className="header-page"
                     style={{

@@ -117,7 +117,7 @@ const teacherViewQuizDetails = () => {
 
     return (
         <div className="container" style={{ marginRight: "-230px" }}>
-            <MenuComponent />
+            <MenuComponent role="teacher"/>
             <Box>
                 <div className="header-page"
                     style={{
