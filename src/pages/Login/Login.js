@@ -1,7 +1,7 @@
 import { Button, Checkbox, TextField } from "@material-ui/core";
 import axios from "axios";
 import React, { useState } from "react";
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -49,15 +49,44 @@ function Login() {
         toast.success("Login successful");
       })
       .catch((error) => {
-        // Handle login error
-        console.error(error.response.data.error);
-        toast.error(error.response.data.error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.status === "failed"
+        ) {
+          const { details } = error.response.data.error;
+          details.forEach((detail) => {
+            toast.error(detail.message);
+          });
+        } else {
+          toast.error(error.response.data.error);
+        }
       });
   };
 
-  const responseGoogle = (response) => {
-     //window.open("http://localhost:8000/auth/google", "_self");
-    console.log(response);
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      // Send the Google credential to the backend
+      const response = await fetch("http://localhost:8000/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+
+      if (response.ok) {
+        const { token } = await response.json();
+        // Save the token to local storage
+        localStorage.setItem("authToken", token);
+        // Navigate to the home page
+        navigate("/home");
+      } else {
+        console.log("Login Failed");
+      }
+    } catch (error) {
+      console.error("Error during Google login:", error);
+    }
   };
 
   return (
@@ -74,7 +103,6 @@ function Login() {
           className="logo"
         />
         <h5>LOGIN</h5>
-
         <TextField
           label="Enter Email"
           value={email}
@@ -105,7 +133,6 @@ function Login() {
             </a>
           </div>
         </div>
-
         <Button
           variant="contained"
           style={{ backgroundColor: "#fc8b03", color: "#ffffff" }} // Custom colors
@@ -115,15 +142,13 @@ function Login() {
           Login
         </Button>
         <div class="or">OR </div>
-
         <GoogleLogin
-          clientId="136665406201-o3244ge21kai14aaehs4gtvrbo3vomih.apps.googleusercontent.com"
-          buttonText="Sign in with Google"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          cookiePolicy={"single_host_origin"}
-          style={{ borderRadius: "10%" }}
+          onSuccess={handleGoogleLogin}
+          onError={() => {
+            console.log("Login Failed");
+          }}
         />
+        ;
       </div>
     </div>
   );
