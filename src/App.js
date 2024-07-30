@@ -30,6 +30,8 @@ import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import StudentGrade from "./pages/Student/StudentGrade";
 import TeacherGrade from "./pages/Teacher/TeacherGrade";
+import TeacherView from "./pages/Teacher/TeacherViewQuizDetails";
+import TeacherQuestionBank from "./pages/Teacher/TeacherQuestionBank";
 
 function App() {
   return (
@@ -61,12 +63,16 @@ function App() {
           element={<TeacherCourseListPage />}
         />
         <Route path="/teacher/teacher-grade" element={<TeacherGrade />} />
+        
 
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route
           path="/teacher/course-management/:courseId"
           element={<TeacherCourseDetailPage />}
         />
+        <Route path = 'teacher/quiz-detail/:quizId' element = {<TeacherView />} />
+        <Route path = 'teacher/question-bank' element = {<TeacherQuestionBank />} />
+
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
 

@@ -88,6 +88,7 @@ const QuizQuestionsPage = () => {
       setQuestions([...questions, response.data]);
     }
     setShowCreateDialog(false);
+    console.log(newQuestion);
   };
 
   return (
