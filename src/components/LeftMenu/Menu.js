@@ -20,7 +20,11 @@ import "./Menu.css";
 
 const MenuComponent = ({ role }) => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ firstName: "", lastName: "", userId: "" });
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    userId: "",
+  });
 
   // call api to get user data
   useEffect(() => {
@@ -83,8 +87,14 @@ const MenuComponent = ({ role }) => {
       {
         text: "Grades",
         icon: <PortraitIcon />,
-        onClick: () => navigate("/teacher/teacher-grade")
-      }
+        onClick: () => navigate("/teacher/teacher-grade"),
+      },
+
+      {
+        text: "Calendar",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/teacher/calendar"),
+      },
     ],
     student: [
       {
@@ -97,9 +107,20 @@ const MenuComponent = ({ role }) => {
         icon: <PortraitIcon />,
         onClick: () => navigate("/student/grade"),
       },
+
+      {
+        text: "Student Rank",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/student/rank"),
+      },
+      {
+        text: "View Exam Schedule",
+        icon: <PortraitIcon />,
+        onClick: () => navigate("/student/viewSchedule"),
+      },
     ],
   };
-  
+
   return (
     <Drawer
       variant="permanent"
@@ -134,7 +155,7 @@ const MenuComponent = ({ role }) => {
           </Stack>
         </div>
 
-        {(menuItems[role])?.map((item) => (
+        {menuItems[role]?.map((item) => (
           <div className="itemList">
             <ListItem button onClick={item.onClick}>
               <ListItemIcon className="itemIcon">{item.icon}</ListItemIcon>

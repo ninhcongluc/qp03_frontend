@@ -26,10 +26,12 @@ import TeacherCourseDetailPage from "./pages/Teacher/TeacherCourseDetail";
 import QuizQuestionsPage from "./pages/Teacher/TeacherSetUpQA";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
+import Rank from "./pages/Student/Rank";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import StudentGrade from "./pages/Student/StudentGrade";
 import TeacherGrade from "./pages/Teacher/TeacherGrade";
+import Calendar from "./pages/Teacher/Calender";
+import ViewExamSchedule from "./pages/Student/ViewExamSchedule";
 
 function App() {
   return (
@@ -69,6 +71,7 @@ function App() {
         />
         <Route path="/teacher/quiz" element={<TeacherQuizListPage />} />
         <Route path="/teacher/quiz/:quizId" element={<QuizQuestionsPage />} />
+        <Route path="/teacher/calendar" element={<Calendar />} />
 
         <Route
           path="/teacher/quiz/:quizId/question-list"
@@ -77,13 +80,14 @@ function App() {
         <Route path="/changePass" element={<ChangePassword />} />
 
         <Route path="/student" element={<StudentPage />} />
+        <Route path="/student/rank" element={<Rank />} />
         <Route
           path="/student/course-management"
           element={<StudentCourseListPage />}
         />
 
         <Route path="/student/grade" element={<StudentGrade />} />
-
+        <Route path="/student/viewSchedule" element={<ViewExamSchedule />} />
         <Route
           path="/student/course-management/class/:classId"
           element={<StudentQuizPage />}

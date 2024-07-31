@@ -1,0 +1,67 @@
+/* styles.css */
+
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 120px;
+  }
+  
+  .fc-toolbar {
+    margin-bottom: 20px;
+  }
+  
+  .fc .fc-scrollgrid-liquid {
+    height: 100%;
+    width: 800px;
+  }
+  .fc-toolbar-chunk .fc-button-group {
+    width: 100px;
+  }
+  
+  .fc .fc-toolbar-title {
+    width: 250px;
+    height: 40px;
+    margin: 0px;
+    margin: auto 120px;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .fc .fc-button-primary:disabled {
+    background-color: var(--fc-button-bg-color);
+    border-color: var(--fc-button-border-color);
+    color: var(--fc-button-text-color);
+    margin-bottom: 5px;
+    width: 80px;
+  }
+  
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+    display: none;
+  }
+  
+  .popup.active {
+    display: block;
+  }
+  
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+  
+  .popup-overlay.active {
+    display: block;
+  }
