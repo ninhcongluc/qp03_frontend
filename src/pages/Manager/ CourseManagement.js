@@ -78,11 +78,8 @@ const CourseManagementPage = () => {
 
   const fetchSemesterData = async () => {
     try {
-      const response = await ApiInstance.get("/semester?isActive=true");
-      const newData = response.data.data.filter((semester) => {
-        return semester.isActive === true;
-      });
-      setSemesters(newData);
+      const response = await ApiInstance.get("/semester?isActive=");
+      setSemesters(response.data.data);
     } catch (error) {
       console.error("Error fetching semester information:", error);
     }
@@ -255,7 +252,7 @@ const CourseManagementPage = () => {
             textAlign: "center",
           }}
         >
-          Course Management
+          Course List
         </h1>
       </Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
@@ -332,7 +329,7 @@ const CourseManagementPage = () => {
               onClick={
                 course.isActive
                   ? () => handleCourseDetailClick(course.id)
-                  : () => {}
+                  : () => { }
               }
             >
               <div

@@ -1,129 +1,39 @@
-import React from "react";
 import MenuComponent from "../../components/LeftMenu/Menu";
-import {
-    Box,
-    Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import BackButton from "../../components/BackButton/BackButton";
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-    Cell,
-} from "recharts";
+import React, { useEffect, useState } from "react";
 
-const teacherViewQuizDetails = () => {
-    const quiz = {
-        name: "Quiz 1",
-        questions: [
-            {
-                id: 1, question: "What is 1 + 1?", type: "multiple_choice",
-                answer: [
-                    {
-                        text: "1",
-                        isCorrect: true
-                    },
-                    {
-                        text: "2",
-                        isCorrect: false
-                    },
-                    {
-                        text: "4",
-                        isCorrect: false
-                    },
-                    {
-                        text: "6",
-                        isCorrect: true
-                    },
-                ]
-            },
-            {
-                id: 2, question: "What is 2 + 3?", type: "select_one",
-                answer: [
-                    {
-                        text: "1",
-                        isCorrect: false
-                    },
-                    {
-                        text: "2",
-                        isCorrect: false
-                    },
-                    {
-                        text: "4",
-                        isCorrect: false
-                    },
-                    {
-                        text: "5",
-                        isCorrect: true
-                    },
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell } from "recharts";
+import ApiInstance from "../../axios";
+import { useParams } from "react-router-dom";
 
-                ]
-            },
-            {
-                id: 3, question: "What is 3 + 4?", type: "select_one",
-                answer: [{
-                    text: "1",
-                    isCorrect: false
-                },
-                {
-                    text: "2",
-                    isCorrect: false
-                },
-                {
-                    text: "4",
-                    isCorrect: false
-                },
-                {
-                    text: "7",
-                    isCorrect: true
-                }]
-            },
-            {
-                id: 4, question: "What is 4 + 5?", type: "select_one",
-                answer: [{
-                    text: "1",
-                    isCorrect: false
-                },
-                {
-                    text: "2",
-                    isCorrect: false
-                },
-                {
-                    text: "4",
-                    isCorrect: false
-                },
-                {
-                    text: "9",
-                    isCorrect: true
-                }]
-            },
+const TeacherViewQuizDetails = () => {
+    const [questions, setQuestions] = useState([]);
+    const [quiz, setQuiz] = useState(null);
+    const { quizId } = useParams();
 
-        ],
-        timeLimitMinutes: 10,
-        score: 10,
-    };
-
-
-    const data = [
-        { answer: 'A', attemptNumber: 2, isCorrect: true },
-        { answer: 'B', attemptNumber: 5, isCorrect: false },
-        { answer: 'C', attemptNumber: 20, isCorrect: false },
-        { answer: 'D', attemptNumber: 9, isCorrect: false },
-        // Add more data points as needed
-    ];
+    useEffect(() => {
+        ApiInstance.get(`/quiz/review-detail/${ quizId }`)
+            .then((response) => {
+                setQuiz(response.data.data);
+                setQuestions(response.data.data.questions);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    }, [quizId]);
 
     return (
         <div className="container" style={{ marginRight: "-230px" }}>
-            <MenuComponent role="teacher"/>
+            <MenuComponent role="teacher" />
             <Box>
-                <div className="header-page"
+                <div
+                    className="header-page"
                     style={{
                         marginLeft: "60px",
-                        width: "700px"
-                    }}>
+                        width: "700px",
+                    }}
+                >
                     <BackButton />
                     <Typography textAlign="center" variant="h4" gutterBottom>
                         View Answer Details
@@ -139,7 +49,7 @@ const teacherViewQuizDetails = () => {
                         borderRadius: 1,
                         boxShadow: 1,
                         mb: 2,
-                        marginLeft: 8
+                        marginLeft: 8,
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
@@ -168,20 +78,20 @@ const teacherViewQuizDetails = () => {
                                     borderRadius: 1,
                                     boxShadow: 1,
                                     mb: 2,
-                                    marginLeft: 8
+                                    marginLeft: 8,
                                 }}
                             >
                                 <Box>
                                     <Box marginLeft={8}>
                                         <Typography variant="h6" gutterBottom>
-                                            Question {index + 1}: {question.question}
+                                            Question {index + 1}: {question.text}
                                         </Typography>
-                                        {question.answer?.map((answer, index) => (
+                                        {question.answerOptions?.map((answer, index) => (
                                             /**
-                                            nêu type là select_one thì render ra radio button,
-                                            nếu type là select_multiple thì render ra checkbox,
-                                            nếu isCorrect === true thì checked,
-                                            */
+                                                                  nÃªu type lÃ  select_one thÃ¬ render ra radio button,
+                                                                  náº¿u type lÃ  select_multiple thÃ¬ render ra checkbox,
+                                                                  náº¿u isCorrect === true thÃ¬ checked,
+                                                                  */
                                             <Box display={"flex"}>
                                                 {question.type === "select_one" ? (
                                                     <input
@@ -200,26 +110,32 @@ const teacherViewQuizDetails = () => {
                                                     />
                                                 ) : null}
                                                 <Typography variant="body1" gutterBottom>
-                                                    {String.fromCharCode(65 + index)}. {answer.text}
+                                                    {String.fromCharCode(65 + index)}. {answer.optionText}
                                                 </Typography>
                                             </Box>
-
                                         ))}
                                     </Box>
                                     <Box>
                                         <BarChart
                                             width={800}
                                             height={200}
-                                            data={data}
+                                            data={question.answerOptions}
                                             layout="vertical"
                                         >
-                                            <XAxis type="number" domain={[0, "dataMax"]} tickCount={10} />
-                                            <YAxis type="category" dataKey="answer" />
+                                            <XAxis
+                                                type="number"
+                                                domain={[0, "dataMax"]}
+                                                tickCount={10}
+                                            />
+                                            <YAxis type="category" dataKey="optionText" />
                                             <Tooltip />
                                             <Legend />
-                                            <Bar dataKey="attemptNumber" barSize={20}>
-                                                {data.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.isCorrect ? 'green' : 'red'} />
+                                            <Bar dataKey="count" barSize={20}>
+                                                {question.answerOptions.map((entry, index) => (
+                                                    <Cell
+                                                        key={`cell-${index}`}
+                                                        fill={entry.isCorrect ? "green" : "red"}
+                                                    />
                                                 ))}
                                             </Bar>
                                         </BarChart>
@@ -229,9 +145,9 @@ const teacherViewQuizDetails = () => {
                         ))}
                     </Box>
                 </Box>
-            </Box >
-        </div >
+            </Box>
+        </div>
     );
-}
+};
 
-export default teacherViewQuizDetails;
+export default TeacherViewQuizDetails;

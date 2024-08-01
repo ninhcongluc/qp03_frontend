@@ -17,7 +17,7 @@ const TeacherManagementPage = () => {
         }}
       >
         <h1 style={{ marginBottom: "1.5rem"}}>
-          Teacher Information Management
+          Teacher Information List
         </h1>
         <ManageTeacherTable />
       </Box>

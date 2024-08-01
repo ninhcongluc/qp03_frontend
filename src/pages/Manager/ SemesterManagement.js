@@ -16,7 +16,7 @@ const SemesterManagement = () => {
           width: "700px",
         }}
       >
-        <h1 style={{ marginBottom: "1.5rem" }}>Semester Management</h1>
+        <h1 style={{ marginBottom: "1.5rem" }}>Semester List</h1>
         <ManageSemesterTable />
       </Box>
     </div>
