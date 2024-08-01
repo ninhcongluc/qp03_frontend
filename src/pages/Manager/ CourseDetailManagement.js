@@ -330,7 +330,7 @@ const CourseDetailPage = () => {
               textAlign: "center",
             }}
           >
-            Class Management
+            Class List
           </h1>
         </Box>
         <Box>
