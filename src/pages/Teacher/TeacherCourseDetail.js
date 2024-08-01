@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { formatDate } from "../../commons/function";
+import InputLabel from "@mui/material/InputLabel";
 import {
   Avatar,
   Box,
@@ -57,8 +58,8 @@ const columns = [
     minWidth: 120,
   },
   {
-    id: "score",
-    label: "Score",
+    id: "type",
+    label: "Type",
     minWidth: 120,
   },
   {
@@ -96,6 +97,7 @@ const TeacherCourseDetailPage = () => {
     description: "",
     startDate: null,
     endDate: null,
+    type: "practice",
     classId: selectedClassId,
     timeLimitMinutes: 0,
     isLimitedAttempts: false,
@@ -219,6 +221,7 @@ const TeacherCourseDetailPage = () => {
       description: "",
       startDate: null,
       endDate: null,
+      type: "practice",
       isLimitedAttempts: false,
       maxAttempts: 0,
       timeLimitMinutes: 0,
@@ -233,6 +236,7 @@ const TeacherCourseDetailPage = () => {
       name: "",
       description: "",
       startDate: null,
+      type: "practice",
       isLimitedAttempts: false,
       classId: selectedClassId,
       endDate: null,
@@ -255,6 +259,7 @@ const TeacherCourseDetailPage = () => {
       startDate: new Date(quiz.startDate),
       endDate: new Date(quiz.endDate),
       classId: selectedClassId,
+      type: quiz.type,
       isLimitedAttempts: quiz.isLimitedAttempts,
       maxAttempts: Number(quiz?.maxAttempts || 0),
       timeLimitMinutes: Number(quiz.timeLimitMinutes),
@@ -282,8 +287,34 @@ const TeacherCourseDetailPage = () => {
     setShowStudentDialog(false);
   };
 
+  const handleQuizTypeChange = (event) => {
+    const selectedType = event.target.value;
+    const today = new Date();
+    setNewQuiz((prevQuiz) => ({
+      ...prevQuiz,
+      type: selectedType,
+      startDate: selectedType === "exam" ? today : prevQuiz.startDate,
+      endDate: selectedType === "exam" ? today : prevQuiz.endDate,
+      isLimitedAttempts: selectedType === "exam" ? true : prevQuiz.isLimitedAttempts,
+      maxAttempts: selectedType === "exam" ? 1 : prevQuiz.maxAttempts,
+      showAnswer: selectedType === "exam" ? false : prevQuiz.showAnswer,
+    }));
+  };
+
   const handleQuizFormSubmit = async (event) => {
     event.preventDefault();
+    if (newQuiz.type === "exam") {
+      const startDate = new Date(newQuiz.startDate);
+      const endDate = new Date(newQuiz.endDate);
+      
+      // Ensure startDate and endDate are on the same day
+      if (startDate.getDate() !== endDate.getDate() || 
+          startDate.getMonth() !== endDate.getMonth() || 
+          startDate.getFullYear() !== endDate.getFullYear()) {
+        toast.error("Start date and end date must be on the same day for an exam.");
+        return;
+      }
+    }
     try {
       if (selectedQuiz) {
         // Update existing quiz
@@ -398,7 +429,7 @@ const TeacherCourseDetailPage = () => {
                     <TableCell>
                       {quiz.isLimitedAttempts ? quiz.maxAttempts : "No"}
                     </TableCell>
-                    <TableCell>{quiz.score}</TableCell>
+                    <TableCell>{quiz.type}</TableCell>
                     <TableCell
                       style={{
                         color: quiz.showAnswer ? "blue" : "red",
@@ -511,6 +542,19 @@ const TeacherCourseDetailPage = () => {
                 margin="normal"
                 required
               />
+              <div>
+                <InputLabel id="quiz-type">Type</InputLabel>
+                <Select
+                  labelId="quiz-type"
+                  id="quiz-type"
+                  defaultValue={"practice"}
+                  value={newQuiz.type}
+                  onChange={handleQuizTypeChange}
+                >
+                  <MenuItem value="practice">Practice</MenuItem>
+                  <MenuItem value="exam">Exam</MenuItem>
+                </Select>
+              </div>
               <TextField
                 label="Time Limit (minutes)"
                 type="number"
@@ -525,47 +569,50 @@ const TeacherCourseDetailPage = () => {
                 margin="normal"
                 required
               />
-
               <div>
                 <Typography variant="subtitle1">Limit Attempts:</Typography>
                 <Switch
-                  checked={newQuiz.isLimitedAttempts}
+                  checked={newQuiz.type === "exam" ? true : newQuiz.isLimitedAttempts}
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      isLimitedAttempts: e.target.checked,
+                      isLimitedAttempts: newQuiz.type === "exam" ? true : e.target.checked, 
                     })
                   }
+                  disabled={newQuiz.type === "exam"} 
                 />
               </div>
-
-              {newQuiz.isLimitedAttempts && (
+              {(newQuiz.isLimitedAttempts || newQuiz.type === "exam") && ( 
                 <TextField
                   label="Max Attempts"
                   type="text"
-                  value={newQuiz?.maxAttempts}
+                  value={newQuiz.type === "exam" ? 1 : newQuiz.maxAttempts} 
                   onChange={(e) =>
                     setNewQuiz({
                       ...newQuiz,
-                      maxAttempts: e.target.value.replace(/\D/g, ""),
+                      maxAttempts: newQuiz.type === "exam" ? 1 : e.target.value.replace(/\D/g, ""), 
                     })
                   }
                   fullWidth
                   margin="normal"
                   required
+                  disabled={newQuiz.type === "exam"} 
                 />
               )}
               <div className="hidden-switch">
-                <Typography variant="subtitle1">
-                  Show Student Answers:
-                </Typography>
+                <Typography variant="subtitle1">Show Student Answers:</Typography>
                 <Switch
-                  checked={newQuiz.showAnswer}
+                  checked={newQuiz.type === "exam" ? false : newQuiz.showAnswer} 
                   onChange={(e) =>
-                    setNewQuiz({ ...newQuiz, showAnswer: e.target.checked })
+                    setNewQuiz({
+                      ...newQuiz,
+                      showAnswer: newQuiz.type === "exam" ? false : e.target.checked, 
+                    })
                   }
+                  disabled={newQuiz.type === "exam"} 
                 />
               </div>
+
               <DialogActions>
                 <Button onClick={handleCloseCreateQuizDialog} color="secondary">
                   Cancel
@@ -621,9 +668,8 @@ const TeacherCourseDetailPage = () => {
                     </TableCell>
                     <TableCell>{student.code}</TableCell>
                     <TableCell>{student.email}</TableCell>
-                    <TableCell>{`${student?.firstName || ""} ${
-                      student?.lastName || ""
-                    }`}</TableCell>
+                    <TableCell>{`${student?.firstName || ""} ${student?.lastName || ""
+                      }`}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

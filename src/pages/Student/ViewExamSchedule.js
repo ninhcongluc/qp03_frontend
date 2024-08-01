@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -11,22 +11,49 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import ApiInstance from "../../axios";
+
 import MenuComponent from "../../components/LeftMenu/Menu";
 
-// Mock data for exam schedules
-const mockExamSchedules = [
-  { id: 1, subjectCode: "ACC101", subjectName: "Principles of Accounting", date: "23/07/2024", roomNo: "AL-R205", time: "12h50-14h20", examForm: "Multiple choices ", exam: "FE", dateOfPublication: "27/07/2024" },
-  { id: 2, subjectCode: "SWR302", subjectName: "Software Requirement", date: "24/07/2024", roomNo: "BE-316", time: "12h50-14h20", examForm: "Practical exam (PEA client)", exam: "FE", dateOfPublication: "29/07/2024" },
-  // Add more data as needed...
-];
-
 const ExamSchedule = () => {
-  const [examSchedules] = useState(mockExamSchedules);
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    ApiInstance.get(`/quiz/student-exam/schedular`)
+      .then((response) => {
+        const rs = response.data.data.map((item) => {
+          const startDate = new Date(item.startDate);
+          const endDate = new Date(item.endDate);
+
+          const pad = (num) => (num < 10 ? "0" + num : num);
+
+          return {
+            id: item.id,
+            name: item.name,
+            date: `${startDate.getFullYear()}-${pad(
+              startDate.getMonth() + 1
+            )}-${pad(startDate.getDate())}`,
+            startTime: `${pad(startDate.getHours())}:${pad(
+              startDate.getMinutes()
+            )}`,
+            endTime: `${pad(endDate.getHours())}:${pad(endDate.getMinutes())}`,
+            course: item.course,
+          };
+        });
+        setData(rs);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
       <MenuComponent role="student" />
-      <Container sx={{ marginLeft: "70px", marginTop:"-30%"}}>
+      <Container sx={{ marginLeft: "70px", marginTop: "-30%" }}>
         <Typography variant="h4" gutterBottom className="exam-schedule-title">
           Exam Schedules
         </Typography>
@@ -42,28 +69,49 @@ const ExamSchedule = () => {
               <TableHead className="exam-schedule-table-head">
                 <TableRow className="exam-schedule-table-row">
                   <TableCell className="exam-schedule-table-cell">NO</TableCell>
-                  <TableCell className="exam-schedule-table-cell">SUBJECT CODE</TableCell>
-                  <TableCell className="exam-schedule-table-cell">SUBJECT NAME</TableCell>
-                  <TableCell className="exam-schedule-table-cell">DATE</TableCell>
-                 
-                  <TableCell className="exam-schedule-table-cell">TIME</TableCell>
-                  <TableCell className="exam-schedule-table-cell">EXAM FORM</TableCell>
-                 
-                  
+                  <TableCell className="exam-schedule-table-cell">
+                    SUBJECT CODE
+                  </TableCell>
+                  <TableCell className="exam-schedule-table-cell">
+                    SUBJECT NAME
+                  </TableCell>
+                  <TableCell className="exam-schedule-table-cell">
+                    START DATE
+                  </TableCell>
+
+                  <TableCell className="exam-schedule-table-cell">
+                    END DATE
+                  </TableCell>
+                  <TableCell className="exam-schedule-table-cell">
+                    EXAM NAME
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="exam-schedule-table-body">
-                {examSchedules.map((schedule, index) => (
-                  <TableRow key={schedule.id} className={`exam-schedule-table-row-${index}`}>
-                    <TableCell className="exam-schedule-table-cell">{index + 1}</TableCell>
-                    <TableCell className="exam-schedule-table-cell">{schedule.subjectCode}</TableCell>
-                    <TableCell className="exam-schedule-table-cell">{schedule.subjectName}</TableCell>
-                    <TableCell className="exam-schedule-table-cell">{schedule.date}</TableCell>
-                   
-                    <TableCell className="exam-schedule-table-cell">{schedule.time}</TableCell>
-                    <TableCell className="exam-schedule-table-cell">{schedule.examForm}</TableCell>
-                   
-                    
+                {data.map((item, index) => (
+                  <TableRow
+                    key={item.id}
+className={`exam-schedule-table-row-${index}`}
+                  >
+                    <TableCell className="exam-schedule-table-cell">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="exam-schedule-table-cell">
+                      {item.course.code}
+                    </TableCell>
+                    <TableCell className="exam-schedule-table-cell">
+                      {item.course.name}
+                    </TableCell>
+                    <TableCell className="exam-schedule-table-cell">
+                      {item.date}
+                    </TableCell>
+
+                    <TableCell className="exam-schedule-table-cell">
+                      {item.startTime} - {item.endTime}
+                    </TableCell>
+                    <TableCell className="exam-schedule-table-cell">
+                      {item.name}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
